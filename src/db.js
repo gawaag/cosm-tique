@@ -104,19 +104,19 @@ CREATE INDEX IF NOT EXISTS idx_res_items_res ON reservation_items(reservation_id
 const DEFAULT_SETTINGS = {
   brand_name: 'VOLTA',
   accent_color: '#0071e3',
-  whatsapp_number: '212600000000', // format international sans "+" ni espaces
-  contact_email: 'contact@example.com',
-  notification_email: '',
+  whatsapp_number: '33744141908', // +33 7 44 14 19 08 (sans + ni espaces)
+  contact_email: 'voltatech.contact@gmail.com',
+  notification_email: 'voltatech.contact@gmail.com',
   smtp_host: '',
   smtp_port: '465',
   smtp_secure: 'true',
-  smtp_user: '',
+  smtp_user: 'voltatech.contact@gmail.com',
   smtp_pass: '',
-  mail_from: '',
+  mail_from: 'VOLTA <voltatech.contact@gmail.com>',
   whatsapp_notify: '1',
   callmebot_apikey: '',
   notify_webhook_url: '',
-  contact_phone: '+33 6 00 00 00 00',
+  contact_phone: '+33 7 44 14 19 08',
   hero_title_fr: 'Le high-tech, simplement.',
   hero_title_en: 'Tech, made simple.',
   hero_sub_fr: 'PC portables, machines gamer et smartphones comme neufs. Vente France uniquement.',
@@ -149,6 +149,43 @@ function forceFranceCurrency() {
     upsertSetting.run('currency_symbol', '€');
     console.log('[db] Devise forcee: EUR / € (vente France)');
   }
+}
+
+/** Contact / réservations VOLTA (email + WhatsApp France). */
+function ensureVoltaContactDefaults() {
+  const EMAIL = 'voltatech.contact@gmail.com';
+  const WA = '33744141908';
+  const PHONE = '+33 7 44 14 19 08';
+  const targets = {
+    notification_email: EMAIL,
+    contact_email: EMAIL,
+    whatsapp_number: WA,
+    contact_phone: PHONE,
+  };
+  const placeholders = new Set([
+    '', 'contact@example.com', '212600000000', '33600000000',
+    '+33 6 00 00 00 00', '+212 6 00 00 00 00',
+  ]);
+  let changed = false;
+  for (const [key, want] of Object.entries(targets)) {
+    const cur = String((getSetting.get(key) || {}).value || '').trim();
+    if (!cur || placeholders.has(cur) || cur !== want) {
+      // Toujours aligner sur le contact boutique (email réservations + WhatsApp).
+      upsertSetting.run(key, want);
+      changed = true;
+    }
+  }
+  const smtpUser = String((getSetting.get('smtp_user') || {}).value || '').trim();
+  if (!smtpUser || placeholders.has(smtpUser) || smtpUser.includes('example.com')) {
+    upsertSetting.run('smtp_user', EMAIL);
+    changed = true;
+  }
+  const mailFrom = String((getSetting.get('mail_from') || {}).value || '').trim();
+  if (!mailFrom || mailFrom.includes('example.com')) {
+    upsertSetting.run('mail_from', `VOLTA <${EMAIL}>`);
+    changed = true;
+  }
+  if (changed) console.log(`[db] Contact boutique: ${EMAIL} / WhatsApp ${PHONE}`);
 }
 
 function slugifyName(str) {
@@ -202,6 +239,7 @@ function seedFranceCatalog() {
 
 function ensureFranceCatalog() {
   forceFranceCurrency();
+  ensureVoltaContactDefaults();
 
   const demo = db.prepare(`
     SELECT COUNT(*) AS c FROM products
