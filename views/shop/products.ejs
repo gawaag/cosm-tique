@@ -1,0 +1,37 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main>
+  <section class="page-head">
+    <div class="container">
+      <p class="page-kicker"><%= settings.brand_name %></p>
+      <h1><%= t('all_products') %></h1>
+      <p class="page-sub"><%= t('catalog_sub') %></p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="catalog-toolbar">
+      <div class="cat-chips" id="catChips">
+        <button type="button" class="cat-chip <%= activeCat ? '' : 'active' %>" data-cat=""><%= t('all') %> <span class="chip-count"><%= products.length %></span></button>
+        <% categories.forEach(function(c){ %>
+          <button type="button" class="cat-chip <%= activeCat === c.category ? 'active' : '' %>" data-cat="<%= c.category %>"><%= c.category %> <span class="chip-count"><%= c.n %></span></button>
+        <% }) %>
+      </div>
+      <input type="search" id="productSearch" placeholder="<%= t('search') %>" aria-label="<%= t('search') %>">
+    </div>
+
+    <div class="product-grid" id="productList">
+      <% products.forEach(function(p){ %>
+        <div class="product-item" data-category="<%= p.category %>" data-name="<%= (p.name + ' ' + p.brand + ' ' + p.cpu + ' ' + p.gpu).toLowerCase() %>">
+          <%- include('../partials/product-card', { p: p }) %>
+        </div>
+      <% }) %>
+    </div>
+    <p class="empty-note" id="noResults" hidden><%= t('no_results') %></p>
+    <% if (!products.length) { %><p class="empty-note"><%= t('out_of_stock') %></p><% } %>
+  </section>
+</main>
+
+<script nonce="<%= nonce %>">window.__ACTIVE_CAT__ = <%- JSON.stringify(activeCat || '') %>;</script>
+<%- include('../partials/footer') %>

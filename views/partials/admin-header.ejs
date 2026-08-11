@@ -1,0 +1,44 @@
+<%- include('./head', { bodyClass: 'admin-body' }) %>
+<% var section = (typeof section !== 'undefined') ? section : ''; %>
+<div class="admin-wrap">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <a href="/admin" class="admin-brand"><%- include('logo') %><span class="brand-name"><%= settings.brand_name %></span></a>
+    <nav class="admin-nav">
+      <a href="/admin" class="<%= section === 'dashboard' ? 'active' : '' %>">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M3 3h8v8H3V3zm10 0h8v5h-8V3zM3 13h8v8H3v-8zm10 3h8v5h-8v-5z"/></svg>
+        Tableau de bord</a>
+      <a href="/admin/produits" class="<%= section === 'products' ? 'active' : '' %>">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M4 5h16a1 1 0 011 1v9H3V6a1 1 0 011-1zm-3 12h22a1 1 0 011 1 2 2 0 01-2 2H2a2 2 0 01-2-2 1 1 0 011-1z"/></svg>
+        Produits</a>
+      <a href="/admin/reservations" class="<%= section === 'reservations' ? 'active' : '' %>">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M7 2h10a2 2 0 012 2v18l-7-4-7 4V4a2 2 0 012-2z"/></svg>
+        Réservations</a>
+      <a href="/admin/personnel" class="<%= section === 'personnel' ? 'active' : '' %>">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z"/></svg>
+        Personnel</a>
+      <a href="/admin/parametres" class="<%= section === 'settings' ? 'active' : '' %>">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l2 1.5-2 3.5-2.4-.6a7 7 0 01-1.4.8L16.5 21h-4l-.7-2.3a7 7 0 01-1.4-.8L8 18.5l-2-3.5L8 12l-2-1.5 2-3.5 2.4.6c.4-.3 1-.6 1.4-.8L12.5 3h4l.7 2.3c.5.2 1 .5 1.4.8L21 5.5l2 3.5L21 12z"/></svg>
+        Paramètres</a>
+    </nav>
+    <a href="/" target="_blank" class="admin-view-site">Voir le site ↗</a>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="admin-menu-btn" id="adminMenuBtn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+      </button>
+      <h1 class="admin-title"><%= typeof title !== 'undefined' ? title : '' %></h1>
+      <div class="admin-topbar-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Theme" title="Theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 17a5 5 0 100-10 5 5 0 000 10zm0 3a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm0-20a1 1 0 011 1v1a1 1 0 11-2 0V1a1 1 0 011-1zM4.2 4.2a1 1 0 011.4 0l.7.7A1 1 0 115 6.3l-.7-.7a1 1 0 010-1.4zm13.4 13.4a1 1 0 011.4 0l.7.7a1 1 0 01-1.4 1.4l-.7-.7a1 1 0 010-1.4zM0 12a1 1 0 011-1h1a1 1 0 110 2H1a1 1 0 01-1-1zm20 0a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zM4.9 17.6a1 1 0 010 1.4l-.7.7a1 1 0 01-1.4-1.4l.7-.7a1 1 0 011.4 0zM18.3 4.2a1 1 0 010 1.4l-.7.7A1 1 0 0116.2 5l.7-.7a1 1 0 011.4 0z"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+        </button>
+        <span class="admin-user"><%= isAdmin ? (typeof username !== 'undefined' ? username : 'Admin') : 'Admin' %></span>
+        <form method="post" action="/admin/logout" class="inline-form">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="btn btn-ghost btn-sm">Déconnexion</button>
+        </form>
+      </div>
+    </header>
+    <main class="admin-content">

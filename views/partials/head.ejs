@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <% var _desc = (typeof metaDesc !== 'undefined' && metaDesc) ? metaDesc : (settings['hero_sub_' + lang] || settings.hero_sub_fr || ''); %>
+  <% var _title = (typeof title !== 'undefined' && title) ? (title + ' | ' + settings.brand_name) : settings.brand_name; %>
+  <% var _url = siteUrl + (currentPath === '/' ? '' : currentPath); %>
+  <% var _ogImage = (typeof ogImage !== 'undefined' && ogImage) ? (siteUrl + ogImage) : ''; %>
+  <meta name="description" content="<%= _desc %>">
+  <title><%= _title %></title>
+  <link rel="canonical" href="<%= _url %>">
+  <meta property="og:type" content="<%= (typeof ogType !== 'undefined' ? ogType : 'website') %>">
+  <meta property="og:site_name" content="<%= settings.brand_name %>">
+  <meta property="og:title" content="<%= _title %>">
+  <meta property="og:description" content="<%= _desc %>">
+  <meta property="og:url" content="<%= _url %>">
+  <% if (_ogImage) { %><meta property="og:image" content="<%= _ogImage %>"><% } %>
+  <meta name="twitter:card" content="<%= _ogImage ? 'summary_large_image' : 'summary' %>">
+  <meta name="twitter:title" content="<%= _title %>">
+  <meta name="twitter:description" content="<%= _desc %>">
+  <link rel="icon" href="data:image/svg+xml,<%= encodeURIComponent('<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 32\'><rect width=\'32\' height=\'32\' rx=\'8\' fill=\'#1d1d1f\'/><path d=\'M8 11h16v9a2 2 0 01-2 2H10a2 2 0 01-2-2V11zm1.5 10.5h13M12 24h8\' stroke=\'#f5f5f7\' stroke-width=\'1.6\' fill=\'none\' stroke-linecap=\'round\'/></svg>') %>">
+  <link rel="preload" href="/static/fonts/geist-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style nonce="<%= nonce %>">:root{--accent: <%= settings.accent_color || '#0071e3' %>;}</style>
+  <script nonce="<%= nonce %>">
+    (function(){
+      document.documentElement.classList.add('js');
+      try{
+        var t = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      }catch(e){}
+    })();
+  </script>
+</head>
+<body class="<%= (typeof bodyClass !== 'undefined' ? bodyClass : '') %>">

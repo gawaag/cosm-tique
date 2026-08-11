@@ -1,0 +1,171 @@
+<%- include('../partials/head') %>
+<% var _org = {
+     '@context': 'https://schema.org', '@type': 'Store',
+     name: settings.brand_name, url: siteUrl,
+     description: (settings['about_' + lang] || settings.about_fr || undefined),
+     telephone: settings.contact_phone || undefined,
+     email: settings.contact_email || undefined
+   }; %>
+<script type="application/ld+json" nonce="<%= nonce %>"><%- JSON.stringify(_org) %></script>
+<%- include('../partials/header') %>
+
+<%
+  var withImage = (featured || []).filter(function(p){ return p.image; });
+  var heroProduct = withImage.find(function(p){ return /rog|asus|dark|gaming|predator|legion/i.test((p.image||'') + ' ' + (p.name||'') + ' ' + (p.category||'')); })
+    || withImage[0]
+    || ((featured && featured.length) ? featured[0] : null);
+  var showcaseCopy = {
+    'Ordinateurs': {
+      fr: { title: 'Ordinateurs', sub: 'Légers, fiables, prêts à travailler.' },
+      en: { title: 'Laptops', sub: 'Light, reliable, ready to work.' }
+    },
+    'PC Portable': {
+      fr: { title: 'PC portables', sub: 'Légers, fiables, prêts à travailler.' },
+      en: { title: 'Laptops', sub: 'Light, reliable, ready to work.' }
+    },
+    'Gaming': {
+      fr: { title: 'Gaming', sub: 'Puissance fluide pour jouer et créer.' },
+      en: { title: 'Gaming', sub: 'Smooth power to play and create.' }
+    },
+    'PC Gamer': {
+      fr: { title: 'PC gamer', sub: 'Puissance fluide pour jouer et créer.' },
+      en: { title: 'Gaming PCs', sub: 'Smooth power to play and create.' }
+    },
+    'Smartphones': {
+      fr: { title: 'Smartphones', sub: 'Comme neufs, au juste prix.' },
+      en: { title: 'Phones', sub: 'Like-new, fair pricing.' }
+    },
+    'Telephone': {
+      fr: { title: 'Smartphones', sub: 'Comme neufs, au juste prix.' },
+      en: { title: 'Phones', sub: 'Like-new, fair pricing.' }
+    }
+  };
+%>
+
+<main>
+  <%
+    var heroVideo = (settings.hero_video && settings.hero_video.trim())
+      ? settings.hero_video.trim()
+      : 'gemini_generated_video_c9721e56.mp4';
+    var heroImg = (settings.hero_image && settings.hero_image.trim())
+      ? settings.hero_image.trim()
+      : (heroProduct && heroProduct.image ? heroProduct.image : '');
+    var hasVideo = !!heroVideo;
+  %>
+  <section class="hero<%= (hasVideo || heroImg) ? ' hero--photo' : ' hero--fallback' %>">
+    <% if (hasVideo) { %>
+      <div class="hero-media" aria-hidden="true">
+        <video
+          class="hero-bg hero-bg--video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+          <% if (heroImg) { %>poster="/uploads/<%= heroImg %>"<% } %>
+        >
+          <source src="/uploads/<%= heroVideo %>" type="video/mp4">
+        </video>
+      </div>
+      <div class="hero-scrim" aria-hidden="true"></div>
+    <% } else if (heroImg) { %>
+      <div class="hero-media" aria-hidden="true">
+        <img class="hero-bg" src="/uploads/<%= heroImg %>" alt="" loading="eager" fetchpriority="high">
+      </div>
+      <div class="hero-scrim" aria-hidden="true"></div>
+    <% } else { %>
+      <div class="hero-media hero-media--fallback" aria-hidden="true">
+        <div class="laptop-scene">
+          <div class="laptop">
+            <div class="laptop-screen">
+              <div class="laptop-bezel">
+                <div class="laptop-display">
+                  <span class="display-brand"><%= settings.brand_name %></span>
+                  <span class="display-line"></span>
+                </div>
+              </div>
+            </div>
+            <div class="laptop-base"></div>
+            <div class="laptop-shadow"></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-scrim" aria-hidden="true"></div>
+    <% } %>
+
+    <div class="hero-copy">
+      <p class="hero-brand"><%= settings.brand_name %></p>
+      <h1 class="hero-headline"><%= settings['hero_title_' + lang] || settings.hero_title_fr %></h1>
+      <p class="hero-sub"><%= settings['hero_sub_' + lang] || settings.hero_sub_fr %></p>
+      <div class="hero-links">
+        <a href="/produits" class="hero-cta hero-cta--primary"><%= t('hero_cta') %></a>
+        <a href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('whatsapp_prefill')) %>" target="_blank" rel="noopener" class="hero-cta hero-cta--ghost">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-line">
+    <div class="container trust-inner">
+      <p><%= lang === 'en'
+        ? 'Protected payment · Hand delivery Montrouge (92120) · Free Office + antivirus · Tested parts'
+        : 'Paiement protégé · Main propre Montrouge (92120) · Office + antivirus offerts · Pièces testées' %></p>
+      <ul class="trust-chips" aria-label="Paiement & remise">
+        <li>Leboncoin</li>
+        <li>eBay</li>
+        <li>PayPal</li>
+        <li>Main propre · Montrouge 92120</li>
+        <li>Office + antivirus offerts</li>
+      </ul>
+    </div>
+  </section>
+
+  <%- include('../partials/trust-pay', { mode: 'full' }) %>
+
+  <% byCategory.forEach(function(cat, idx){
+       var copy = (showcaseCopy[cat.name] && showcaseCopy[cat.name][lang]) || { title: cat.name, sub: '' };
+       var lead = cat.products[0];
+  %>
+  <section class="showcase <%= idx % 2 === 1 ? 'showcase-dark' : 'showcase-light' %>">
+    <div class="showcase-inner" data-reveal>
+      <p class="showcase-kicker"><%= settings.brand_name %></p>
+      <h2><%= copy.title %></h2>
+      <% if (copy.sub) { %><p class="showcase-sub"><%= copy.sub %></p><% } %>
+      <a class="apple-link" href="/produits?cat=<%= encodeURIComponent(cat.name) %>"><%= t('discover') %> <span aria-hidden="true">›</span></a>
+    </div>
+    <% if (lead) { %>
+    <div class="showcase-visual" data-reveal>
+      <a href="/produit/<%= lead.slug %>" class="showcase-product">
+        <% if (lead.image) { %>
+          <img src="/uploads/<%= lead.image %>" alt="<%= lead.name %>" loading="lazy">
+        <% } else { %>
+          <div class="product-silhouette <%= cat.name === 'Telephone' ? 'is-phone' : 'is-laptop' %>">
+            <strong><%= lead.brand || lead.name %></strong>
+            <span><%= lead.cpu || lead.short_fr || '' %></span>
+          </div>
+        <% } %>
+        <div class="showcase-caption">
+          <span><%= lead.name %></span>
+          <strong><%= Number(lead.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></strong>
+        </div>
+      </a>
+    </div>
+    <% } %>
+  </section>
+  <% }) %>
+
+  <section class="section featured-section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2><%= t('selection') %></h2>
+        <a href="/produits" class="apple-link"><%= t('all_products') %> <span aria-hidden="true">›</span></a>
+      </div>
+      <div class="product-grid">
+        <% featured.forEach(function(p){ %>
+          <%- include('../partials/product-card', { p: p }) %>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

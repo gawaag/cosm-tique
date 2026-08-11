@@ -1,0 +1,48 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main>
+  <section class="page-head">
+    <div class="container">
+      <p class="page-kicker"><%= settings.brand_name %></p>
+      <h1>À propos</h1>
+      <p class="page-sub">3 ans d’expérience · Fournisseurs de confiance · Pièces testées</p>
+    </div>
+  </section>
+
+  <section class="section container narrow about-page">
+    <p class="lead" data-reveal><%= settings.about_fr || settings['about_' + lang] %></p>
+
+    <ul class="about-points" data-reveal>
+      <li>
+        <strong>Présents depuis 3 ans</strong>
+        <span>Nous accompagnons les particuliers et professionnels avec des machines sélectionnées et un suivi clair.</span>
+      </li>
+      <li>
+        <strong>Fournisseurs de confiance</strong>
+        <span>Nous travaillons uniquement avec des partenaires fiables pour garantir la qualité du matériel.</span>
+      </li>
+      <li>
+        <strong>Chaque pièce est testée</strong>
+        <span>Toutes les pièces sont et seront testées lors de la vente — en appel vidéo ou en main propre devant vous.</span>
+      </li>
+      <li>
+        <strong>Main propre à Montrouge</strong>
+        <span>Remise possible à Montrouge (92120), Île-de-France, sur rendez-vous.</span>
+      </li>
+      <li>
+        <strong>Paiements protégés</strong>
+        <span>Leboncoin, eBay Marketplace ou PayPal, avec protection acheteur.</span>
+      </li>
+    </ul>
+
+    <div class="about-cta" data-reveal>
+      <a href="/produits" class="btn btn-primary">Découvrir la boutique</a>
+      <a href="/contact" class="btn btn-outline">Contact</a>
+      <a class="btn btn-whatsapp" target="_blank" rel="noopener"
+         href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent('Bonjour, je suis intéressé par') %>">Contacter sur WhatsApp</a>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

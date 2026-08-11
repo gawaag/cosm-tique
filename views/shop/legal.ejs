@@ -1,0 +1,18 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main>
+  <section class="page-head"><div class="container"><h1><%= which === 'privacy' ? t('footer_privacy') : t('footer_legal') %></h1></div></section>
+  <section class="section container narrow legal-text">
+    <% if (which === 'privacy') { %>
+      <p>Les informations que vous fournissez (nom, telephone, email, message) sont utilisees uniquement pour traiter votre reservation et vous recontacter. Elles ne sont ni vendues ni partagees avec des tiers.</p>
+      <p>Pour toute demande de suppression de vos donnees, contactez-nous a <%= settings.contact_email %>.</p>
+    <% } else { %>
+      <p><strong><%= settings.brand_name %></strong></p>
+      <p>Vente de PC portables. Contact : <%= settings.contact_email %> - <%= settings.contact_phone %></p>
+      <p>Les prix sont indiques en <%= settings.currency %> toutes taxes comprises, sous reserve de disponibilite.</p>
+    <% } %>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,30 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main>
+  <div class="container">
+    <ol class="steps">
+      <li class="done"><span>1</span><%= t('step_cart') %></li>
+      <li class="done"><span>2</span><%= t('step_info') %></li>
+      <li class="active"><span>✓</span><%= t('step_confirm') %></li>
+    </ol>
+  </div>
+
+  <section class="section container">
+    <div class="confirm-card" data-clear-cart>
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" width="46" height="46"><path fill="currentColor" d="M9 16.2l-3.5-3.5L4 14.2 9 19.2 20 8.2l-1.5-1.5z"/></svg>
+      </div>
+      <h1><%= t('reservation_ok_title') %></h1>
+      <p><%= t('reservation_ok_msg') %></p>
+      <p class="confirm-next"><%= t('reservation_ok_next') %></p>
+      <p class="confirm-ref">#<%= String(reservationId).padStart(5, '0') %></p>
+      <div class="confirm-actions">
+        <a href="/produits" class="btn btn-outline"><%= t('continue_shopping') %></a>
+        <a href="/" class="btn btn-primary"><%= t('back_home') %></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

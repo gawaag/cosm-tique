@@ -1,0 +1,99 @@
+<%- include('../partials/admin-header') %>
+
+<% if (notice) { %><div class="alert alert-ok"><%= notice %></div><% } %>
+
+<form method="post" action="/admin/parametres" class="admin-card form-card">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="admin-card-head"><h2>Contenu du site</h2><button type="submit" class="btn btn-primary btn-sm">Enregistrer</button></div>
+
+  <div class="form-section">
+    <h3>Identité</h3>
+    <div class="field-row">
+      <div class="field grow"><label for="brand_name">Nom de la boutique</label><input type="text" id="brand_name" name="brand_name" value="<%= settings.brand_name %>"></div>
+      <div class="field"><label for="accent_color">Couleur principale</label><input type="color" id="accent_color" name="accent_color" value="<%= settings.accent_color %>"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label for="currency">Devise (code)</label><input type="text" id="currency" name="currency" value="<%= settings.currency %>" maxlength="10"></div>
+      <div class="field"><label for="currency_symbol">Symbole</label><input type="text" id="currency_symbol" name="currency_symbol" value="<%= settings.currency_symbol %>" maxlength="10"></div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>Contact</h3>
+    <div class="field-row">
+      <div class="field"><label for="whatsapp_number">Numéro WhatsApp <span class="muted">(format international, ex: 33600000000)</span></label><input type="text" id="whatsapp_number" name="whatsapp_number" value="<%= settings.whatsapp_number %>"></div>
+      <div class="field"><label for="contact_phone">Téléphone affiché</label><input type="text" id="contact_phone" name="contact_phone" value="<%= settings.contact_phone %>"></div>
+    </div>
+    <div class="field"><label for="contact_email">Email de contact (affiché sur le site)</label><input type="email" id="contact_email" name="contact_email" value="<%= settings.contact_email %>"></div>
+    <p class="muted" style="margin:0">Pour l’email qui <strong>reçoit</strong> les formulaires de réservation, allez dans <a href="/admin/personnel">Personnel</a>.</p>
+  </div>
+
+  <div class="form-section">
+    <h3>Page d'accueil (bandeau)</h3>
+    <div class="field-row">
+      <div class="field grow"><label for="hero_title_fr">Titre (FR)</label><input type="text" id="hero_title_fr" name="hero_title_fr" value="<%= settings.hero_title_fr %>"></div>
+      <div class="field grow"><label for="hero_title_en">Titre (EN)</label><input type="text" id="hero_title_en" name="hero_title_en" value="<%= settings.hero_title_en %>"></div>
+    </div>
+    <div class="field-row">
+      <div class="field grow"><label for="hero_sub_fr">Sous-titre (FR)</label><input type="text" id="hero_sub_fr" name="hero_sub_fr" value="<%= settings.hero_sub_fr %>"></div>
+      <div class="field grow"><label for="hero_sub_en">Sous-titre (EN)</label><input type="text" id="hero_sub_en" name="hero_sub_en" value="<%= settings.hero_sub_en %>"></div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>À propos</h3>
+    <div class="field-row">
+      <div class="field grow"><label for="about_fr">Texte (FR)</label><textarea id="about_fr" name="about_fr" rows="4"><%= settings.about_fr %></textarea></div>
+      <div class="field grow"><label for="about_en">Texte (EN)</label><textarea id="about_en" name="about_en" rows="4"><%= settings.about_en %></textarea></div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>Configurateur PC (prix)</h3>
+    <p class="muted" style="margin:0 0 12px">Ces tarifs s’appliquent sur la fiche produit avant ajout au panier / réservation.</p>
+    <div class="field-row">
+      <div class="field">
+        <label for="cfg_storage_step_gb">Palier SSD (Go)</label>
+        <input type="number" id="cfg_storage_step_gb" name="cfg_storage_step_gb" min="64" step="64" value="<%= settings.cfg_storage_step_gb || 256 %>">
+      </div>
+      <div class="field">
+        <label for="cfg_storage_step_price">Prix par palier SSD</label>
+        <input type="number" id="cfg_storage_step_price" name="cfg_storage_step_price" min="0" step="0.5" value="<%= settings.cfg_storage_step_price || 40 %>">
+      </div>
+      <div class="field">
+        <label for="cfg_storage_max_steps">Nb max de paliers SSD</label>
+        <input type="number" id="cfg_storage_max_steps" name="cfg_storage_max_steps" min="0" max="8" step="1" value="<%= settings.cfg_storage_max_steps || 3 %>">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="cfg_ram_upgrade_price">RAM 8 → 16 Go (supplément)</label>
+        <input type="number" id="cfg_ram_upgrade_price" name="cfg_ram_upgrade_price" min="0" step="0.5" value="<%= settings.cfg_ram_upgrade_price || 25 %>">
+      </div>
+      <div class="field">
+        <label for="cfg_ram_downgrade_price">RAM 16 → 8 Go (réduction)</label>
+        <input type="number" id="cfg_ram_downgrade_price" name="cfg_ram_downgrade_price" min="0" step="0.5" value="<%= settings.cfg_ram_downgrade_price || 15 %>">
+      </div>
+    </div>
+    <p class="muted" style="margin:8px 0 0">Exemple : SSD +256 Go = +<%= settings.cfg_storage_step_price || 40 %> <%= settings.currency_symbol %>. PC en 8 Go → option 16 Go à +<%= settings.cfg_ram_upgrade_price || 25 %>. PC en 16 Go → option 8 Go à −<%= settings.cfg_ram_downgrade_price || 15 %>.</p>
+  </div>
+
+  <div class="form-actions"><button type="submit" class="btn btn-primary btn-lg">Enregistrer les paramètres</button></div>
+</form>
+
+<form method="post" action="/admin/parametres/mot-de-passe" class="admin-card form-card">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="admin-card-head"><h2>Sécurité — Mot de passe</h2></div>
+  <% if (pwError) { %><div class="alert alert-error"><%= pwError %></div><% } %>
+  <% if (pwOk) { %><div class="alert alert-ok"><%= pwOk %></div><% } %>
+  <div class="form-section">
+    <div class="field"><label for="current_password">Mot de passe actuel</label><input type="password" id="current_password" name="current_password" required autocomplete="current-password"></div>
+    <div class="field-row">
+      <div class="field grow"><label for="new_password">Nouveau mot de passe <span class="muted">(min. 8 caractères)</span></label><input type="password" id="new_password" name="new_password" required minlength="8" autocomplete="new-password"></div>
+      <div class="field grow"><label for="confirm_password">Confirmer</label><input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password"></div>
+    </div>
+  </div>
+  <div class="form-actions"><button type="submit" class="btn btn-primary">Changer le mot de passe</button></div>
+</form>
+
+<%- include('../partials/admin-footer') %>

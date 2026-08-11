@@ -1,0 +1,66 @@
+<%- include('../partials/admin-header') %>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <span class="stat-label">Produits</span>
+    <span class="stat-value"><%= products.length %></span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Nouvelles reservations</span>
+    <span class="stat-value accent"><%= counts.nouveau %></span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Traitees</span>
+    <span class="stat-value"><%= counts.traite %></span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Stock total</span>
+    <span class="stat-value"><%= products.reduce(function(s,p){return s + p.stock;}, 0) %></span>
+  </div>
+</div>
+
+<div class="admin-cols">
+  <section class="admin-card">
+    <div class="admin-card-head">
+      <h2>Produits</h2>
+      <a href="/admin/produits/nouveau" class="btn btn-primary btn-sm">+ Nouveau produit</a>
+    </div>
+    <div class="table-scroll">
+      <table class="admin-table">
+        <thead><tr><th></th><th>Modele</th><th>Stock</th><th>Prix</th><th></th></tr></thead>
+        <tbody>
+          <% products.slice(0, 6).forEach(function(p){ %>
+            <tr>
+              <td class="cell-img"><% if (p.image) { %><img src="/uploads/<%= p.image %>" alt=""><% } else { %><span class="mini-ph"></span><% } %></td>
+              <td><%= p.name %></td>
+              <td><span class="stock-pill <%= p.stock>0?'ok':'out' %>"><%= p.stock %></span></td>
+              <td><%= Number(p.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></td>
+              <td class="cell-actions"><a href="/admin/produits/<%= p.id %>/modifier" class="icon-btn" title="Modifier">✎</a></td>
+            </tr>
+          <% }) %>
+          <% if (!products.length) { %><tr><td colspan="5" class="empty-cell">Aucun produit.</td></tr><% } %>
+        </tbody>
+      </table>
+    </div>
+    <a href="/admin/produits" class="card-foot-link">Voir tous les produits →</a>
+  </section>
+
+  <section class="admin-card">
+    <div class="admin-card-head"><h2>Reservations recentes</h2></div>
+    <ul class="res-list">
+      <% reservations.forEach(function(r){ %>
+        <li>
+          <div class="res-list-main">
+            <strong><%= r.customer_name %></strong>
+            <span class="res-products"><%= r.items.map(function(i){return i.product_name;}).join(', ') %></span>
+          </div>
+          <span class="badge <%= r.type === 'offer' ? 'badge-offer' : 'badge-res' %>"><%= r.type === 'offer' ? 'Offre' : 'Reservation' %></span>
+        </li>
+      <% }) %>
+      <% if (!reservations.length) { %><li class="empty-cell">Aucune reservation.</li><% } %>
+    </ul>
+    <a href="/admin/reservations" class="card-foot-link">Voir toutes les reservations →</a>
+  </section>
+</div>
+
+<%- include('../partials/admin-footer') %>

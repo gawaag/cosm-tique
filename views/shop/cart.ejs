@@ -1,0 +1,132 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<% var form = (typeof form !== 'undefined') ? form : {}; var errors = (typeof errors !== 'undefined') ? errors : []; %>
+
+<main>
+  <div class="reserve-banner" id="reserveBanner" role="status" aria-live="polite">
+    <strong>Important :</strong>
+    <span>Validez votre réservation — sinon la demande n’est pas envoyée. Un rappel apparaît toutes les 4 minutes.</span>
+    <button type="button" class="reserve-banner-cta" id="reserveBannerFocus">Réserver maintenant</button>
+  </div>
+
+  <section class="page-head">
+    <div class="container">
+      <p class="page-kicker"><%= settings.brand_name %></p>
+      <h1><%= t('reservation_title') %></h1>
+    </div>
+  </section>
+
+  <div class="container">
+    <ol class="steps">
+      <li class="done"><span>1</span><%= t('step_cart') %></li>
+      <li class="active"><span>2</span><%= t('step_info') %></li>
+      <li><span>3</span><%= t('step_confirm') %></li>
+    </ol>
+  </div>
+
+  <section class="section container checkout-grid">
+    <div class="cart-panel">
+      <h2><%= t('cart_title') %></h2>
+      <div id="cartItems" class="cart-items"></div>
+      <div id="cartEmpty" class="cart-empty" hidden>
+        <p><%= t('cart_empty') %></p>
+        <a href="/produits" class="btn btn-outline btn-sm"><%= t('continue_shopping') %></a>
+      </div>
+      <div class="cart-total-row" id="cartTotalRow">
+        <span><%= t('total') %></span>
+        <strong id="cartTotal">0 <%= settings.currency_symbol %></strong>
+      </div>
+      <%- include('../partials/trust-pay', { mode: 'compact' }) %>
+    </div>
+
+    <div class="form-panel">
+      <h2><%= t('reservation_title') %></h2>
+      <% if (errors.length) { %>
+        <div class="alert alert-error">
+          <ul><% errors.forEach(function(e){ %><li><%= e %></li><% }) %></ul>
+        </div>
+      <% } %>
+      <form method="post" action="/reservation" id="reservationForm" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" name="items" id="itemsField" value="">
+        <div class="hp-field" aria-hidden="true">
+          <label>Ne pas remplir<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="customer_name"><%= t('full_name') %> *</label>
+            <input type="text" id="customer_name" name="customer_name" required maxlength="120" value="<%= form.customer_name || '' %>">
+          </div>
+          <div class="field">
+            <label for="phone"><%= t('phone') %> *</label>
+            <input type="tel" id="phone" name="phone" required maxlength="40" value="<%= form.phone || '' %>">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email"><%= t('email') %> <span class="muted">(<%= t('optional') %>)</span></label>
+          <input type="email" id="email" name="email" maxlength="160" value="<%= form.email || '' %>">
+        </div>
+
+        <fieldset class="pay-fieldset">
+          <legend><%= t('pay_pref_title') %></legend>
+          <p class="field-hint"><%= t('pay_pref_hint') %></p>
+          <label class="pay-option">
+            <input type="radio" name="payment_pref" value="leboncoin" <%= form.payment_pref === 'leboncoin' ? 'checked' : '' %>>
+            <span><%= t('pay_leboncoin') %></span>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="payment_pref" value="ebay" <%= form.payment_pref === 'ebay' ? 'checked' : '' %>>
+            <span><%= t('pay_ebay') %></span>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="payment_pref" value="paypal" <%= form.payment_pref === 'paypal' ? 'checked' : '' %>>
+            <span><%= t('pay_paypal') %></span>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="payment_pref" value="handoff" <%= form.payment_pref === 'handoff' || !form.payment_pref ? 'checked' : '' %>>
+            <span><%= t('pay_handoff') %></span>
+          </label>
+        </fieldset>
+
+        <fieldset class="req-fieldset">
+          <legend><%= t('req_title') %></legend>
+          <label class="req-option">
+            <input type="checkbox" name="req_rdv" value="1" <%= form.req_rdv ? 'checked' : '' %>>
+            <span><%= t('req_rdv') %></span>
+          </label>
+          <label class="req-option">
+            <input type="checkbox" name="req_photos" value="1" <%= form.req_photos ? 'checked' : '' %>>
+            <span><%= t('req_photos') %></span>
+          </label>
+          <label class="req-option">
+            <input type="checkbox" name="req_info" value="1" <%= form.req_info ? 'checked' : '' %>>
+            <span><%= t('req_info') %></span>
+          </label>
+        </fieldset>
+
+        <div class="field">
+          <label for="offer_total"><%= t('offer_price') %> <span class="muted">(<%= t('optional') %>)</span></label>
+          <input type="text" id="offer_total" name="offer_total" inputmode="decimal" placeholder="<%= settings.currency_symbol %>" value="<%= form.offer_total || '' %>">
+        </div>
+
+        <div class="field">
+          <label for="message"><%= t('your_message') %></label>
+          <textarea id="message" name="message" rows="4" maxlength="2000"><%= form.message || '' %></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitReservation"><%= t('submit_reservation') %></button>
+
+        <div class="or-divider"><span><%= t('or') %></span></div>
+
+        <a class="btn btn-whatsapp btn-block" id="whatsappCheckout" target="_blank" rel="noopener"
+           href="https://wa.me/<%= settings.whatsapp_number %>">
+          <%= t('contact_whatsapp') %>
+        </a>
+      </form>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

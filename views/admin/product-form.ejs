@@ -1,0 +1,112 @@
+<%- include('../partials/admin-header') %>
+<% var p = product || {}; var isEdit = !!(p && p.id); %>
+<% function val(k){ return (p && p[k] != null) ? p[k] : ''; } %>
+
+<section class="admin-card form-card">
+  <div class="admin-card-head">
+    <h2><%= isEdit ? 'Modifier le produit' : 'Nouveau produit' %></h2>
+    <a href="/admin/produits" class="btn btn-ghost btn-sm">← Retour</a>
+  </div>
+
+  <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+  <form method="post" action="<%= isEdit ? '/admin/produits/' + p.id + '/modifier' : '/admin/produits/nouveau' %>" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <div class="form-section">
+      <h3>Informations</h3>
+      <div class="field-row">
+        <div class="field grow">
+          <label for="name">Nom du modele *</label>
+          <input type="text" id="name" name="name" required maxlength="160" value="<%= val('name') %>">
+        </div>
+        <div class="field">
+          <label for="brand">Marque</label>
+          <input type="text" id="brand" name="brand" maxlength="80" value="<%= val('brand') %>">
+        </div>
+        <div class="field">
+          <label for="category">Categorie</label>
+          <input type="text" id="category" name="category" maxlength="60" list="categoryList" value="<%= p.category || 'PC Portable' %>" placeholder="PC Portable, PC Gamer, Telephone...">
+          <datalist id="categoryList">
+            <% (allCategories || []).forEach(function(c){ %><option value="<%= c.category %>"></option><% }) %>
+            <option value="PC Portable"></option><option value="PC Gamer"></option><option value="Telephone"></option><option value="Accessoire"></option>
+          </datalist>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="price">Prix (<%= settings.currency_symbol %>) *</label>
+          <input type="text" id="price" name="price" inputmode="decimal" required value="<%= val('price') %>">
+        </div>
+        <div class="field">
+          <label for="old_price">Ancien prix <span class="muted">(optionnel)</span></label>
+          <input type="text" id="old_price" name="old_price" inputmode="decimal" value="<%= p.old_price != null ? p.old_price : '' %>">
+        </div>
+        <div class="field">
+          <label for="stock">Stock</label>
+          <input type="number" id="stock" name="stock" min="0" value="<%= p.stock != null ? p.stock : 0 %>">
+        </div>
+        <div class="field">
+          <label for="sort_order">Ordre d'affichage</label>
+          <input type="number" id="sort_order" name="sort_order" value="<%= p.sort_order != null ? p.sort_order : 0 %>">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Specifications</h3>
+      <div class="field-row">
+        <div class="field grow"><label for="cpu">Processeur</label><input type="text" id="cpu" name="cpu" maxlength="160" value="<%= val('cpu') %>"></div>
+        <div class="field"><label for="ram">RAM</label><input type="text" id="ram" name="ram" maxlength="80" value="<%= val('ram') %>"></div>
+      </div>
+      <div class="field-row">
+        <div class="field grow"><label for="storage">Stockage</label><input type="text" id="storage" name="storage" maxlength="120" value="<%= val('storage') %>"></div>
+        <div class="field grow"><label for="gpu">Carte graphique</label><input type="text" id="gpu" name="gpu" maxlength="160" value="<%= val('gpu') %>"></div>
+      </div>
+      <div class="field-row">
+        <div class="field grow"><label for="screen">Ecran</label><input type="text" id="screen" name="screen" maxlength="120" value="<%= val('screen') %>"></div>
+        <div class="field"><label for="os">Systeme</label><input type="text" id="os" name="os" maxlength="80" value="<%= val('os') %>"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Descriptions</h3>
+      <div class="field-row">
+        <div class="field grow"><label for="short_fr">Accroche (FR)</label><input type="text" id="short_fr" name="short_fr" maxlength="300" value="<%= val('short_fr') %>"></div>
+        <div class="field grow"><label for="short_en">Accroche (EN)</label><input type="text" id="short_en" name="short_en" maxlength="300" value="<%= val('short_en') %>"></div>
+      </div>
+      <div class="field-row">
+        <div class="field grow"><label for="desc_fr">Description (FR)</label><textarea id="desc_fr" name="desc_fr" rows="3" maxlength="4000"><%= val('desc_fr') %></textarea></div>
+        <div class="field grow"><label for="desc_en">Description (EN)</label><textarea id="desc_en" name="desc_en" rows="3" maxlength="4000"><%= val('desc_en') %></textarea></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Image</h3>
+      <% if (p.image) { %>
+        <div class="current-image">
+          <img src="/uploads/<%= p.image %>" alt="">
+          <label class="check-inline"><input type="checkbox" name="remove_image" value="1"> Supprimer l'image actuelle</label>
+        </div>
+      <% } %>
+      <div class="field">
+        <label for="image">Photo du produit (JPEG, PNG, WEBP - max 4 Mo)</label>
+        <input type="file" id="image" name="image" accept="image/*">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="check-row">
+        <label class="check-inline"><input type="checkbox" name="featured" value="1" <%= p.featured ? 'checked' : '' %>> Mettre en avant sur l'accueil</label>
+        <label class="check-inline"><input type="checkbox" name="active" value="1" <%= (p.active == null || p.active) ? 'checked' : '' %>> Visible sur le site</label>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary btn-lg"><%= isEdit ? 'Enregistrer' : 'Creer le produit' %></button>
+      <a href="/admin/produits" class="btn btn-ghost">Annuler</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/admin-footer') %>

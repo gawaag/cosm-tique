@@ -1,0 +1,189 @@
+<%- include('../partials/admin-header') %>
+
+<% if (typeof notice !== 'undefined' && notice) { %><div class="alert alert-ok"><%= notice %></div><% } %>
+<% if (typeof error !== 'undefined' && error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<% if (!mailConfigured) { %>
+  <div class="alert alert-error">
+    <strong>Email non configuré.</strong>
+    Il manque l’<em>identifiant SMTP</em> (votre Gmail) et/ou le <em>mot de passe d’application</em>
+    (16 caractères générés par Google — pas votre mot de passe Gmail habituel).
+    Remplissez → <strong>Enregistrer</strong> → <strong>Tester l’email</strong>.
+  </div>
+<% } %>
+
+<section class="admin-card form-card">
+  <div class="admin-card-head"><h2>1. Destinataire des réservations</h2></div>
+  <p class="muted" style="margin-top:0">Chaque réservation est <strong>toujours enregistrée</strong> dans Admin → Réservations, puis notifiée ici.</p>
+
+  <form method="post" action="/admin/personnel" id="personnelForm">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <div class="form-section">
+      <div class="field">
+        <label for="notification_email">Adresse email qui reçoit les formulaires *</label>
+        <input type="email" id="notification_email" name="notification_email"
+               value="<%= settings.notification_email || '' %>"
+               placeholder="ex: monadresse@gmail.com" autocomplete="email" required>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>2. Envoi email (SMTP) — obligatoire</h3>
+
+      <ol class="smtp-steps">
+        <li>Ouvrez <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">Google → Mots de passe des applications</a> (connecté avec votre Gmail).</li>
+        <li>Créez un mot de passe pour « Mail » / « Autre » nommé VOLTA — Google affiche <strong>16 caractères</strong>.</li>
+        <li>Collez-le dans « Mot de passe d’application » ci-dessous (sans espaces).</li>
+        <li>Identifiant SMTP = votre adresse Gmail complète.</li>
+        <li>Cliquez <strong>Enregistrer</strong>, puis <strong>Tester l’email</strong>.</li>
+      </ol>
+
+      <div class="field-row">
+        <div class="field grow">
+          <label for="smtp_host">Serveur SMTP</label>
+          <input type="text" id="smtp_host" name="smtp_host" value="<%= settings.smtp_host || 'smtp.gmail.com' %>" placeholder="smtp.gmail.com">
+        </div>
+        <div class="field">
+          <label for="smtp_port">Port</label>
+          <input type="text" id="smtp_port" name="smtp_port" value="<%= settings.smtp_port || '465' %>" placeholder="465">
+        </div>
+        <div class="field">
+          <label for="smtp_secure">Connexion sécurisée</label>
+          <select id="smtp_secure" name="smtp_secure">
+            <option value="true" <%= settings.smtp_secure !== 'false' ? 'selected' : '' %>>Oui (SSL/TLS — 465)</option>
+            <option value="false" <%= settings.smtp_secure === 'false' ? 'selected' : '' %>>Non (STARTTLS — 587)</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field grow">
+          <label for="smtp_user">Identifiant SMTP * <span class="muted">(votre Gmail)</span></label>
+          <input type="email" id="smtp_user" name="smtp_user"
+                 value="<%= settings.smtp_user || settings.notification_email || '' %>"
+                 placeholder="aminechebaibi@gmail.com" autocomplete="username" required>
+          <button type="button" class="btn btn-ghost btn-sm" id="copySmtpUser" style="margin-top:8px">Copier l’email destinataire</button>
+        </div>
+        <div class="field grow">
+          <label for="smtp_pass">Mot de passe d’application Gmail *</label>
+          <input type="password" id="smtp_pass" name="smtp_pass"
+                 value="<%= smtpPassSet ? '********' : '' %>"
+                 autocomplete="new-password"
+                 placeholder="<%= smtpPassSet ? 'Laisser tel quel pour ne pas changer' : 'xxxx xxxx xxxx xxxx' %>"
+                 <%= smtpPassSet ? '' : 'required' %>>
+          <p class="field-hint">Pas le mot de passe de connexion Google. Uniquement le mot de passe d’application.</p>
+        </div>
+      </div>
+      <div class="field">
+        <label for="mail_from">Expéditeur affiché (optionnel)</label>
+        <input type="text" id="mail_from" name="mail_from" value="<%= settings.mail_from || '' %>" placeholder='VOLTA &lt;aminechebaibi@gmail.com&gt;'>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>3. WhatsApp automatique</h3>
+      <p class="muted">
+        Utilise <a href="https://www.callmebot.com/blog/free-api-whatsapp-messages/" target="_blank" rel="noopener">CallMeBot</a> :
+        ajoutez le contact, envoyez le message d’activation, puis collez la clé API reçue.
+        Le numéro WhatsApp boutique est celui des <a href="/admin/parametres">Paramètres</a>
+        (actuellement <code><%= settings.whatsapp_number || 'non défini' %></code>).
+      </p>
+      <div class="check-row" style="margin-bottom:14px">
+        <label class="check-inline">
+          <input type="checkbox" name="whatsapp_notify" value="1" <%= settings.whatsapp_notify !== '0' ? 'checked' : '' %>>
+          Envoyer aussi un WhatsApp à chaque réservation
+        </label>
+      </div>
+      <div class="field">
+        <label for="callmebot_apikey">Clé API CallMeBot</label>
+        <input type="password" id="callmebot_apikey" name="callmebot_apikey"
+               value="<%= settings.callmebot_apikey ? '********' : '' %>"
+               placeholder="<%= settings.callmebot_apikey ? 'Laisser tel quel pour ne pas changer' : 'ex: 1234567' %>"
+               autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="notify_webhook_url">Webhook optionnel (Make / n8n / Zapier)</label>
+        <input type="url" id="notify_webhook_url" name="notify_webhook_url" value="<%= settings.notify_webhook_url || '' %>" placeholder="https://...">
+      </div>
+    </div>
+
+    <div class="mail-status <%= mailConfigured ? 'ok' : 'warn' %>">
+      <strong>Email :</strong>
+      <% if (mailConfigured && recipient) { %>
+        prêt → <code><%= recipient %></code>
+      <% } else if (!mailConfigured) { %>
+        incomplet — il manque :
+        <% if (!(settings.smtp_host || '').trim()) { %> serveur,<% } %>
+        <% if (!(settings.smtp_user || '').trim()) { %> <u>identifiant</u>,<% } %>
+        <% if (!smtpPassSet) { %> <u>mot de passe d’application</u><% } %>
+      <% } else { %>
+        destinataire manquant
+      <% } %>
+      <br>
+      <strong>WhatsApp :</strong>
+      <% if (waConfigured) { %>prêt (CallMeBot)<% } else { %>clé API ou numéro manquant<% } %>
+    </div>
+
+    <% if (lastNotify) { %>
+      <div class="mail-status <%= (lastNotify.email && lastNotify.email.sent) || (lastNotify.whatsapp && lastNotify.whatsapp.sent) ? 'ok' : 'warn' %>">
+        <strong>Dernière notification (#<%= lastNotify.id %>) :</strong>
+        email <%= lastNotify.email && lastNotify.email.sent ? 'OK' : ('échec / ' + ((lastNotify.email && lastNotify.email.reason) || '?')) %>
+        · WhatsApp <%= lastNotify.whatsapp && lastNotify.whatsapp.sent ? 'OK' : ((lastNotify.whatsapp && lastNotify.whatsapp.reason) || '?') %>
+        <span class="muted"> — <%= lastNotify.at %></span>
+        <% if (lastNotify.email && lastNotify.email.error) { %>
+          <br><code><%= lastNotify.email.error %></code>
+        <% } %>
+      </div>
+    <% } %>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary btn-lg">Enregistrer</button>
+    </div>
+  </form>
+
+  <div class="form-actions" style="gap:10px;flex-wrap:wrap">
+    <form method="post" action="/admin/personnel/test-email" class="inline-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-outline" <%= mailConfigured && recipient ? '' : 'disabled' %>>Tester l’email</button>
+    </form>
+    <form method="post" action="/admin/personnel/test-whatsapp" class="inline-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-outline" <%= waConfigured ? '' : 'disabled' %>>Tester WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<section class="admin-card">
+  <div class="admin-card-head"><h2>Impression personnelle</h2></div>
+  <p class="muted" style="margin-top:0">Liste imprimable / PDF des réservations (données sensibles — à usage personnel uniquement).</p>
+  <div class="form-actions" style="padding-top:0">
+    <a class="btn btn-outline" href="/admin/reservations/imprimer" target="_blank" rel="noopener">Ouvrir la version imprimable</a>
+    <a class="btn btn-ghost" href="/admin/reservations">Voir les réservations</a>
+  </div>
+</section>
+
+<section class="admin-card">
+  <div class="admin-card-head"><h2>Sécurité &amp; mise en ligne</h2></div>
+  <ul class="muted" style="margin:0;padding-left:18px;line-height:1.6">
+    <li><strong>Netlify ne peut pas héberger ce site tel quel</strong> (il faut un serveur Node + base SQLite). Utilisez plutôt <strong>Render</strong>, <strong>Railway</strong> ou <strong>Fly.io</strong>.</li>
+    <li>En production : <code>NODE_ENV=production</code> et <code>SECURE_COOKIES=true</code> (HTTPS obligatoire).</li>
+    <li>Changez le mot de passe admin dans Paramètres → Sécurité.</li>
+    <li>Ne publiez jamais le fichier <code>.env</code> ni le dossier <code>data/</code>.</li>
+  </ul>
+</section>
+
+<script nonce="<%= nonce %>">
+(function () {
+  var btn = document.getElementById('copySmtpUser');
+  var notif = document.getElementById('notification_email');
+  var user = document.getElementById('smtp_user');
+  if (btn && notif && user) {
+    btn.addEventListener('click', function () {
+      if (notif.value) user.value = notif.value.trim();
+      user.focus();
+    });
+  }
+})();
+</script>
+
+<%- include('../partials/admin-footer') %>

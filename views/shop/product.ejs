@@ -1,0 +1,254 @@
+<%- include('../partials/head', {
+  metaDesc: (product['short_' + lang] || product.short_fr),
+  ogType: 'product',
+  ogImage: (product.image ? '/uploads/' + product.image : '')
+}) %>
+<% var _ld = {
+     '@context': 'https://schema.org', '@type': 'Product',
+     name: product.name, brand: product.brand || undefined,
+     description: (product['desc_' + lang] || product.desc_fr || product['short_' + lang] || product.short_fr || undefined),
+     image: (product.image ? siteUrl + '/uploads/' + product.image : undefined),
+     sku: product.slug,
+     offers: {
+       '@type': 'Offer', priceCurrency: settings.currency,
+       price: product.price, url: siteUrl + '/produit/' + product.slug,
+       availability: (product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock')
+     }
+   };
+   var short = product['short_' + lang] || product.short_fr;
+   var desc = product['desc_' + lang] || product.desc_fr;
+   var specRows = [
+     ['spec_brand', product.brand],
+     ['spec_cpu', product.cpu],
+     ['spec_ram', product.ram],
+     ['spec_storage', product.storage],
+     ['spec_gpu', product.gpu],
+     ['spec_screen', product.screen],
+     ['spec_os', product.os]
+   ].filter(function(r){ return r[1]; });
+   var canConfigure = !!(typeof configurable !== 'undefined' && configurable);
+   var baseRamGo = (typeof cfgBaseRam !== 'undefined') ? cfgBaseRam : null;
+   var baseStorageGo = (typeof cfgBaseStorage !== 'undefined') ? cfgBaseStorage : null;
+   var pricing = (typeof cfgPricing !== 'undefined' && cfgPricing) ? cfgPricing : {
+     storageStepGb: 256, storageStepPrice: 40, storageMaxSteps: 3,
+     ramUpgradePrice: 25, ramDowngradePrice: 15
+   };
+   var ramOptions = (typeof cfgRamOptions !== 'undefined' && cfgRamOptions) ? cfgRamOptions : [];
+%>
+<script type="application/ld+json" nonce="<%= nonce %>"><%- JSON.stringify(_ld) %></script>
+<%- include('../partials/header') %>
+
+<% if (canConfigure) { %>
+<div class="cfg-sticky" id="cfgSticky" hidden>
+  <div class="cfg-sticky-inner">
+    <% if (product.image) { %>
+      <img class="cfg-sticky-thumb" src="/uploads/<%= product.image %>" alt="">
+    <% } %>
+    <div class="cfg-sticky-copy">
+      <strong><%= product.name %></strong>
+      <span id="cfgStickySummary"><%= product.storage || '' %><% if (product.storage && product.ram) { %> · <% } %><%= product.ram || '' %></span>
+    </div>
+    <div class="cfg-sticky-price">
+      <strong id="cfgStickyPrice"><%= Number(product.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></strong>
+      <% if (product.old_price && product.old_price > product.price) { %>
+        <span class="cfg-sticky-old"><%= Number(product.old_price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %> neuf</span>
+      <% } %>
+    </div>
+    <button type="button" class="btn btn-primary" id="cfgStickyAdd" <%= product.stock <= 0 ? 'disabled' : '' %>>Ajouter au panier</button>
+  </div>
+</div>
+<% } %>
+
+<main>
+  <section class="pdp-hero">
+    <div class="container pdp-hero-copy">
+      <% if (product.brand) { %><p class="pdp-brand"><%= product.brand %></p><% } %>
+      <h1 class="pdp-title"><%= product.name %></h1>
+      <% if (short) { %><p class="pdp-sub"><%= short %></p><% } %>
+      <div class="pdp-price-row">
+        <% if (product.old_price && product.old_price > product.price) { %>
+          <span class="price-old"><%= Number(product.old_price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></span>
+        <% } %>
+        <span class="pdp-price" id="pdpHeroPrice"><%= Number(product.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></span>
+      </div>
+      <% if (canConfigure) { %>
+        <p class="pdp-soft-perk">Office + antivirus offerts</p>
+      <% } %>
+      <div class="pdp-links">
+        <a href="#acheter" class="apple-link"><%= t('reserve') %> <span aria-hidden="true">›</span></a>
+        <a href="#specs" class="apple-link"><%= t('specs') %> <span aria-hidden="true">›</span></a>
+      </div>
+    </div>
+
+    <div class="pdp-stage">
+      <% if (product.image) { %>
+        <img src="/uploads/<%= product.image %>" alt="<%= product.name %>" id="pdpHeroImg" loading="eager">
+      <% } else { %>
+        <div class="product-silhouette <%= product.category === 'Smartphones' || product.category === 'Telephone' ? 'is-phone' : 'is-laptop' %>">
+          <strong><%= product.brand || settings.brand_name %></strong>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <section class="section container product-detail"
+           id="acheter"
+           data-product-id="<%= product.id %>"
+           data-product-name="<%= product.name %>"
+           data-price="<%= product.price %>"
+           data-slug="<%= product.slug %>"
+           data-image="<%= product.image %>"
+           data-configurable="<%= canConfigure ? '1' : '0' %>"
+           data-base-ram="<%= baseRamGo || '' %>"
+           data-base-storage="<%= baseStorageGo || '' %>"
+           data-storage-step="<%= pricing.storageStepGb %>"
+           data-storage-price="<%= pricing.storageStepPrice %>"
+           data-max-storage-steps="<%= pricing.storageMaxSteps %>"
+           data-ram-upgrade="<%= pricing.ramUpgradePrice %>"
+           data-ram-downgrade="<%= pricing.ramDowngradePrice %>"
+           data-ram-options="<%= encodeURIComponent(JSON.stringify(ramOptions)) %>">
+    <div class="detail-media" data-reveal>
+      <div class="detail-main-image" id="mainImage">
+        <% if (product.image) { %>
+          <img src="/uploads/<%= product.image %>" alt="<%= product.name %>">
+        <% } else { %>
+          <span class="thumb-placeholder large"><strong><%= product.brand || settings.brand_name %></strong></span>
+        <% } %>
+      </div>
+      <% if (gallery && gallery.length) { %>
+        <div class="detail-gallery">
+          <% if (product.image) { %><button type="button" class="thumb-mini is-active" data-src="/uploads/<%= product.image %>"><img src="/uploads/<%= product.image %>" alt=""></button><% } %>
+          <% gallery.forEach(function(g){ %>
+            <button type="button" class="thumb-mini" data-src="/uploads/<%= g.filename %>"><img src="/uploads/<%= g.filename %>" alt=""></button>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="detail-info" data-reveal>
+      <p class="stock-line">
+        <% if (product.stock > 5) { %>
+          <span class="dot dot-ok"></span> <%= t('in_stock') %>
+        <% } else if (product.stock > 0) { %>
+          <span class="dot dot-low"></span> <%= t('low_stock') %> (<%= product.stock %>)
+        <% } else { %>
+          <span class="dot dot-out"></span> <%= t('out_of_stock') %>
+        <% } %>
+      </p>
+
+      <% if (specRows.length) { %>
+        <ul class="pdp-highlights">
+          <% specRows.slice(0, 4).forEach(function(r){ %>
+            <li><span><%= t(r[0]) %></span><strong><%= r[1] %></strong></li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <% if (canConfigure) { %>
+      <div class="pc-config" id="pcConfig">
+        <div class="pc-config-head">
+          <h2>Configurez votre PC</h2>
+          <p>Choisissez stockage, mémoire et logiciels — le prix se met à jour tout de suite.</p>
+        </div>
+
+        <div class="pc-trust-tip">
+          SSD : +<%= pricing.storageStepPrice %> <%= settings.currency_symbol %> par +<%= pricing.storageStepGb %> Go.
+          RAM : PC en 8 Go → 16 Go (+<%= pricing.ramUpgradePrice %> <%= settings.currency_symbol %>) · PC en 16 Go → 8 Go (−<%= pricing.ramDowngradePrice %> <%= settings.currency_symbol %>).
+          Modifiable dans l’admin. Office + antivirus offerts. Tests en visio ou main propre Montrouge 92120.
+        </div>
+
+        <fieldset class="pc-config-block">
+          <legend>Sélectionnez la capacité de stockage</legend>
+          <div class="pc-options" id="cfgStorageOpts" role="radiogroup" aria-label="Stockage"></div>
+        </fieldset>
+
+        <fieldset class="pc-config-block">
+          <legend>Sélectionnez la mémoire</legend>
+          <div class="pc-options" id="cfgRamOpts" role="radiogroup" aria-label="Mémoire RAM"></div>
+        </fieldset>
+
+        <fieldset class="pc-config-block">
+          <legend>Logiciels</legend>
+          <label class="pc-soft-row is-locked">
+            <input type="checkbox" checked disabled>
+            <span>
+              <strong>Microsoft Office (offert)</strong>
+              <em>Inclus</em>
+            </span>
+          </label>
+          <label class="pc-soft-row">
+            <input type="checkbox" id="cfgAntivirus" name="cfg_antivirus" value="1">
+            <span>
+              <strong>Antivirus</strong>
+              <em>Coût confirmé après échange</em>
+            </span>
+          </label>
+          <div class="field pc-other-soft">
+            <label for="cfgOtherSoft">Autre logiciel</label>
+            <input type="text" id="cfgOtherSoft" maxlength="120" placeholder="Ex. Adobe, AutoCAD…">
+            <p class="field-hint">Coût confirmé après échange</p>
+          </div>
+        </fieldset>
+
+        <div class="pc-config-total">
+          <span>Prix configuré</span>
+          <strong id="cfgLivePrice"><%= Number(product.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></strong>
+        </div>
+      </div>
+      <% } %>
+
+      <div class="quantity-row">
+        <label for="qty"><%= t('quantity') %></label>
+        <div class="qty-stepper">
+          <button type="button" class="qty-minus" aria-label="-">−</button>
+          <input type="number" id="qty" value="1" min="1" max="99" inputmode="numeric">
+          <button type="button" class="qty-plus" aria-label="+">+</button>
+        </div>
+      </div>
+
+      <div class="detail-actions">
+        <button type="button" class="btn btn-primary btn-block btn-lg" id="addToCart" <%= product.stock <= 0 ? 'disabled' : '' %>><%= t('add_to_cart') %></button>
+        <button type="button" class="btn btn-outline btn-block" id="makeOffer" <%= product.stock <= 0 ? 'disabled' : '' %>><%= t('make_offer') %></button>
+        <a class="btn btn-whatsapp btn-block" target="_blank" rel="noopener"
+           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('whatsapp_prefill') + ' ' + product.name + ' (' + Number(product.price).toLocaleString('fr-FR') + ' ' + settings.currency_symbol + ')') %>">
+          <%= t('contact_whatsapp') %>
+        </a>
+      </div>
+      <p class="added-msg" id="addedMsg" hidden>✓ <%= t('add_to_cart') %></p>
+
+      <%- include('../partials/trust-pay', { mode: 'compact' }) %>
+
+      <div class="pdp-quick-asks">
+        <a class="apple-link" target="_blank" rel="noopener"
+           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('ask_photos') + ' — ' + product.name) %>"><%= t('ask_photos') %> <span aria-hidden="true">›</span></a>
+        <a class="apple-link" target="_blank" rel="noopener"
+           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('ask_info') + ' — ' + product.name) %>"><%= t('ask_info') %> <span aria-hidden="true">›</span></a>
+        <a class="apple-link" target="_blank" rel="noopener"
+           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('book_rdv') + ' — ' + product.name) %>"><%= t('book_rdv') %> <span aria-hidden="true">›</span></a>
+      </div>
+    </div>
+  </section>
+
+  <% if (specRows.length) { %>
+  <section class="section specs-band" id="specs">
+    <div class="container" data-reveal>
+      <h2 class="specs-title"><%= t('specs') %></h2>
+      <div class="specs-grid">
+        <% specRows.forEach(function(r){ %>
+          <div class="spec-tile">
+            <span><%= t(r[0]) %></span>
+            <strong><%= r[1] %></strong>
+          </div>
+        <% }) %>
+      </div>
+      <% if (desc) { %><div class="detail-description"><%= desc %></div><% } %>
+    </div>
+  </section>
+  <% } else if (desc) { %>
+  <section class="section container" data-reveal>
+    <div class="detail-description"><%= desc %></div>
+  </section>
+  <% } %>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,90 @@
+<%
+  var mode = (typeof mode !== 'undefined') ? mode : 'compact';
+  var L = {
+    title: lang === 'en' ? 'Shop with confidence' : 'Achetez en toute confiance',
+    lead: lang === 'en'
+      ? 'Secure payments with buyer protection, or hand delivery in Montrouge (92120), Île-de-France — by appointment.'
+      : 'Paiements sécurisés avec protection acheteur, ou remise en main propre à Montrouge (92120), Île-de-France — sur rendez-vous.',
+    secure: lang === 'en' ? 'Secure payment' : 'Paiement sécurisé',
+    secureDesc: lang === 'en'
+      ? 'Leboncoin, eBay Marketplace or PayPal — buyer protection included.'
+      : 'Leboncoin, eBay Marketplace ou PayPal — protection acheteur pour acheter sereinement.',
+    handoff: lang === 'en' ? 'Hand delivery · Montrouge' : 'Main propre · Montrouge',
+    handoffDesc: lang === 'en'
+      ? 'In-person handoff in Montrouge (92120), Île-de-France. Easy appointment booking.'
+      : 'Remise en main propre à Montrouge (92120), Île-de-France. Prise de rendez-vous simple.',
+    photos: lang === 'en' ? 'Photos & details' : 'Photos & infos',
+    photosDesc: lang === 'en'
+      ? 'Need more photos or details? Just ask before you reserve.'
+      : 'Besoin de plus de photos ou de détails ? Demandez-nous avant de réserver.',
+    software: lang === 'en' ? 'Office + antivirus' : 'Office + antivirus',
+    softwareDesc: lang === 'en'
+      ? 'Included free with every PC. Other software — we confirm the cost with you.'
+      : 'Offerts avec chaque PC. Autres logiciels possibles — on vous confirme le coût.',
+    platforms: lang === 'en' ? 'Payment & handoff' : 'Paiement & remise',
+    badge: lang === 'en' ? 'Hand delivery · 92120' : 'Main propre · 92120',
+    compact: lang === 'en'
+      ? 'Secure payment via Leboncoin, eBay or PayPal. Hand delivery in Montrouge (92120). Free Office + antivirus with PCs.'
+      : 'Paiement sécurisé via Leboncoin, eBay Marketplace ou PayPal. Remise en main propre à Montrouge (92120). Office et antivirus offerts avec les PC.',
+  };
+%>
+<% if (mode === 'full') { %>
+<section class="reassure" aria-labelledby="reassure-title">
+  <div class="container">
+    <div class="reassure-head" data-reveal>
+      <p class="reassure-kicker"><%= settings.brand_name %></p>
+      <h2 id="reassure-title"><%= L.title %></h2>
+      <p class="reassure-lead"><%= L.lead %></p>
+    </div>
+    <ul class="reassure-grid" data-reveal>
+      <li>
+        <span class="reassure-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        </span>
+        <strong><%= L.secure %></strong>
+        <span><%= L.secureDesc %></span>
+      </li>
+      <li>
+        <span class="reassure-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z"/></svg>
+        </span>
+        <strong><%= L.handoff %></strong>
+        <span><%= L.handoffDesc %></span>
+      </li>
+      <li>
+        <span class="reassure-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+        </span>
+        <strong><%= L.photos %></strong>
+        <span><%= L.photosDesc %></span>
+      </li>
+      <li>
+        <span class="reassure-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+        </span>
+        <strong><%= L.software %></strong>
+        <span><%= L.softwareDesc %></span>
+      </li>
+    </ul>
+    <p class="reassure-platforms" data-reveal>
+      <span><%= L.platforms %></span>
+      <strong>Leboncoin</strong>
+      <strong>eBay</strong>
+      <strong>PayPal</strong>
+      <strong><%= L.badge %></strong>
+    </p>
+  </div>
+</section>
+<% } else { %>
+<aside class="trust-pay<%= mode === 'inline' ? ' trust-pay--inline' : '' %>" aria-label="<%= L.title %>">
+  <p class="trust-pay-title"><%= L.title %></p>
+  <p class="trust-pay-text"><%= L.compact %></p>
+  <ul class="trust-pay-badges">
+    <li>Leboncoin</li>
+    <li>eBay</li>
+    <li>PayPal</li>
+    <li>Main propre · Montrouge 92120</li>
+    <li>Office + antivirus offerts</li>
+  </ul>
+</aside>
+<% } %>
