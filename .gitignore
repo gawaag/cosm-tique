@@ -1,8 +1,14 @@
 node_modules/
 .env
 data/
+# Garder les photos catalogue + video hero versionnees (Render n'a pas les fichiers locaux sinon)
 public/uploads/*
 !public/uploads/.gitkeep
+!public/uploads/*.jpg
+!public/uploads/*.jpeg
+!public/uploads/*.png
+!public/uploads/*.webp
+!public/uploads/*.mp4
 *.log
 .DS_Store
 Thumbs.db

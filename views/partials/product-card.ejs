@@ -1,12 +1,14 @@
-<article class="product-card" data-reveal>
+<article class="product-card<%= p.stock <= 0 ? ' is-sold' : '' %>" data-reveal>
   <a href="/produit/<%= p.slug %>" class="product-thumb">
-    <% if (p.old_price && p.old_price > p.price) { %>
+    <% if (p.stock <= 0) { %>
+      <span class="badge-sold">Vendu</span>
+    <% } else if (p.old_price && p.old_price > p.price) { %>
       <span class="badge-sale">-<%= Math.round((1 - p.price / p.old_price) * 100) %>%</span>
     <% } %>
     <% if (p.image) { %>
       <img src="/uploads/<%= p.image %>" alt="<%= p.name %>" loading="lazy">
     <% } else { %>
-      <span class="thumb-placeholder <%= p.category === 'Telephone' ? 'is-phone' : '' %>">
+      <span class="thumb-placeholder <%= (p.category === 'Telephone' || p.category === 'Smartphones') ? 'is-phone' : '' %>">
         <strong><%= (typeof settings !== 'undefined' && settings.brand_name) ? settings.brand_name : (p.brand || '') %></strong>
       </span>
     <% } %>
@@ -19,6 +21,10 @@
       <span class="price"><%= Number(p.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></span>
       <% if (p.old_price && p.old_price > p.price) { %><span class="price-old"><%= Number(p.old_price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></span><% } %>
     </div>
-    <a href="/produit/<%= p.slug %>" class="btn btn-primary btn-pill"><%= t('reserve') %></a>
+    <% if (p.stock <= 0) { %>
+      <span class="btn btn-sold btn-pill" aria-disabled="true"><%= t('sold') %></span>
+    <% } else { %>
+      <a href="/produit/<%= p.slug %>" class="btn btn-primary btn-pill"><%= t('reserve') %></a>
+    <% } %>
   </div>
 </article>

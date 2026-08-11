@@ -166,6 +166,31 @@
       </div>
     </div>
   </section>
+
+  <% if (typeof reviews !== 'undefined' && reviews && reviews.length) { %>
+  <section class="section reviews-section" aria-labelledby="reviews-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2 id="reviews-title"><%= t('reviews_title') %></h2>
+        <p class="section-sub"><%= t('reviews_sub') %></p>
+      </div>
+      <div class="reviews-grid">
+        <% reviews.forEach(function(r){ %>
+          <blockquote class="review-card" data-reveal>
+            <div class="review-stars" aria-label="<%= r.stars %> / 5">
+              <% for (var s = 1; s <= 5; s++) { %><span class="<%= s <= r.stars ? 'on' : '' %>" aria-hidden="true">★</span><% } %>
+            </div>
+            <p class="review-text"><%= r.text %></p>
+            <footer class="review-meta">
+              <strong><%= r.name %></strong>
+              <% if (r.city) { %><span>· <%= r.city %></span><% } %>
+            </footer>
+          </blockquote>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+  <% } %>
 </main>
 
 <%- include('../partials/footer') %>

@@ -116,15 +116,15 @@ const DEFAULT_SETTINGS = {
   whatsapp_notify: '1',
   callmebot_apikey: '',
   notify_webhook_url: '',
-  contact_phone: '+212 6 00 00 00 00',
+  contact_phone: '+33 6 00 00 00 00',
   hero_title_fr: 'Le high-tech, simplement.',
   hero_title_en: 'Tech, made simple.',
-  hero_sub_fr: 'PC portables, machines gamer et smartphones comme neufs.',
-  hero_sub_en: 'Like-new laptops, gaming PCs and smartphones.',
-  about_fr: "VOLTA, c’est 3 ans d’expérience dans le high-tech comme neuf. Nous travaillons avec des fournisseurs de confiance. Toutes les pièces sont et seront testées lors de la vente — en appel vidéo ou en main propre à Montrouge (92120), Île-de-France. Paiements sécurisés via Leboncoin, eBay Marketplace ou PayPal.",
-  about_en: "VOLTA has 3 years of experience in like-new tech. We work with trusted suppliers. Every part is and will be tested at sale — on a video call or in person in Montrouge (92120), Île-de-France. Secure payments via Leboncoin, eBay Marketplace or PayPal.",
-  currency: 'MAD',
-  currency_symbol: 'DH',
+  hero_sub_fr: 'PC portables, machines gamer et smartphones comme neufs. Vente France uniquement.',
+  hero_sub_en: 'Like-new laptops, gaming PCs and smartphones. France sales only.',
+  about_fr: "VOLTA, c’est 3 ans d’expérience dans le high-tech comme neuf. Nous travaillons avec des fournisseurs de confiance. Toutes les pièces sont et seront testées lors de la vente — en appel vidéo ou en main propre à Montrouge (92120), Île-de-France. Paiements sécurisés via Leboncoin, eBay Marketplace ou PayPal. Vente exclusivement en France.",
+  about_en: "VOLTA has 3 years of experience in like-new tech. We work with trusted suppliers. Every part is and will be tested at sale — on a video call or in person in Montrouge (92120), Île-de-France. Secure payments via Leboncoin, eBay Marketplace or PayPal. France sales only.",
+  currency: 'EUR',
+  currency_symbol: '€',
   cfg_storage_step_gb: '256',
   cfg_storage_step_price: '40',
   cfg_storage_max_steps: '3',
@@ -134,7 +134,30 @@ const DEFAULT_SETTINGS = {
 
 const getSetting = db.prepare('SELECT value FROM settings WHERE key = ?');
 const insertSetting = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');
+const upsertSetting = db.prepare(`
+  INSERT INTO settings (key, value) VALUES (?, ?)
+  ON CONFLICT(key) DO UPDATE SET value = excluded.value
+`);
 for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) insertSetting.run(k, v);
+
+/** Vente France uniquement : toujours forcer EUR / € (jamais MAD / DH). */
+function forceFranceCurrency() {
+  const cur = (getSetting.get('currency') || {}).value;
+  const sym = (getSetting.get('currency_symbol') || {}).value;
+  if (cur !== 'EUR' || sym !== '€') {
+    upsertSetting.run('currency', 'EUR');
+    upsertSetting.run('currency_symbol', '€');
+    console.log('[db] Devise forcee: EUR / € (vente France)');
+  }
+}
+
+function slugifyName(str) {
+  return String(str)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'produit';
+}
 
 // ---------------------------------------------------------------------------
 // Seed: admin from environment
@@ -150,63 +173,62 @@ function seedAdmin() {
 }
 
 // ---------------------------------------------------------------------------
-// Seed: sample products
+// Seed: catalogue France (€) + photos
 // ---------------------------------------------------------------------------
-function seedProducts() {
-  const count = db.prepare('SELECT COUNT(*) AS c FROM products').get().c;
-  if (count > 0) return;
+function insertCatalogRows(rows) {
   const insert = db.prepare(`
     INSERT INTO products
-      (slug, name, brand, price, old_price, stock, cpu, ram, storage, gpu, screen, os,
+      (slug, name, brand, category, price, old_price, stock, cpu, ram, storage, gpu, screen, os,
        short_fr, short_en, desc_fr, desc_en, image, featured, active, sort_order)
     VALUES
-      (@slug, @name, @brand, @price, @old_price, @stock, @cpu, @ram, @storage, @gpu, @screen, @os,
+      (@slug, @name, @brand, @category, @price, @old_price, @stock, @cpu, @ram, @storage, @gpu, @screen, @os,
        @short_fr, @short_en, @desc_fr, @desc_en, @image, @featured, @active, @sort_order)
   `);
-  const samples = [
-    {
-      slug: 'probook-z15', name: 'ProBook Z15', brand: 'HP', price: 6290, old_price: 6990, stock: 8,
-      cpu: 'Intel Core i7-1165G7', ram: '16 Go DDR4', storage: 'SSD 512 Go NVMe', gpu: 'Intel Iris Xe',
-      screen: '15.6" Full HD IPS', os: 'Windows 11 Pro',
-      short_fr: 'Ultraportable pro, autonomie et securite.', short_en: 'Pro ultrabook, battery life and security.',
-      desc_fr: "Le ProBook Z15 combine puissance et mobilite pour les professionnels exigeants.",
-      desc_en: 'The ProBook Z15 blends power and mobility for demanding professionals.',
-      image: '', featured: 1, active: 1, sort_order: 1,
-    },
-    {
-      slug: 'pc-portable-ar', name: 'PC Portable AR', brand: 'Asus', price: 5490, old_price: null, stock: 12,
-      cpu: 'Intel Core i7-1255U', ram: '16 Go DDR4', storage: 'SSD 512 Go NVMe', gpu: 'Intel Iris Xe',
-      screen: '14" Full HD', os: 'Windows 11',
-      short_fr: 'Leger et polyvalent pour le quotidien.', short_en: 'Light and versatile for everyday use.',
-      desc_fr: 'Un portable equilibre, ideal pour le travail et les etudes.',
-      desc_en: 'A balanced laptop, ideal for work and studies.',
-      image: '', featured: 1, active: 1, sort_order: 2,
-    },
-    {
-      slug: 'gamer-rtx-17', name: 'Gamer RTX 17', brand: 'MSI', price: 12990, old_price: 13990, stock: 4,
-      cpu: 'Intel Core i9-13900H', ram: '32 Go DDR5', storage: 'SSD 1 To NVMe', gpu: 'NVIDIA RTX 4070 8 Go',
-      screen: '17.3" QHD 165 Hz', os: 'Windows 11',
-      short_fr: 'Machine de jeu, ecran 165 Hz et RTX 4070.', short_en: 'Gaming machine, 165 Hz screen and RTX 4070.',
-      desc_fr: 'Performances extremes pour le gaming et la creation 3D.',
-      desc_en: 'Extreme performance for gaming and 3D creation.',
-      image: '', featured: 1, active: 1, sort_order: 3,
-    },
-    {
-      slug: 'ultra-thin-13', name: 'UltraThin 13', brand: 'Dell', price: 7490, old_price: null, stock: 6,
-      cpu: 'Intel Core i5-1340P', ram: '16 Go LPDDR5', storage: 'SSD 512 Go NVMe', gpu: 'Intel Iris Xe',
-      screen: '13.4" 2.5K tactile', os: 'Windows 11',
-      short_fr: 'Compact, ecran 2.5K tactile.', short_en: 'Compact, 2.5K touch display.',
-      desc_fr: 'Design fin et premium, parfait pour la mobilite.',
-      desc_en: 'Slim premium design, perfect for mobility.',
-      image: '', featured: 0, active: 1, sort_order: 4,
-    },
-  ];
-  const tx = db.transaction((rows) => rows.forEach((r) => insert.run(r)));
-  tx(samples);
-  console.log(`[db] ${samples.length} produits de demonstration ajoutes`);
+  const used = new Set();
+  for (const row of rows) {
+    let slug = slugifyName(row.name);
+    let n = 2;
+    while (used.has(slug)) slug = `${slugifyName(row.name)}-${n++}`;
+    used.add(slug);
+    insert.run({ ...row, slug, old_price: row.old_price == null ? null : row.old_price });
+  }
+}
+
+function seedFranceCatalog() {
+  const catalog = require('./catalog-seed');
+  insertCatalogRows(catalog);
+  console.log(`[db] ${catalog.length} produits catalogue France (€) ajoutes`);
+}
+
+function ensureFranceCatalog() {
+  forceFranceCurrency();
+
+  const demo = db.prepare(`
+    SELECT COUNT(*) AS c FROM products
+    WHERE slug IN ('probook-z15','pc-portable-ar','gamer-rtx-17','ultra-thin-13')
+       OR price >= 5000
+  `).get().c;
+  const total = db.prepare('SELECT COUNT(*) AS c FROM products').get().c;
+  const noImages = db.prepare(`
+    SELECT COUNT(*) AS c FROM products WHERE active = 1 AND (image IS NULL OR image = '')
+  `).get().c;
+
+  if (total === 0 || demo > 0 || (total > 0 && noImages === total)) {
+    db.exec('DELETE FROM product_images; DELETE FROM products;');
+    seedFranceCatalog();
+  }
+
+  // Strictement vendus : S22 + Acer Nitro
+  const sold = db.prepare(`
+    UPDATE products SET stock = 0,
+      short_fr = CASE WHEN short_fr LIKE 'Vendu%' THEN short_fr ELSE 'Vendu — plus disponible.' END,
+      short_en = CASE WHEN short_en LIKE 'Sold%' THEN short_en ELSE 'Sold — no longer available.' END
+    WHERE name LIKE '%S22%' OR name LIKE '%Nitro 5%'
+  `).run();
+  if (sold.changes) console.log(`[db] ${sold.changes} produit(s) marques vendus (S22 / Nitro)`);
 }
 
 seedAdmin();
-seedProducts();
+ensureFranceCatalog();
 
 module.exports = { db, getSetting };

@@ -132,7 +132,7 @@
         <% } else if (product.stock > 0) { %>
           <span class="dot dot-low"></span> <%= t('low_stock') %> (<%= product.stock %>)
         <% } else { %>
-          <span class="dot dot-out"></span> <%= t('out_of_stock') %>
+          <span class="dot dot-out"></span> <strong><%= t('sold') %></strong> — plus disponible
         <% } %>
       </p>
 

@@ -33,6 +33,7 @@ router.get('/', (req, res) => {
     featured: featured.length ? featured : all.slice(0, 8),
     byCategory,
     categories,
+    reviews: require('../reviews'),
     page: 'home',
     bodyClass: 'page-home',
   });

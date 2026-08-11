@@ -65,7 +65,7 @@ const products = [
 
   // ============ PC GAMER (exemples a ajuster) ============
   {
-    name: 'Acer Nitro 5 - Gaming RTX 2060', brand: 'Acer', category: CAT_GAMER, price: 519, old_price: 599, stock: 1,
+    name: 'Acer Nitro 5 - Gaming RTX 2060', brand: 'Acer', category: CAT_GAMER, price: 519, old_price: 599, stock: 0,
     cpu: 'Intel Core i5', ram: '16 Go', storage: 'SSD 512 Go', gpu: 'NVIDIA GeForce RTX 2060', screen: '15.6" 144 Hz', os: '',
     short_fr: 'Entree de gamme gaming, ecran 144 Hz.', short_en: 'Entry gaming, 144 Hz screen.',
     desc_fr: 'Acer Nitro 5, PC portable gamer avec NVIDIA RTX 2060, 16 Go de RAM et 512 Go de SSD, ecran 144 Hz.\nEtat comme neuf.',
@@ -131,20 +131,20 @@ const products = [
     featured: 0, active: 1, sort_order: 11,
   },
   {
-    name: 'Samsung Galaxy S21 - 128 Go', brand: 'Samsung', category: CAT_TEL, price: 299, old_price: 379, stock: 1,
+    name: 'Samsung Galaxy S22 - 128 Go (graphite)', brand: 'Samsung', category: CAT_TEL, price: 299, old_price: 379, stock: 0,
     cpu: 'Exynos 2100', ram: '8 Go', storage: '128 Go', gpu: '', screen: '6.2" Dynamic AMOLED 120 Hz', os: 'Android',
-    short_fr: 'Flagship compact et rapide.', short_en: 'Compact, fast flagship.',
-    desc_fr: 'Samsung Galaxy S21, 8 Go de RAM et 128 Go de stockage, ecran 6.2" Dynamic AMOLED 120 Hz.\nEtat comme neuf.',
-    desc_en: 'Samsung Galaxy S21, 8 GB RAM and 128 GB storage, 6.2" Dynamic AMOLED 120 Hz. Like-new.',
-    featured: 1, active: 1, sort_order: 12,
+    short_fr: 'Vendu — plus disponible.', short_en: 'Sold — no longer available.',
+    desc_fr: 'Galaxy S22 128 Go graphite. Cet exemplaire est vendu.',
+    desc_en: 'Galaxy S22 128 GB graphite. This unit is sold.',
+    featured: 0, active: 1, sort_order: 12,
   },
   {
-    name: 'Samsung Galaxy S22 - 128 Go', brand: 'Samsung', category: CAT_TEL, price: 379, old_price: 459, stock: 1,
+    name: 'Samsung Galaxy S22 - 128 Go', brand: 'Samsung', category: CAT_TEL, price: 379, old_price: 459, stock: 0,
     cpu: 'Qualcomm Snapdragon 8 Gen 1', ram: '8 Go', storage: '128 Go', gpu: '', screen: '6.1" Dynamic AMOLED 120 Hz', os: 'Android',
-    short_fr: 'Premium, photo au top.', short_en: 'Premium, great camera.',
-    desc_fr: 'Samsung Galaxy S22, 8 Go de RAM et 128 Go de stockage, ecran 6.1" Dynamic AMOLED 120 Hz.\nEtat comme neuf.',
-    desc_en: 'Samsung Galaxy S22, 8 GB RAM and 128 GB storage, 6.1" Dynamic AMOLED 120 Hz. Like-new.',
-    featured: 1, active: 1, sort_order: 13,
+    short_fr: 'Vendu — plus disponible.', short_en: 'Sold — no longer available.',
+    desc_fr: 'Samsung Galaxy S22, 8 Go de RAM et 128 Go de stockage. Cet exemplaire est vendu.',
+    desc_en: 'Samsung Galaxy S22. This unit is sold.',
+    featured: 0, active: 1, sort_order: 13,
   },
 ];
 

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var CURRENCY = window.__CURRENCY__ || 'DH';
+  var CURRENCY = window.__CURRENCY__ || '€';
   var LANG = window.__LANG__ || 'fr';
   var CART_KEY = 'tp_cart_v2';
 
