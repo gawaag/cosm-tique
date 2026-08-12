@@ -11,18 +11,27 @@ function fmt(n, sym) {
   return Number(n).toLocaleString('fr-FR') + ' ' + sym;
 }
 
-function smtpFrom(settings) {
+function resendKey(settings = {}) {
+  return (settings.resend_api_key || process.env.RESEND_API_KEY || '').trim();
+}
+
+function smtpFrom(settings = {}) {
   const host = (settings.smtp_host || process.env.SMTP_HOST || '').trim();
   const user = (settings.smtp_user || process.env.SMTP_USER || '').trim();
-  const pass = (settings.smtp_pass || process.env.SMTP_PASS || '').trim();
-  const port = Number(settings.smtp_port || process.env.SMTP_PORT || 587);
-  const secure = String(settings.smtp_secure || process.env.SMTP_SECURE || '') === 'true' || port === 465;
+  // Gmail app passwords are often copied with spaces — strip them.
+  const pass = (settings.smtp_pass || process.env.SMTP_PASS || '').replace(/\s+/g, '').trim();
+  const port = Number(settings.smtp_port || process.env.SMTP_PORT || 465);
+  const secure = String(settings.smtp_secure || process.env.SMTP_SECURE || 'true') === 'true' || port === 465;
   return { host, user, pass, port, secure };
 }
 
-function isConfigured(settings = {}) {
+function isSmtpConfigured(settings = {}) {
   const s = smtpFrom(settings);
   return !!(s.host && s.user && s.pass);
+}
+
+function isConfigured(settings = {}) {
+  return !!(resendKey(settings) || isSmtpConfigured(settings));
 }
 
 function createTransport(settings = {}) {
@@ -33,7 +42,22 @@ function createTransport(settings = {}) {
     port: s.port,
     secure: s.secure,
     auth: { user: s.user, pass: s.pass },
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000,
   });
+}
+
+function fromAddress(settings, smtpUser) {
+  const custom = (settings.mail_from || process.env.MAIL_FROM || '').trim();
+  if (resendKey(settings)) {
+    // Compte Resend gratuit : expéditeur = onboarding@resend.dev (domaine non vérifié).
+    if (custom && /resend\.dev/i.test(custom)) return custom;
+    return `${settings.brand_name || 'VOLTA'} <onboarding@resend.dev>`;
+  }
+  if (custom) return custom;
+  if (smtpUser) return `"${settings.brand_name || 'Boutique'}" <${smtpUser}>`;
+  return `${settings.brand_name || 'VOLTA'} <voltatech.contact@gmail.com>`;
 }
 
 function buildContent(reservation, settings) {
@@ -96,62 +120,139 @@ function recipientOf(settings) {
     || (process.env.ADMIN_EMAIL || '').trim();
 }
 
+function explainMailError(err) {
+  const msg = String(err && err.message ? err.message : err || 'Échec');
+  const low = msg.toLowerCase();
+  if (low.includes('timeout') || low.includes('etimedout') || low.includes('econnrefused')
+    || low.includes('enetunreach') || low.includes('blocked')) {
+    return msg + ' — Sur Render gratuit, les ports SMTP (465/587) sont bloqués. Utilisez Resend (HTTPS) : variable RESEND_API_KEY.';
+  }
+  if (low.includes('invalid login') || low.includes('username and password') || low.includes('badcredentials')) {
+    return msg + ' — Vérifiez le mot de passe d’application Gmail (16 caractères), pas le mot de passe du compte.';
+  }
+  return msg;
+}
+
+async function sendViaResend(settings, { from, to, subject, html, text, replyTo }) {
+  const key = resendKey(settings);
+  if (!key) return null;
+  const body = {
+    from,
+    to: [to],
+    subject,
+    html,
+    text,
+  };
+  if (replyTo) body.reply_to = replyTo;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const detail = data.message || data.name || JSON.stringify(data) || res.statusText;
+    throw new Error(`Resend: ${detail}`);
+  }
+  return { sent: true, to, via: 'resend', id: data.id };
+}
+
+async function sendViaSmtp(settings, { from, to, subject, html, text, replyTo }) {
+  const transport = createTransport(settings);
+  if (!transport) return null;
+  await transport.sendMail({
+    from,
+    to,
+    replyTo: replyTo || undefined,
+    subject,
+    html,
+    text,
+  });
+  return { sent: true, to, via: 'smtp' };
+}
+
+async function dispatchEmail(settings, payload) {
+  const recipient = payload.to;
+  if (!recipient) {
+    return { sent: false, reason: 'not_configured', error: 'Destinataire manquant.' };
+  }
+  if (!isConfigured(settings)) {
+    return {
+      sent: false,
+      reason: 'not_configured',
+      error: 'Email non configuré. Sur Render gratuit : créez une clé Resend (RESEND_API_KEY). En local : SMTP Gmail OK.',
+    };
+  }
+
+  const from = fromAddress(settings, smtpFrom(settings).user);
+  const mail = { ...payload, from, to: recipient };
+
+  // Resend (HTTPS) d’abord — seul moyen fiable sur Render free.
+  if (resendKey(settings)) {
+    try {
+      return await sendViaResend(settings, mail);
+    } catch (err) {
+      console.error('[mail] Resend échec:', err.message);
+      // Si SMTP aussi dispo, tenter en secours (local / Render payant).
+      if (!isSmtpConfigured(settings)) {
+        return { sent: false, reason: 'error', error: explainMailError(err) };
+      }
+    }
+  }
+
+  try {
+    const result = await sendViaSmtp(settings, mail);
+    if (!result) {
+      return { sent: false, reason: 'not_configured', error: 'SMTP incomplet.' };
+    }
+    return result;
+  } catch (err) {
+    console.error('[mail] SMTP échec:', err.message);
+    return { sent: false, reason: 'error', error: explainMailError(err) };
+  }
+}
+
 async function sendReservationEmail(reservation, settings) {
   const recipient = recipientOf(settings);
-  const transport = createTransport(settings);
-  if (!transport || !recipient) {
-    console.log(`[mail] SMTP ou destinataire manquant — réservation #${reservation.id} non notifiée.`);
+  if (!recipient) {
+    console.log(`[mail] Destinataire manquant — réservation #${reservation.id} non notifiée.`);
     return { sent: false, reason: 'not_configured' };
   }
   const { html, text, typeLabel } = buildContent(reservation, settings);
-  const smtp = smtpFrom(settings);
-  const from = (settings.mail_from || process.env.MAIL_FROM || '').trim()
-    || `"${settings.brand_name || 'Boutique'}" <${smtp.user}>`;
-  try {
-    await transport.sendMail({
-      from,
-      to: recipient,
-      replyTo: reservation.email || undefined,
-      subject: `${typeLabel} #${String(reservation.id).padStart(5, '0')} — ${reservation.customer_name}`,
-      html,
-      text,
-    });
-    console.log(`[mail] Notification envoyée #${reservation.id} -> ${recipient}`);
-    return { sent: true, to: recipient };
-  } catch (err) {
-    console.error('[mail] Échec envoi email:', err.message);
-    return { sent: false, reason: 'error', error: err.message };
+  const result = await dispatchEmail(settings, {
+    to: recipient,
+    replyTo: reservation.email || undefined,
+    subject: `${typeLabel} #${String(reservation.id).padStart(5, '0')} — ${reservation.customer_name}`,
+    html,
+    text,
+  });
+  if (result.sent) {
+    console.log(`[mail] Notification envoyée #${reservation.id} -> ${recipient} (${result.via})`);
   }
+  return result;
 }
 
 async function sendTestEmail(settings, toOverride) {
   const recipient = (toOverride || '').trim() || recipientOf(settings);
-  const transport = createTransport(settings);
-  if (!transport || !recipient) {
-    return { sent: false, reason: 'not_configured', error: 'SMTP ou destinataire manquant.' };
-  }
-  const smtp = smtpFrom(settings);
-  const from = (settings.mail_from || process.env.MAIL_FROM || '').trim()
-    || `"${settings.brand_name || 'Boutique'}" <${smtp.user}>`;
-  try {
-    await transport.sendMail({
-      from,
-      to: recipient,
-      subject: `Test ${settings.brand_name || 'Boutique'} — notifications OK`,
-      text: `Ceci est un email de test. Les réservations seront envoyées à ${recipient}.`,
-      html: `<p>Ceci est un <strong>email de test</strong>.</p><p>Les réservations seront envoyées à <code>${esc(recipient)}</code>.</p>`,
-    });
-    return { sent: true, to: recipient };
-  } catch (err) {
-    return { sent: false, reason: 'error', error: err.message };
-  }
+  return dispatchEmail(settings, {
+    to: recipient,
+    subject: `Test ${settings.brand_name || 'Boutique'} — notifications OK`,
+    text: `Ceci est un email de test. Les réservations seront envoyées à ${recipient}.`,
+    html: `<p>Ceci est un <strong>email de test</strong>.</p><p>Les réservations seront envoyées à <code>${esc(recipient)}</code>.</p>`,
+  });
 }
 
 module.exports = {
   sendReservationEmail,
   sendTestEmail,
   isConfigured,
+  isSmtpConfigured,
   buildContent,
   recipientOf,
   smtpFrom,
+  resendKey,
 };

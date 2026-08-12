@@ -337,6 +337,8 @@ function personnelLocals(extra = {}) {
     recipient: mailer.recipientOf(settings),
     lastNotify,
     smtpPassSet: !!(settings.smtp_pass || process.env.SMTP_PASS),
+    resendSet: !!(settings.resend_api_key || process.env.RESEND_API_KEY),
+    viaResend: !!(settings.resend_api_key || process.env.RESEND_API_KEY),
     ...extra,
   };
 }
@@ -381,7 +383,10 @@ router.post('/personnel', requireAuth, csrf, (req, res) => {
   };
 
   const newPass = String(req.body.smtp_pass || '');
-  if (newPass && newPass !== '********') update.smtp_pass = newPass.slice(0, 200);
+  if (newPass && newPass !== '********') update.smtp_pass = newPass.replace(/\s+/g, '').slice(0, 200);
+
+  const newResend = String(req.body.resend_api_key || '');
+  if (newResend && newResend !== '********') update.resend_api_key = newResend.trim().slice(0, 200);
 
   const newKey = String(req.body.callmebot_apikey || '');
   if (newKey && newKey !== '********') update.callmebot_apikey = newKey.slice(0, 120);
@@ -402,7 +407,7 @@ router.post('/personnel/test-email', requireAuth, csrf, async (req, res) => {
   const settings = store.getSettings();
   if (!mailer.isConfigured(settings)) {
     return res.redirect('/admin/personnel?test=mail-fail&msg=' + encodeURIComponent(
-      'SMTP incomplet : remplissez Identifiant SMTP + Mot de passe d’application Gmail, puis Enregistrer.'
+      'Email incomplet. Sur Render gratuit : ajoutez RESEND_API_KEY. Sinon : Identifiant SMTP + mot de passe d’application Gmail, puis Enregistrer.'
     ));
   }
   if (!mailer.recipientOf(settings)) {

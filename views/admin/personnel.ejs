@@ -6,9 +6,12 @@
 <% if (!mailConfigured) { %>
   <div class="alert alert-error">
     <strong>Email non configuré.</strong>
-    Il manque l’<em>identifiant SMTP</em> (votre Gmail) et/ou le <em>mot de passe d’application</em>
-    (16 caractères générés par Google — pas votre mot de passe Gmail habituel).
-    Remplissez → <strong>Enregistrer</strong> → <strong>Tester l’email</strong>.
+    Sur <strong>Render gratuit</strong>, Gmail SMTP est bloqué. Utilisez <strong>Resend</strong> (gratuit, HTTPS) ci-dessous.
+    En local, le SMTP Gmail fonctionne aussi.
+  </div>
+<% } else if (!viaResend) { %>
+  <div class="alert alert-ok">
+    SMTP détecté (OK en local). Sur Render gratuit, ajoutez aussi une clé <strong>Resend</strong> — sinon l’envoi peut échouer (ports 465/587 bloqués).
   </div>
 <% } %>
 
@@ -24,19 +27,35 @@
         <label for="notification_email">Adresse email qui reçoit les formulaires *</label>
         <input type="email" id="notification_email" name="notification_email"
                value="<%= settings.notification_email || '' %>"
-               placeholder="ex: monadresse@gmail.com" autocomplete="email" required>
+               placeholder="ex: voltatech.contact@gmail.com" autocomplete="email" required>
       </div>
     </div>
 
     <div class="form-section">
-      <h3>2. Envoi email (SMTP) — obligatoire</h3>
+      <h3>2. Resend (recommandé sur Render)</h3>
+      <ol class="smtp-steps">
+        <li>Créez un compte gratuit sur <a href="https://resend.com/signup" target="_blank" rel="noopener">resend.com</a> avec <strong>voltatech.contact@gmail.com</strong>.</li>
+        <li>Allez dans <a href="https://resend.com/api-keys" target="_blank" rel="noopener">API Keys</a> → Create API Key.</li>
+        <li>Collez la clé ici <em>ou</em> dans Render → Environment → <code>RESEND_API_KEY</code>.</li>
+        <li>Enregistrer → Tester l’email.</li>
+      </ol>
+      <div class="field">
+        <label for="resend_api_key">Clé API Resend</label>
+        <input type="password" id="resend_api_key" name="resend_api_key"
+               value="<%= resendSet ? '********' : '' %>"
+               placeholder="<%= resendSet ? 'Laisser tel quel pour ne pas changer' : 're_xxxxxxxx' %>"
+               autocomplete="off">
+        <p class="field-hint">Fonctionne sur Render free (passe en HTTPS, pas SMTP). Gratuit ~100 emails/jour.</p>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>3. SMTP Gmail (local / Render payant uniquement)</h3>
 
       <ol class="smtp-steps">
-        <li>Ouvrez <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">Google → Mots de passe des applications</a> (connecté avec votre Gmail).</li>
-        <li>Créez un mot de passe pour « Mail » / « Autre » nommé VOLTA — Google affiche <strong>16 caractères</strong>.</li>
-        <li>Collez-le dans « Mot de passe d’application » ci-dessous (sans espaces).</li>
-        <li>Identifiant SMTP = votre adresse Gmail complète.</li>
-        <li>Cliquez <strong>Enregistrer</strong>, puis <strong>Tester l’email</strong>.</li>
+        <li>Ouvrez <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">Google → Mots de passe des applications</a>.</li>
+        <li>Créez un mot de passe « Mail » / VOLTA — 16 caractères.</li>
+        <li>Collez-le ci-dessous (sans espaces) — utile surtout en local.</li>
       </ol>
 
       <div class="field-row">
@@ -58,30 +77,29 @@
       </div>
       <div class="field-row">
         <div class="field grow">
-          <label for="smtp_user">Identifiant SMTP * <span class="muted">(votre Gmail)</span></label>
+          <label for="smtp_user">Identifiant SMTP <span class="muted">(votre Gmail)</span></label>
           <input type="email" id="smtp_user" name="smtp_user"
                  value="<%= settings.smtp_user || settings.notification_email || '' %>"
-                 placeholder="aminechebaibi@gmail.com" autocomplete="username" required>
+                 placeholder="voltatech.contact@gmail.com" autocomplete="username">
           <button type="button" class="btn btn-ghost btn-sm" id="copySmtpUser" style="margin-top:8px">Copier l’email destinataire</button>
         </div>
         <div class="field grow">
-          <label for="smtp_pass">Mot de passe d’application Gmail *</label>
+          <label for="smtp_pass">Mot de passe d’application Gmail</label>
           <input type="password" id="smtp_pass" name="smtp_pass"
                  value="<%= smtpPassSet ? '********' : '' %>"
                  autocomplete="new-password"
-                 placeholder="<%= smtpPassSet ? 'Laisser tel quel pour ne pas changer' : 'xxxx xxxx xxxx xxxx' %>"
-                 <%= smtpPassSet ? '' : 'required' %>>
-          <p class="field-hint">Pas le mot de passe de connexion Google. Uniquement le mot de passe d’application.</p>
+                 placeholder="<%= smtpPassSet ? 'Laisser tel quel pour ne pas changer' : 'xxxx xxxx xxxx xxxx' %>">
+          <p class="field-hint">Pas le mot de passe de connexion Google. Bloqué sur Render free.</p>
         </div>
       </div>
       <div class="field">
         <label for="mail_from">Expéditeur affiché (optionnel)</label>
-        <input type="text" id="mail_from" name="mail_from" value="<%= settings.mail_from || '' %>" placeholder='VOLTA &lt;aminechebaibi@gmail.com&gt;'>
+        <input type="text" id="mail_from" name="mail_from" value="<%= settings.mail_from || '' %>" placeholder='VOLTA &lt;onboarding@resend.dev&gt;'>
       </div>
     </div>
 
     <div class="form-section">
-      <h3>3. WhatsApp automatique</h3>
+      <h3>4. WhatsApp automatique</h3>
       <p class="muted">
         Utilise <a href="https://www.callmebot.com/blog/free-api-whatsapp-messages/" target="_blank" rel="noopener">CallMeBot</a> :
         ajoutez le contact, envoyez le message d’activation, puis collez la clé API reçue.
@@ -111,11 +129,9 @@
       <strong>Email :</strong>
       <% if (mailConfigured && recipient) { %>
         prêt → <code><%= recipient %></code>
+        <% if (viaResend) { %> (via Resend)<% } else { %> (via SMTP)<% } %>
       <% } else if (!mailConfigured) { %>
-        incomplet — il manque :
-        <% if (!(settings.smtp_host || '').trim()) { %> serveur,<% } %>
-        <% if (!(settings.smtp_user || '').trim()) { %> <u>identifiant</u>,<% } %>
-        <% if (!smtpPassSet) { %> <u>mot de passe d’application</u><% } %>
+        incomplet — ajoutez une clé Resend <em>ou</em> SMTP Gmail
       <% } else { %>
         destinataire manquant
       <% } %>

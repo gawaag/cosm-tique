@@ -23,7 +23,18 @@ ADMIN_USERNAME=admin
 ADMIN_PASSWORD=mot-de-passe-fort
 ```
 
-Puis dans **Admin → Personnel** : SMTP (Gmail + mot de passe d’application) + email de réception + clé CallMeBot pour WhatsApp.
+Puis pour les emails sur **Render gratuit** (Gmail SMTP est bloqué) :
+
+```
+RESEND_API_KEY=re_xxxxxxxx
+ADMIN_EMAIL=voltatech.contact@gmail.com
+```
+
+1. Compte gratuit sur [resend.com](https://resend.com/signup) avec `voltatech.contact@gmail.com`
+2. Créer une API Key → coller dans Render
+3. Admin → Personnel → **Tester l’email**
+
+(SMTP Gmail marche en local ; sur Render free il faut Resend ou un plan payant.)
 
 ## Sécurité déjà en place
 

@@ -113,6 +113,7 @@ const DEFAULT_SETTINGS = {
   smtp_user: 'voltatech.contact@gmail.com',
   smtp_pass: '',
   mail_from: 'VOLTA <voltatech.contact@gmail.com>',
+  resend_api_key: '',
   whatsapp_notify: '1',
   callmebot_apikey: '',
   notify_webhook_url: '',
