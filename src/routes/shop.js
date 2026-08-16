@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const store = require('../store');
 const notify = require('../notify');
 const pcConfig = require('../pc-config');
+const { productName } = require('../categories');
 
 const router = express.Router();
 
@@ -68,7 +69,7 @@ router.get('/produit/:slug', (req, res) => {
   const pricing = pcConfig.getPricing(settings);
   const ramOpts = pcConfig.ramOptions(product, pricing);
   res.render('shop/product', {
-    title: product.name,
+    title: productName(product, res.locals.lang),
     product,
     gallery,
     page: 'products',
@@ -112,10 +113,10 @@ router.post('/reservation', reservationLimiter, (req, res) => {
     const globalOffer = toNum(req.body.offer_total);
 
     const PAY_LABELS = {
-      leboncoin: 'Leboncoin (protection acheteur)',
-      ebay: 'eBay Marketplace (protection acheteur)',
-      paypal: 'PayPal (protection acheteur)',
-      handoff: 'Remise en main propre — Montrouge (92120)',
+      leboncoin: 'Carte bancaire',
+      ebay: 'Apple Pay',
+      paypal: 'Virement bancaire',
+      handoff: 'Paiement à la livraison',
     };
     const payKey = clean(req.body.payment_pref, 40);
     const paymentPref = PAY_LABELS[payKey] ? payKey : '';

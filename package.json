@@ -1,7 +1,7 @@
 {
-  "name": "pc-portables-store",
+  "name": "herbalis-store",
   "version": "1.0.0",
-  "description": "Boutique de PC portables avec reservation, panier, offres et panneau admin securise",
+  "description": "Boutique HERBALIS - complements alimentaires (colon, cheveux, respiration), FR/AR",
   "type": "commonjs",
   "main": "server.js",
   "scripts": {

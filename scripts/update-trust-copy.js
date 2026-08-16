@@ -1,16 +1,15 @@
 'use strict';
-const store = require('../src/store');
-const { translator } = require('../src/i18n');
+require('dotenv').config();
+const { db } = require('../src/db');
 
-store.setSettings({
-  about_fr:
-    "VOLTA, c’est 3 ans d’expérience dans le high-tech comme neuf. Nous travaillons avec des fournisseurs de confiance. Toutes les pièces sont et seront testées lors de la vente — en appel vidéo ou en main propre à Montrouge (92120), Île-de-France. Paiements sécurisés via Leboncoin, eBay Marketplace ou PayPal.",
-  about_en:
-    'VOLTA has 3 years of experience in like-new tech. We work with trusted suppliers. Every part is and will be tested at sale — on a video call or in person in Montrouge (92120), Île-de-France. Secure payments via Leboncoin, eBay Marketplace or PayPal.',
-});
+const aboutFr = "HERBALIS formule des compléments ciblés : confort du côlon et du microbiote, anti-chute et pousse capillaire, confort des voies respiratoires. Gélules végétales, fabrication française. Paiement sécurisé (CB, Apple Pay), livraison 48 h, satisfait ou remboursé 30 jours.";
+const aboutAr = "هيرباليس يصيغ مكمّلات موجّهة: راحة القولون والميكروبيوتا، مكافحة التساقط، وراحة الجهاز التنفسي. كبسولات نباتية، تصنيع فرنسي. دفع آمن، توصيل 48 ساعة، رضا أو استرداد 30 يوماً.";
 
-const t = translator('fr');
-console.log('trust_pay_title:', t('trust_pay_title'));
-console.log('trust_badge_handoff:', t('trust_badge_handoff'));
-console.log('attract_software:', t('attract_software'));
-console.log('about ok:', store.getSettings().about_fr.includes('Montrouge'));
+const upsert = db.prepare(`
+  INSERT INTO settings (key, value) VALUES (?, ?)
+  ON CONFLICT(key) DO UPDATE SET value = excluded.value
+`);
+upsert.run('about_fr', aboutFr);
+upsert.run('about_ar', aboutAr);
+upsert.run('brand_name', 'HERBALIS');
+console.log('Trust copy HERBALIS mise a jour.');

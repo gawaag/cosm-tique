@@ -148,7 +148,7 @@ function parseProductBody(body) {
   return {
     name: str(body.name, 160),
     brand: str(body.brand, 80),
-    category: str(body.category, 60) || 'PC Portable',
+    category: str(body.category, 60) || 'colon',
     price: num(body.price),
     old_price: optNum(body.old_price),
     stock: int(body.stock),
@@ -159,9 +159,12 @@ function parseProductBody(body) {
     screen: str(body.screen, 120),
     os: str(body.os, 80),
     short_fr: str(body.short_fr, 300),
-    short_en: str(body.short_en, 300),
+    short_en: str(body.short_ar, 300) || str(body.short_en, 300),
+    short_ar: str(body.short_ar, 300),
     desc_fr: str(body.desc_fr, 4000),
-    desc_en: str(body.desc_en, 4000),
+    desc_en: str(body.desc_ar, 4000) || str(body.desc_en, 4000),
+    desc_ar: str(body.desc_ar, 4000),
+    name_ar: str(body.name_ar, 160),
     featured: body.featured ? 1 : 0,
     active: body.active ? 1 : 0,
     sort_order: int(body.sort_order),
@@ -266,10 +269,9 @@ router.post('/reservations/:id/supprimer', requireAuth, csrf, (req, res) => {
 // ---------------------------------------------------------------------------
 const SETTING_KEYS = [
   'brand_name', 'accent_color', 'whatsapp_number', 'contact_email', 'notification_email', 'contact_phone',
-  'hero_title_fr', 'hero_title_en', 'hero_sub_fr', 'hero_sub_en',
-  'about_fr', 'about_en', 'currency', 'currency_symbol',
-  'cfg_storage_step_gb', 'cfg_storage_step_price', 'cfg_storage_max_steps',
-  'cfg_ram_upgrade_price', 'cfg_ram_downgrade_price',
+  'hero_title_fr', 'hero_title_ar', 'hero_sub_fr', 'hero_sub_ar',
+  'about_fr', 'about_ar', 'currency', 'currency_symbol',
+  'hero_image', 'hero_video',
 ];
 
 router.get('/parametres', requireAuth, (req, res) => {
@@ -291,13 +293,6 @@ router.post('/parametres', requireAuth, csrf, (req, res) => {
   if (update.whatsapp_number != null) update.whatsapp_number = update.whatsapp_number.replace(/[^0-9]/g, '');
   if (update.notification_email != null) update.notification_email = String(update.notification_email).trim();
   if (update.contact_email != null) update.contact_email = String(update.contact_email).trim();
-  // Prix config PC : nombres uniquement
-  ['cfg_storage_step_gb', 'cfg_storage_step_price', 'cfg_storage_max_steps', 'cfg_ram_upgrade_price', 'cfg_ram_downgrade_price']
-    .forEach((k) => {
-      if (update[k] == null) return;
-      const n = parseFloat(String(update[k]).replace(',', '.'));
-      update[k] = Number.isFinite(n) ? String(n) : String(req.body[k] || '');
-    });
   store.setSettings(update);
   res.redirect('/admin/parametres?ok=1');
 });
@@ -427,7 +422,7 @@ router.post('/personnel/test-whatsapp', requireAuth, csrf, async (req, res) => {
   const fake = {
     id: 0,
     type: 'reservation',
-    customer_name: 'Test VOLTA',
+    customer_name: 'Test HERBALIS',
     phone: settings.whatsapp_number || '',
     email: settings.notification_email || '',
     message: 'Message de test depuis l’espace Personnel.',

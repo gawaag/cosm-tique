@@ -1,25 +1,33 @@
 <article class="product-card<%= p.stock <= 0 ? ' is-sold' : '' %>" data-reveal>
   <a href="/produit/<%= p.slug %>" class="product-thumb">
     <% if (p.stock <= 0) { %>
-      <span class="badge-sold">Vendu</span>
+      <span class="badge-sold"><%= t('sold') %></span>
     <% } else if (p.old_price && p.old_price > p.price) { %>
       <span class="badge-sale">-<%= Math.round((1 - p.price / p.old_price) * 100) %>%</span>
     <% } %>
     <% if (p.image) { %>
-      <img src="/uploads/<%= p.image %>" alt="<%= p.name %>" loading="lazy">
+      <img src="/uploads/<%= p.image %>" alt="<%= pName(p) %>" loading="lazy">
     <% } else { %>
-      <span class="thumb-placeholder <%= (p.category === 'Telephone' || p.category === 'Smartphones') ? 'is-phone' : '' %>">
-        <strong><%= (typeof settings !== 'undefined' && settings.brand_name) ? settings.brand_name : (p.brand || '') %></strong>
+      <span class="thumb-placeholder is-bottle">
+        <strong><%= settings.brand_name %></strong>
       </span>
     <% } %>
   </a>
   <div class="product-body">
     <% if (p.brand) { %><span class="product-brand"><%= p.brand %></span><% } %>
-    <h3 class="product-name"><a href="/produit/<%= p.slug %>"><%= p.name %></a></h3>
-    <% var short = p['short_' + lang] || p.short_fr; if (short) { %><p class="product-tag"><%= short %></p><% } %>
+    <h3 class="product-name"><a href="/produit/<%= p.slug %>"><%= pName(p) %></a></h3>
+    <% var spec = pSpec(p); if (spec) { %><p class="product-tag"><%= spec %></p><% } %>
+    <% var short = pShort(p); if (short) { %><p class="product-need"><%= short %></p><% } %>
+    <% var badges = pBadges(p); if (badges.length) { %>
+      <ul class="card-badges" aria-label="<%= t('trust_platforms_label') %>">
+        <% badges.slice(0, 3).forEach(function(b){ %>
+          <li><%= b === '100% Naturel' ? t('badge_natural') : (b === 'Fabriqué en France' ? t('badge_france') : (b === 'Vegan' ? t('badge_vegan') : b)) %></li>
+        <% }) %>
+      </ul>
+    <% } %>
     <div class="price-block">
-      <span class="price"><%= Number(p.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></span>
-      <% if (p.old_price && p.old_price > p.price) { %><span class="price-old"><%= Number(p.old_price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></span><% } %>
+      <span class="price"><%= Number(p.price).toLocaleString(lang === 'ar' ? 'ar' : 'fr-FR') %> <%= settings.currency_symbol %></span>
+      <% if (p.old_price && p.old_price > p.price) { %><span class="price-old"><%= Number(p.old_price).toLocaleString(lang === 'ar' ? 'ar' : 'fr-FR') %> <%= settings.currency_symbol %></span><% } %>
     </div>
     <% if (p.stock <= 0) { %>
       <span class="btn btn-sold btn-pill" aria-disabled="true"><%= t('sold') %></span>

@@ -1,41 +1,41 @@
 'use strict';
 
-/** Avis clients (ton naturel FR, fautes volontaires). */
+/** Avis clients (FR + AR). */
 module.exports = [
   {
-    name: 'Karim',
-    city: 'Paris 15e',
+    name: 'سارة ب.',
+    city: 'الدار البيضاء',
     stars: 5,
-    text: 'Pc reçu nickel franchement, on a tout testé en visio avant. Un peut de micro rayure sur le capot mais c’étais dit. Merci pour le rdv a Montrouge c’étais simple',
+    text: 'بعد شهرين من بيوتين فورت قلّ التساقط عند الغسيل. الكبسولات سهلة والتركيب واضح. أنصح بالعلاج ثلاثة أشهر.',
   },
   {
-    name: 'Sophie M.',
-    city: 'Issy-les-Moulineaux',
+    name: 'Karim L.',
+    city: 'Lyon',
     stars: 5,
-    text: 'Jai pris le Dell 16go, office installé direct. Paiement via leboncoin donc je me suis sentie rassuré. Je recommande',
+    text: 'Flora Colon m\'a aidé sur les ballonnements du soir. Pas miracle overnight, mais au bout de 3 semaines le ventre est plus calme.',
   },
   {
-    name: 'Mehdi',
-    city: 'Créteil',
+    name: 'نادية م.',
+    city: 'الرباط',
     stars: 4,
-    text: 'Bon contact sur WhatsApp, réponse rapide. Le pc gamer tourne bien, un peu chaud quand je joue trop longtmps mais normal. Prix ok pour la config',
+    text: 'ريسبكالم في موسم الحساسية: الحلق أقل تهيّجاً. طبعاً ما زلت أستخدم البخاخ الذي وصفه الطبيب.',
   },
   {
-    name: 'Laura',
-    city: 'Vanves',
+    name: 'Camille R.',
+    city: 'Bordeaux',
     stars: 5,
-    text: 'Premiere fois que jachete d’occase comme ca, j’avais peur mais ils ont testé devant moi. Telephone S20 FE tip top batterie tiens bien',
+    text: 'Sérum romarin + biotine, cuir chevelu moins gras, cheveux qui cassent moins. Livraison en 2 jours, colis soigné.',
   },
   {
-    name: 'Antoine',
-    city: 'Boulogne',
+    name: 'يوسف ك.',
+    city: 'طنجة',
     stars: 5,
-    text: 'Remise en main propre 92120, 10min de rdv et c’etait plié. Pack office + antivirus offert c’est cool. Merci !!',
+    text: 'باقة الثنائي قولون وشعر منطقية. الدفع بالبطاقة تم مباشرة والشحن من فرنسا وصل بسرعة.',
   },
   {
-    name: 'Nadia',
-    city: 'Montrouge',
+    name: 'Léa D.',
+    city: 'Nantes',
     stars: 4,
-    text: 'Le S22 etait deja vendu quand jai voulu le prendre snif, jai pris l’A54 a la place et finalment jsuis contente. Vendeur sérieux',
+    text: 'Detox Côlon en cure courte après les fêtes. Goût neutre, consignes claires (éloigner des médicaments). Je recommande.',
   },
 ];

@@ -32,11 +32,11 @@
     <h3>Page d'accueil (bandeau)</h3>
     <div class="field-row">
       <div class="field grow"><label for="hero_title_fr">Titre (FR)</label><input type="text" id="hero_title_fr" name="hero_title_fr" value="<%= settings.hero_title_fr %>"></div>
-      <div class="field grow"><label for="hero_title_en">Titre (EN)</label><input type="text" id="hero_title_en" name="hero_title_en" value="<%= settings.hero_title_en %>"></div>
+      <div class="field grow"><label for="hero_title_ar">Titre (AR)</label><input type="text" id="hero_title_ar" name="hero_title_ar" value="<%= settings.hero_title_ar || '' %>" dir="rtl"></div>
     </div>
     <div class="field-row">
       <div class="field grow"><label for="hero_sub_fr">Sous-titre (FR)</label><input type="text" id="hero_sub_fr" name="hero_sub_fr" value="<%= settings.hero_sub_fr %>"></div>
-      <div class="field grow"><label for="hero_sub_en">Sous-titre (EN)</label><input type="text" id="hero_sub_en" name="hero_sub_en" value="<%= settings.hero_sub_en %>"></div>
+      <div class="field grow"><label for="hero_sub_ar">Sous-titre (AR)</label><input type="text" id="hero_sub_ar" name="hero_sub_ar" value="<%= settings.hero_sub_ar || '' %>" dir="rtl"></div>
     </div>
   </div>
 
@@ -44,38 +44,8 @@
     <h3>À propos</h3>
     <div class="field-row">
       <div class="field grow"><label for="about_fr">Texte (FR)</label><textarea id="about_fr" name="about_fr" rows="4"><%= settings.about_fr %></textarea></div>
-      <div class="field grow"><label for="about_en">Texte (EN)</label><textarea id="about_en" name="about_en" rows="4"><%= settings.about_en %></textarea></div>
+      <div class="field grow"><label for="about_ar">Texte (AR)</label><textarea id="about_ar" name="about_ar" rows="4" dir="rtl"><%= settings.about_ar || '' %></textarea></div>
     </div>
-  </div>
-
-  <div class="form-section">
-    <h3>Configurateur PC (prix)</h3>
-    <p class="muted" style="margin:0 0 12px">Ces tarifs s’appliquent sur la fiche produit avant ajout au panier / réservation.</p>
-    <div class="field-row">
-      <div class="field">
-        <label for="cfg_storage_step_gb">Palier SSD (Go)</label>
-        <input type="number" id="cfg_storage_step_gb" name="cfg_storage_step_gb" min="64" step="64" value="<%= settings.cfg_storage_step_gb || 256 %>">
-      </div>
-      <div class="field">
-        <label for="cfg_storage_step_price">Prix par palier SSD</label>
-        <input type="number" id="cfg_storage_step_price" name="cfg_storage_step_price" min="0" step="0.5" value="<%= settings.cfg_storage_step_price || 40 %>">
-      </div>
-      <div class="field">
-        <label for="cfg_storage_max_steps">Nb max de paliers SSD</label>
-        <input type="number" id="cfg_storage_max_steps" name="cfg_storage_max_steps" min="0" max="8" step="1" value="<%= settings.cfg_storage_max_steps || 3 %>">
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label for="cfg_ram_upgrade_price">RAM 8 → 16 Go (supplément)</label>
-        <input type="number" id="cfg_ram_upgrade_price" name="cfg_ram_upgrade_price" min="0" step="0.5" value="<%= settings.cfg_ram_upgrade_price || 25 %>">
-      </div>
-      <div class="field">
-        <label for="cfg_ram_downgrade_price">RAM 16 → 8 Go (réduction)</label>
-        <input type="number" id="cfg_ram_downgrade_price" name="cfg_ram_downgrade_price" min="0" step="0.5" value="<%= settings.cfg_ram_downgrade_price || 15 %>">
-      </div>
-    </div>
-    <p class="muted" style="margin:8px 0 0">Exemple : SSD +256 Go = +<%= settings.cfg_storage_step_price || 40 %> <%= settings.currency_symbol %>. PC en 8 Go → option 16 Go à +<%= settings.cfg_ram_upgrade_price || 25 %>. PC en 16 Go → option 8 Go à −<%= settings.cfg_ram_downgrade_price || 15 %>.</p>
   </div>
 
   <div class="form-actions"><button type="submit" class="btn btn-primary btn-lg">Enregistrer les paramètres</button></div>

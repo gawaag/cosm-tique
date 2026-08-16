@@ -9,13 +9,18 @@
   var T = {
     fr: {
       added: 'Ajouté au panier', empty: 'Votre panier est vide.', qty: 'Qté',
-      wa_intro: 'Bonjour, je souhaite réserver :', wa_total: 'Total', wa_offer: 'Mon offre',
-      cfg_base: 'Configuration de base', cfg_included: 'Inclus', cfg_quote: 'coût à confirmer'
+      wa_intro: 'Bonjour, je souhaite commander :', wa_total: 'Total', wa_offer: 'Mon message',
+      cfg_base: 'Formule', cfg_included: 'Inclus', cfg_quote: 'à confirmer'
+    },
+    ar: {
+      added: 'أُضيف إلى السلة', empty: 'سلتك فارغة.', qty: 'الكمية',
+      wa_intro: 'مرحباً، أرغب في طلب:', wa_total: 'المجموع', wa_offer: 'رسالتي',
+      cfg_base: 'الصيغة', cfg_included: 'مشمول', cfg_quote: 'يُؤكد لاحقاً'
     },
     en: {
       added: 'Added to cart', empty: 'Your cart is empty.', qty: 'Qty',
-      wa_intro: 'Hello, I would like to reserve:', wa_total: 'Total', wa_offer: 'My offer',
-      cfg_base: 'Base configuration', cfg_included: 'Included', cfg_quote: 'price TBD'
+      wa_intro: 'Hello, I would like to order:', wa_total: 'Total', wa_offer: 'My message',
+      cfg_base: 'Formula', cfg_included: 'Included', cfg_quote: 'price TBD'
     }
   };
   var t = function (k) { return (T[LANG] && T[LANG][k]) || T.fr[k]; };

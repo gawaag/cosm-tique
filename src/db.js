@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS products (
   slug           TEXT UNIQUE NOT NULL,
   name           TEXT NOT NULL,
   brand          TEXT DEFAULT '',
-  category       TEXT NOT NULL DEFAULT 'PC Portable',
+  category       TEXT NOT NULL DEFAULT 'colon',
   price          REAL NOT NULL DEFAULT 0,
   old_price      REAL,
   stock          INTEGER NOT NULL DEFAULT 0,
@@ -93,8 +93,20 @@ CREATE INDEX IF NOT EXISTS idx_res_items_res ON reservation_items(reservation_id
 (function migrate() {
   const cols = db.prepare('PRAGMA table_info(products)').all().map((c) => c.name);
   if (!cols.includes('category')) {
-    db.exec("ALTER TABLE products ADD COLUMN category TEXT NOT NULL DEFAULT 'PC Portable'");
+    db.exec("ALTER TABLE products ADD COLUMN category TEXT NOT NULL DEFAULT 'colon'");
     console.log('[db] migration: colonne "category" ajoutee aux produits');
+  }
+  const extra = [
+    ['name_ar', "TEXT DEFAULT ''"],
+    ['short_ar', "TEXT DEFAULT ''"],
+    ['desc_ar', "TEXT DEFAULT ''"],
+  ];
+  const fresh = db.prepare('PRAGMA table_info(products)').all().map((c) => c.name);
+  for (const [col, typ] of extra) {
+    if (!fresh.includes(col)) {
+      db.exec(`ALTER TABLE products ADD COLUMN ${col} ${typ}`);
+      console.log(`[db] migration: colonne "${col}" ajoutee`);
+    }
   }
 })();
 
@@ -102,9 +114,9 @@ CREATE INDEX IF NOT EXISTS idx_res_items_res ON reservation_items(reservation_id
 // Seed: settings
 // ---------------------------------------------------------------------------
 const DEFAULT_SETTINGS = {
-  brand_name: 'VOLTA',
-  accent_color: '#0071e3',
-  whatsapp_number: '33744141908', // +33 7 44 14 19 08 (sans + ni espaces)
+  brand_name: 'HERBALIS',
+  accent_color: '#2E8B57',
+  whatsapp_number: '33744141908',
   contact_email: 'voltatech.contact@gmail.com',
   notification_email: 'voltatech.contact@gmail.com',
   smtp_host: '',
@@ -112,25 +124,26 @@ const DEFAULT_SETTINGS = {
   smtp_secure: 'true',
   smtp_user: 'voltatech.contact@gmail.com',
   smtp_pass: '',
-  mail_from: 'VOLTA <voltatech.contact@gmail.com>',
+  mail_from: 'HERBALIS <voltatech.contact@gmail.com>',
   resend_api_key: '',
   whatsapp_notify: '1',
   callmebot_apikey: '',
   notify_webhook_url: '',
   contact_phone: '+33 7 44 14 19 08',
-  hero_title_fr: 'Le high-tech, simplement.',
-  hero_title_en: 'Tech, made simple.',
-  hero_sub_fr: 'PC portables, machines gamer et smartphones comme neufs. Vente France uniquement.',
-  hero_sub_en: 'Like-new laptops, gaming PCs and smartphones. France sales only.',
-  about_fr: "VOLTA, c’est 3 ans d’expérience dans le high-tech comme neuf. Nous travaillons avec des fournisseurs de confiance. Toutes les pièces sont et seront testées lors de la vente — en appel vidéo ou en main propre à Montrouge (92120), Île-de-France. Paiements sécurisés via Leboncoin, eBay Marketplace ou PayPal. Vente exclusivement en France.",
-  about_en: "VOLTA has 3 years of experience in like-new tech. We work with trusted suppliers. Every part is and will be tested at sale — on a video call or in person in Montrouge (92120), Île-de-France. Secure payments via Leboncoin, eBay Marketplace or PayPal. France sales only.",
+  hero_title_fr: 'La santé naturelle, simplement.',
+  hero_title_ar: 'الصحة الطبيعية، ببساطة.',
+  hero_title_en: 'La santé naturelle, simplement.',
+  hero_sub_fr: 'Compléments naturels ciblés pour le confort intestinal et la vitalité capillaire. Formules concentrées, fabriquées en France.',
+  hero_sub_ar: 'مكملات طبيعية موجّهة لراحة الأمعاء وحيوية الشعر. صيغ مركّزة، مصنوعة في فرنسا.',
+  hero_sub_en: 'Compléments naturels ciblés pour le confort intestinal et la vitalité capillaire. Formules concentrées, fabriquées en France.',
+  hero_image: 'hero-botanica.png',
+  hero_video: '',
+  about_fr: "HERBALIS formule des compléments ciblés : confort du côlon et du microbiote, anti-chute et pousse capillaire, confort des voies respiratoires (asthme léger, gorges irritées). Gélules végétales, dosages utiles, fabrication française. Chaque lot est contrôlé en laboratoire indépendant. Paiement sécurisé (CB, Apple Pay), livraison 48 h, satisfait ou remboursé 30 jours. Les compléments ne se substituent pas à un traitement médical.",
+  about_ar: "هيرباليس يصيغ مكمّلات موجّهة: راحة القولون والميكروبيوتا، مكافحة التساقط وإنبات الشعر، وراحة الجهاز التنفسي (ربو خفيف، حلق متهيّج). كبسولات نباتية، جرعات نافعة، تصنيع فرنسي. كل دفعة تُفحص في مختبر مستقل. دفع آمن (بطاقة، آبل باي)، توصيل 48 ساعة، رضا أو استرداد 30 يوماً. المكمّلات لا تغني عن علاج طبي.",
+  about_en: "HERBALIS formule des compléments ciblés : confort du côlon, anti-chute, confort respiratoire. Fabrication française.",
   currency: 'EUR',
   currency_symbol: '€',
-  cfg_storage_step_gb: '256',
-  cfg_storage_step_price: '40',
-  cfg_storage_max_steps: '3',
-  cfg_ram_upgrade_price: '25',
-  cfg_ram_downgrade_price: '15',
+  catalog_version: 'herbalis-v1',
 };
 
 const getSetting = db.prepare('SELECT value FROM settings WHERE key = ?');
@@ -152,7 +165,27 @@ function forceFranceCurrency() {
   }
 }
 
-/** Contact / réservations VOLTA (email + WhatsApp France). */
+function applyHerbalisBrand() {
+  const force = {
+    brand_name: DEFAULT_SETTINGS.brand_name,
+    accent_color: DEFAULT_SETTINGS.accent_color,
+    hero_title_fr: DEFAULT_SETTINGS.hero_title_fr,
+    hero_title_ar: DEFAULT_SETTINGS.hero_title_ar,
+    hero_title_en: DEFAULT_SETTINGS.hero_title_en,
+    hero_sub_fr: DEFAULT_SETTINGS.hero_sub_fr,
+    hero_sub_ar: DEFAULT_SETTINGS.hero_sub_ar,
+    hero_sub_en: DEFAULT_SETTINGS.hero_sub_en,
+    hero_image: DEFAULT_SETTINGS.hero_image,
+    hero_video: DEFAULT_SETTINGS.hero_video,
+    about_fr: DEFAULT_SETTINGS.about_fr,
+    about_ar: DEFAULT_SETTINGS.about_ar,
+    about_en: DEFAULT_SETTINGS.about_en,
+    mail_from: DEFAULT_SETTINGS.mail_from,
+  };
+  for (const [k, v] of Object.entries(force)) upsertSetting.run(k, v);
+}
+
+/** Contact boutique (email + WhatsApp France). */
 function ensureVoltaContactDefaults() {
   const EMAIL = 'voltatech.contact@gmail.com';
   const WA = '33744141908';
@@ -171,7 +204,6 @@ function ensureVoltaContactDefaults() {
   for (const [key, want] of Object.entries(targets)) {
     const cur = String((getSetting.get(key) || {}).value || '').trim();
     if (!cur || placeholders.has(cur) || cur !== want) {
-      // Toujours aligner sur le contact boutique (email réservations + WhatsApp).
       upsertSetting.run(key, want);
       changed = true;
     }
@@ -182,8 +214,8 @@ function ensureVoltaContactDefaults() {
     changed = true;
   }
   const mailFrom = String((getSetting.get('mail_from') || {}).value || '').trim();
-  if (!mailFrom || mailFrom.includes('example.com')) {
-    upsertSetting.run('mail_from', `VOLTA <${EMAIL}>`);
+  if (!mailFrom || mailFrom.includes('example.com') || mailFrom.includes('VOLTA')) {
+    upsertSetting.run('mail_from', `HERBALIS <${EMAIL}>`);
     changed = true;
   }
   if (changed) console.log(`[db] Contact boutique: ${EMAIL} / WhatsApp ${PHONE}`);
@@ -216,11 +248,11 @@ function seedAdmin() {
 function insertCatalogRows(rows) {
   const insert = db.prepare(`
     INSERT INTO products
-      (slug, name, brand, category, price, old_price, stock, cpu, ram, storage, gpu, screen, os,
-       short_fr, short_en, desc_fr, desc_en, image, featured, active, sort_order)
+      (slug, name, name_ar, brand, category, price, old_price, stock, cpu, ram, storage, gpu, screen, os,
+       short_fr, short_en, short_ar, desc_fr, desc_en, desc_ar, image, featured, active, sort_order)
     VALUES
-      (@slug, @name, @brand, @category, @price, @old_price, @stock, @cpu, @ram, @storage, @gpu, @screen, @os,
-       @short_fr, @short_en, @desc_fr, @desc_en, @image, @featured, @active, @sort_order)
+      (@slug, @name, @name_ar, @brand, @category, @price, @old_price, @stock, @cpu, @ram, @storage, @gpu, @screen, @os,
+       @short_fr, @short_en, @short_ar, @desc_fr, @desc_en, @desc_ar, @image, @featured, @active, @sort_order)
   `);
   const used = new Set();
   for (const row of rows) {
@@ -228,7 +260,16 @@ function insertCatalogRows(rows) {
     let n = 2;
     while (used.has(slug)) slug = `${slugifyName(row.name)}-${n++}`;
     used.add(slug);
-    insert.run({ ...row, slug, old_price: row.old_price == null ? null : row.old_price });
+    insert.run({
+      ...row,
+      slug,
+      name_ar: row.name_ar || '',
+      short_ar: row.short_ar || '',
+      desc_ar: row.desc_ar || '',
+      short_en: row.short_ar || row.short_en || '',
+      desc_en: row.desc_ar || row.desc_en || '',
+      old_price: row.old_price == null ? null : row.old_price,
+    });
   }
 }
 
@@ -241,30 +282,22 @@ function seedFranceCatalog() {
 function ensureFranceCatalog() {
   forceFranceCurrency();
   ensureVoltaContactDefaults();
+  applyHerbalisBrand();
 
-  const demo = db.prepare(`
+  const version = String((getSetting.get('catalog_version') || {}).value || '');
+  const pcLeftover = db.prepare(`
     SELECT COUNT(*) AS c FROM products
-    WHERE slug IN ('probook-z15','pc-portable-ar','gamer-rtx-17','ultra-thin-13')
-       OR price >= 5000
+    WHERE category IN ('Ordinateurs','Gaming','Smartphones','PC Portable','PC Gamer','Telephone')
+       OR name LIKE '%RTX%' OR name LIKE '%Galaxy%' OR name LIKE '%Dell%' OR name LIKE '%i5%'
   `).get().c;
   const total = db.prepare('SELECT COUNT(*) AS c FROM products').get().c;
-  const noImages = db.prepare(`
-    SELECT COUNT(*) AS c FROM products WHERE active = 1 AND (image IS NULL OR image = '')
-  `).get().c;
 
-  if (total === 0 || demo > 0 || (total > 0 && noImages === total)) {
+  if (version !== 'herbalis-v1' || total === 0 || pcLeftover > 0) {
     db.exec('DELETE FROM product_images; DELETE FROM products;');
     seedFranceCatalog();
+    upsertSetting.run('catalog_version', 'herbalis-v1');
+    console.log('[db] Catalogue HERBALIS (côlon / cheveux / respiration) chargé');
   }
-
-  // Strictement vendus : S22 + Acer Nitro
-  const sold = db.prepare(`
-    UPDATE products SET stock = 0,
-      short_fr = CASE WHEN short_fr LIKE 'Vendu%' THEN short_fr ELSE 'Vendu — plus disponible.' END,
-      short_en = CASE WHEN short_en LIKE 'Sold%' THEN short_en ELSE 'Sold — no longer available.' END
-    WHERE name LIKE '%S22%' OR name LIKE '%Nitro 5%'
-  `).run();
-  if (sold.changes) console.log(`[db] ${sold.changes} produit(s) marques vendus (S22 / Nitro)`);
 }
 
 seedAdmin();

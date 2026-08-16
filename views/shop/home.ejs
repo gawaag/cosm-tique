@@ -11,45 +11,15 @@
 
 <%
   var withImage = (featured || []).filter(function(p){ return p.image; });
-  var heroProduct = withImage.find(function(p){ return /rog|asus|dark|gaming|predator|legion/i.test((p.image||'') + ' ' + (p.name||'') + ' ' + (p.category||'')); })
-    || withImage[0]
-    || ((featured && featured.length) ? featured[0] : null);
-  var showcaseCopy = {
-    'Ordinateurs': {
-      fr: { title: 'Ordinateurs', sub: 'Légers, fiables, prêts à travailler.' },
-      en: { title: 'Laptops', sub: 'Light, reliable, ready to work.' }
-    },
-    'PC Portable': {
-      fr: { title: 'PC portables', sub: 'Légers, fiables, prêts à travailler.' },
-      en: { title: 'Laptops', sub: 'Light, reliable, ready to work.' }
-    },
-    'Gaming': {
-      fr: { title: 'Gaming', sub: 'Puissance fluide pour jouer et créer.' },
-      en: { title: 'Gaming', sub: 'Smooth power to play and create.' }
-    },
-    'PC Gamer': {
-      fr: { title: 'PC gamer', sub: 'Puissance fluide pour jouer et créer.' },
-      en: { title: 'Gaming PCs', sub: 'Smooth power to play and create.' }
-    },
-    'Smartphones': {
-      fr: { title: 'Smartphones', sub: 'Comme neufs, au juste prix.' },
-      en: { title: 'Phones', sub: 'Like-new, fair pricing.' }
-    },
-    'Telephone': {
-      fr: { title: 'Smartphones', sub: 'Comme neufs, au juste prix.' },
-      en: { title: 'Phones', sub: 'Like-new, fair pricing.' }
-    }
-  };
+  var heroProduct = withImage[0] || ((featured && featured.length) ? featured[0] : null);
 %>
 
 <main>
   <%
-    var heroVideo = (settings.hero_video && settings.hero_video.trim())
-      ? settings.hero_video.trim()
-      : 'gemini_generated_video_c9721e56.mp4';
+    var heroVideo = (settings.hero_video && settings.hero_video.trim()) ? settings.hero_video.trim() : '';
     var heroImg = (settings.hero_image && settings.hero_image.trim())
       ? settings.hero_image.trim()
-      : (heroProduct && heroProduct.image ? heroProduct.image : '');
+      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-botanica.png');
     var hasVideo = !!heroVideo;
   %>
   <section class="hero<%= (hasVideo || heroImg) ? ' hero--photo' : ' hero--fallback' %>">
@@ -57,11 +27,7 @@
       <div class="hero-media" aria-hidden="true">
         <video
           class="hero-bg hero-bg--video"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="auto"
+          autoplay muted loop playsinline preload="auto"
           <% if (heroImg) { %>poster="/uploads/<%= heroImg %>"<% } %>
         >
           <source src="/uploads/<%= heroVideo %>" type="video/mp4">
@@ -75,19 +41,13 @@
       <div class="hero-scrim" aria-hidden="true"></div>
     <% } else { %>
       <div class="hero-media hero-media--fallback" aria-hidden="true">
-        <div class="laptop-scene">
-          <div class="laptop">
-            <div class="laptop-screen">
-              <div class="laptop-bezel">
-                <div class="laptop-display">
-                  <span class="display-brand"><%= settings.brand_name %></span>
-                  <span class="display-line"></span>
-                </div>
-              </div>
-            </div>
-            <div class="laptop-base"></div>
-            <div class="laptop-shadow"></div>
-          </div>
+        <div class="bottle-scene">
+          <div class="bottle bottle--a"></div>
+          <div class="bottle bottle--b"></div>
+          <div class="bottle bottle--c"></div>
+          <div class="leaf leaf--1"></div>
+          <div class="leaf leaf--2"></div>
+          <div class="capsules"></div>
         </div>
       </div>
       <div class="hero-scrim" aria-hidden="true"></div>
@@ -99,22 +59,19 @@
       <p class="hero-sub"><%= settings['hero_sub_' + lang] || settings.hero_sub_fr %></p>
       <div class="hero-links">
         <a href="/produits" class="hero-cta hero-cta--primary"><%= t('hero_cta') %></a>
-        <a href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('whatsapp_prefill')) %>" target="_blank" rel="noopener" class="hero-cta hero-cta--ghost">WhatsApp</a>
+        <a href="/contact#diagnostic" class="hero-cta hero-cta--ghost"><%= t('hero_diag') %></a>
       </div>
     </div>
   </section>
 
   <section class="trust-line">
     <div class="container trust-inner">
-      <p><%= lang === 'en'
-        ? 'Protected payment · Hand delivery Montrouge (92120) · Free Office + antivirus · Tested parts'
-        : 'Paiement protégé · Main propre Montrouge (92120) · Office + antivirus offerts · Pièces testées' %></p>
-      <ul class="trust-chips" aria-label="Paiement & remise">
-        <li>Leboncoin</li>
-        <li>eBay</li>
-        <li>PayPal</li>
-        <li>Main propre · Montrouge 92120</li>
-        <li>Office + antivirus offerts</li>
+      <p><%= t('trust_line') %></p>
+      <ul class="trust-chips" aria-label="<%= t('trust_platforms_label') %>">
+        <li><%= t('trust_pay_secure') %></li>
+        <li><%= t('trust_pay_handoff') %></li>
+        <li><%= t('trust_pay_photos') %></li>
+        <li><%= t('trust_pay_software') %></li>
       </ul>
     </div>
   </section>
@@ -122,12 +79,11 @@
   <%- include('../partials/trust-pay', { mode: 'full' }) %>
 
   <% byCategory.forEach(function(cat, idx){
-       var copy = (showcaseCopy[cat.name] && showcaseCopy[cat.name][lang]) || { title: cat.name, sub: '' };
+       var copy = catShow(cat.name);
        var lead = cat.products[0];
   %>
   <section class="showcase <%= idx % 2 === 1 ? 'showcase-dark' : 'showcase-light' %>">
     <div class="showcase-inner" data-reveal>
-      <p class="showcase-kicker"><%= settings.brand_name %></p>
       <h2><%= copy.title %></h2>
       <% if (copy.sub) { %><p class="showcase-sub"><%= copy.sub %></p><% } %>
       <a class="apple-link" href="/produits?cat=<%= encodeURIComponent(cat.name) %>"><%= t('discover') %> <span aria-hidden="true">›</span></a>
@@ -136,16 +92,16 @@
     <div class="showcase-visual" data-reveal>
       <a href="/produit/<%= lead.slug %>" class="showcase-product">
         <% if (lead.image) { %>
-          <img src="/uploads/<%= lead.image %>" alt="<%= lead.name %>" loading="lazy">
+          <img src="/uploads/<%= lead.image %>" alt="<%= pName(lead) %>" loading="lazy">
         <% } else { %>
-          <div class="product-silhouette <%= cat.name === 'Telephone' ? 'is-phone' : 'is-laptop' %>">
-            <strong><%= lead.brand || lead.name %></strong>
-            <span><%= lead.cpu || lead.short_fr || '' %></span>
+          <div class="product-silhouette is-bottle">
+            <strong><%= lead.brand || settings.brand_name %></strong>
+            <span><%= pSpec(lead) %></span>
           </div>
         <% } %>
         <div class="showcase-caption">
-          <span><%= lead.name %></span>
-          <strong><%= Number(lead.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></strong>
+          <span><%= pName(lead) %></span>
+          <strong><%= Number(lead.price).toLocaleString(lang === 'ar' ? 'ar' : 'fr-FR') %> <%= settings.currency_symbol %></strong>
         </div>
       </a>
     </div>
@@ -183,7 +139,7 @@
             <p class="review-text"><%= r.text %></p>
             <footer class="review-meta">
               <strong><%= r.name %></strong>
-              <% if (r.city) { %><span>· <%= r.city %></span><% } %>
+              <% if (r.city) { %><span> - <%= r.city %></span><% } %>
             </footer>
           </blockquote>
         <% }) %>

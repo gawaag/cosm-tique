@@ -6,15 +6,13 @@
           <strong class="brand-name"><%= settings.brand_name %></strong>
         </a>
         <p class="footer-tag"><%= t('footer_tag') %></p>
-        <p class="footer-trust"><%= lang === 'en'
-          ? 'Secure payment via Leboncoin, eBay or PayPal. Hand delivery in Montrouge (92120). Free Office + antivirus with PCs.'
-          : 'Paiement sécurisé via Leboncoin, eBay Marketplace ou PayPal. Remise en main propre à Montrouge (92120). Office et antivirus offerts avec les PC.' %></p>
+        <p class="footer-trust"><%= t('trust_pay_compact') %></p>
       </div>
       <div class="footer-col">
         <h3><%= t('nav_products') %></h3>
         <a href="/produits"><%= t('all_products') %></a>
         <% (navCategories || []).forEach(function(c){ %>
-          <a href="/produits?cat=<%= encodeURIComponent(c.category) %>"><%= c.category %></a>
+          <a href="/produits?cat=<%= encodeURIComponent(c.category) %>"><%= catNav(c.category) %></a>
         <% }) %>
       </div>
       <div class="footer-col">
@@ -29,16 +27,21 @@
         <a href="/confidentialite"><%= t('footer_privacy') %></a>
       </div>
     </div>
+    <div class="container footer-trust-row" aria-label="<%= t('trust_platforms_label') %>">
+      <span><%= t('trust_pay_secure') %></span>
+      <span><%= t('trust_pay_handoff') %></span>
+      <span><%= t('trust_pay_photos') %></span>
+      <span><%= t('trust_pay_software') %></span>
+    </div>
     <div class="container footer-bottom">
       <span>© <%= new Date().getFullYear() %> <%= settings.brand_name %></span>
-      <a class="apple-link footer-wa" target="_blank" rel="noopener"
-         href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('whatsapp_prefill')) %>">WhatsApp <span aria-hidden="true">›</span></a>
+      <a class="apple-link footer-wa" href="/contact#diagnostic"><%= t('hero_diag') %> <span aria-hidden="true">›</span></a>
     </div>
   </footer>
 
   <a class="whatsapp-float" target="_blank" rel="noopener"
      href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('whatsapp_prefill')) %>"
-     aria-label="WhatsApp">
+     aria-label="<%= t('contact_whatsapp') %>">
     <svg viewBox="0 0 24 24" width="28" height="28"><path fill="currentColor" d="M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2zm0 2a8 8 0 11-4.1 14.9l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 0112 4zm4.4 10.3c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 01-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5.2-.4v-.4l-.8-1.8c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.6 2.6 4 3.6.6.3 1 .4 1.4.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1z"/></svg>
   </a>
 

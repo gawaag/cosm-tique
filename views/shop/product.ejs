@@ -1,12 +1,12 @@
 <%- include('../partials/head', {
-  metaDesc: (product['short_' + lang] || product.short_fr),
+  metaDesc: pShort(product),
   ogType: 'product',
   ogImage: (product.image ? '/uploads/' + product.image : '')
 }) %>
 <% var _ld = {
      '@context': 'https://schema.org', '@type': 'Product',
-     name: product.name, brand: product.brand || undefined,
-     description: (product['desc_' + lang] || product.desc_fr || product['short_' + lang] || product.short_fr || undefined),
+     name: pName(product), brand: product.brand || undefined,
+     description: (pDesc(product) || pShort(product) || undefined),
      image: (product.image ? siteUrl + '/uploads/' + product.image : undefined),
      sku: product.slug,
      offers: {
@@ -15,64 +15,40 @@
        availability: (product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock')
      }
    };
-   var short = product['short_' + lang] || product.short_fr;
-   var desc = product['desc_' + lang] || product.desc_fr;
+   var short = pShort(product);
+   var desc = pDesc(product);
    var specRows = [
      ['spec_brand', product.brand],
      ['spec_cpu', product.cpu],
      ['spec_ram', product.ram],
      ['spec_storage', product.storage],
      ['spec_gpu', product.gpu],
-     ['spec_screen', product.screen],
      ['spec_os', product.os]
    ].filter(function(r){ return r[1]; });
-   var canConfigure = !!(typeof configurable !== 'undefined' && configurable);
-   var baseRamGo = (typeof cfgBaseRam !== 'undefined') ? cfgBaseRam : null;
-   var baseStorageGo = (typeof cfgBaseStorage !== 'undefined') ? cfgBaseStorage : null;
-   var pricing = (typeof cfgPricing !== 'undefined' && cfgPricing) ? cfgPricing : {
-     storageStepGb: 256, storageStepPrice: 40, storageMaxSteps: 3,
-     ramUpgradePrice: 25, ramDowngradePrice: 15
-   };
-   var ramOptions = (typeof cfgRamOptions !== 'undefined' && cfgRamOptions) ? cfgRamOptions : [];
+   var badges = pBadges(product);
+   var loc = lang === 'ar' ? 'ar' : 'fr-FR';
 %>
 <script type="application/ld+json" nonce="<%= nonce %>"><%- JSON.stringify(_ld) %></script>
 <%- include('../partials/header') %>
-
-<% if (canConfigure) { %>
-<div class="cfg-sticky" id="cfgSticky" hidden>
-  <div class="cfg-sticky-inner">
-    <% if (product.image) { %>
-      <img class="cfg-sticky-thumb" src="/uploads/<%= product.image %>" alt="">
-    <% } %>
-    <div class="cfg-sticky-copy">
-      <strong><%= product.name %></strong>
-      <span id="cfgStickySummary"><%= product.storage || '' %><% if (product.storage && product.ram) { %> · <% } %><%= product.ram || '' %></span>
-    </div>
-    <div class="cfg-sticky-price">
-      <strong id="cfgStickyPrice"><%= Number(product.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></strong>
-      <% if (product.old_price && product.old_price > product.price) { %>
-        <span class="cfg-sticky-old"><%= Number(product.old_price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %> neuf</span>
-      <% } %>
-    </div>
-    <button type="button" class="btn btn-primary" id="cfgStickyAdd" <%= product.stock <= 0 ? 'disabled' : '' %>>Ajouter au panier</button>
-  </div>
-</div>
-<% } %>
 
 <main>
   <section class="pdp-hero">
     <div class="container pdp-hero-copy">
       <% if (product.brand) { %><p class="pdp-brand"><%= product.brand %></p><% } %>
-      <h1 class="pdp-title"><%= product.name %></h1>
+      <h1 class="pdp-title"><%= pName(product) %></h1>
       <% if (short) { %><p class="pdp-sub"><%= short %></p><% } %>
       <div class="pdp-price-row">
         <% if (product.old_price && product.old_price > product.price) { %>
-          <span class="price-old"><%= Number(product.old_price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></span>
+          <span class="price-old"><%= Number(product.old_price).toLocaleString(loc) %> <%= settings.currency_symbol %></span>
         <% } %>
-        <span class="pdp-price" id="pdpHeroPrice"><%= Number(product.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></span>
+        <span class="pdp-price" id="pdpHeroPrice"><%= Number(product.price).toLocaleString(loc) %> <%= settings.currency_symbol %></span>
       </div>
-      <% if (canConfigure) { %>
-        <p class="pdp-soft-perk">Office + antivirus offerts</p>
+      <% if (badges.length) { %>
+        <ul class="card-badges pdp-badges">
+          <% badges.forEach(function(b){ %>
+            <li><%= b === '100% Naturel' ? t('badge_natural') : (b === 'Fabriqué en France' ? t('badge_france') : (b === 'Vegan' ? t('badge_vegan') : b)) %></li>
+          <% }) %>
+        </ul>
       <% } %>
       <div class="pdp-links">
         <a href="#acheter" class="apple-link"><%= t('reserve') %> <span aria-hidden="true">›</span></a>
@@ -82,9 +58,9 @@
 
     <div class="pdp-stage">
       <% if (product.image) { %>
-        <img src="/uploads/<%= product.image %>" alt="<%= product.name %>" id="pdpHeroImg" loading="eager">
+        <img src="/uploads/<%= product.image %>" alt="<%= pName(product) %>" id="pdpHeroImg" loading="eager">
       <% } else { %>
-        <div class="product-silhouette <%= product.category === 'Smartphones' || product.category === 'Telephone' ? 'is-phone' : 'is-laptop' %>">
+        <div class="product-silhouette is-bottle">
           <strong><%= product.brand || settings.brand_name %></strong>
         </div>
       <% } %>
@@ -94,25 +70,17 @@
   <section class="section container product-detail"
            id="acheter"
            data-product-id="<%= product.id %>"
-           data-product-name="<%= product.name %>"
+           data-product-name="<%= pName(product) %>"
            data-price="<%= product.price %>"
            data-slug="<%= product.slug %>"
            data-image="<%= product.image %>"
-           data-configurable="<%= canConfigure ? '1' : '0' %>"
-           data-base-ram="<%= baseRamGo || '' %>"
-           data-base-storage="<%= baseStorageGo || '' %>"
-           data-storage-step="<%= pricing.storageStepGb %>"
-           data-storage-price="<%= pricing.storageStepPrice %>"
-           data-max-storage-steps="<%= pricing.storageMaxSteps %>"
-           data-ram-upgrade="<%= pricing.ramUpgradePrice %>"
-           data-ram-downgrade="<%= pricing.ramDowngradePrice %>"
-           data-ram-options="<%= encodeURIComponent(JSON.stringify(ramOptions)) %>">
+           data-configurable="0">
     <div class="detail-media" data-reveal>
       <div class="detail-main-image" id="mainImage">
         <% if (product.image) { %>
-          <img src="/uploads/<%= product.image %>" alt="<%= product.name %>">
+          <img src="/uploads/<%= product.image %>" alt="<%= pName(product) %>">
         <% } else { %>
-          <span class="thumb-placeholder large"><strong><%= product.brand || settings.brand_name %></strong></span>
+          <span class="thumb-placeholder large is-bottle"><strong><%= product.brand || settings.brand_name %></strong></span>
         <% } %>
       </div>
       <% if (gallery && gallery.length) { %>
@@ -132,7 +100,7 @@
         <% } else if (product.stock > 0) { %>
           <span class="dot dot-low"></span> <%= t('low_stock') %> (<%= product.stock %>)
         <% } else { %>
-          <span class="dot dot-out"></span> <strong><%= t('sold') %></strong> — plus disponible
+          <span class="dot dot-out"></span> <strong><%= t('sold') %></strong>
         <% } %>
       </p>
 
@@ -142,59 +110,6 @@
             <li><span><%= t(r[0]) %></span><strong><%= r[1] %></strong></li>
           <% }) %>
         </ul>
-      <% } %>
-
-      <% if (canConfigure) { %>
-      <div class="pc-config" id="pcConfig">
-        <div class="pc-config-head">
-          <h2>Configurez votre PC</h2>
-          <p>Choisissez stockage, mémoire et logiciels — le prix se met à jour tout de suite.</p>
-        </div>
-
-        <div class="pc-trust-tip">
-          SSD : +<%= pricing.storageStepPrice %> <%= settings.currency_symbol %> par +<%= pricing.storageStepGb %> Go.
-          RAM : PC en 8 Go → 16 Go (+<%= pricing.ramUpgradePrice %> <%= settings.currency_symbol %>) · PC en 16 Go → 8 Go (−<%= pricing.ramDowngradePrice %> <%= settings.currency_symbol %>).
-          Modifiable dans l’admin. Office + antivirus offerts. Tests en visio ou main propre Montrouge 92120.
-        </div>
-
-        <fieldset class="pc-config-block">
-          <legend>Sélectionnez la capacité de stockage</legend>
-          <div class="pc-options" id="cfgStorageOpts" role="radiogroup" aria-label="Stockage"></div>
-        </fieldset>
-
-        <fieldset class="pc-config-block">
-          <legend>Sélectionnez la mémoire</legend>
-          <div class="pc-options" id="cfgRamOpts" role="radiogroup" aria-label="Mémoire RAM"></div>
-        </fieldset>
-
-        <fieldset class="pc-config-block">
-          <legend>Logiciels</legend>
-          <label class="pc-soft-row is-locked">
-            <input type="checkbox" checked disabled>
-            <span>
-              <strong>Microsoft Office (offert)</strong>
-              <em>Inclus</em>
-            </span>
-          </label>
-          <label class="pc-soft-row">
-            <input type="checkbox" id="cfgAntivirus" name="cfg_antivirus" value="1">
-            <span>
-              <strong>Antivirus</strong>
-              <em>Coût confirmé après échange</em>
-            </span>
-          </label>
-          <div class="field pc-other-soft">
-            <label for="cfgOtherSoft">Autre logiciel</label>
-            <input type="text" id="cfgOtherSoft" maxlength="120" placeholder="Ex. Adobe, AutoCAD…">
-            <p class="field-hint">Coût confirmé après échange</p>
-          </div>
-        </fieldset>
-
-        <div class="pc-config-total">
-          <span>Prix configuré</span>
-          <strong id="cfgLivePrice"><%= Number(product.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></strong>
-        </div>
-      </div>
       <% } %>
 
       <div class="quantity-row">
@@ -208,24 +123,24 @@
 
       <div class="detail-actions">
         <button type="button" class="btn btn-primary btn-block btn-lg" id="addToCart" <%= product.stock <= 0 ? 'disabled' : '' %>><%= t('add_to_cart') %></button>
-        <button type="button" class="btn btn-outline btn-block" id="makeOffer" <%= product.stock <= 0 ? 'disabled' : '' %>><%= t('make_offer') %></button>
+        <a class="btn btn-outline btn-block" href="/contact#diagnostic"><%= t('hero_diag') %></a>
         <a class="btn btn-whatsapp btn-block" target="_blank" rel="noopener"
-           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('whatsapp_prefill') + ' ' + product.name + ' (' + Number(product.price).toLocaleString('fr-FR') + ' ' + settings.currency_symbol + ')') %>">
+           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('whatsapp_prefill') + ' ' + pName(product) + ' (' + Number(product.price).toLocaleString(loc) + ' ' + settings.currency_symbol + ')') %>">
           <%= t('contact_whatsapp') %>
         </a>
       </div>
-      <p class="added-msg" id="addedMsg" hidden>✓ <%= t('add_to_cart') %></p>
+      <p class="added-msg" id="addedMsg" hidden><%= t('add_to_cart') %></p>
 
       <%- include('../partials/trust-pay', { mode: 'compact' }) %>
 
       <div class="pdp-quick-asks">
         <a class="apple-link" target="_blank" rel="noopener"
-           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('ask_photos') + ' — ' + product.name) %>"><%= t('ask_photos') %> <span aria-hidden="true">›</span></a>
+           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('ask_photos') + ' - ' + pName(product)) %>"><%= t('ask_photos') %> <span aria-hidden="true">›</span></a>
         <a class="apple-link" target="_blank" rel="noopener"
-           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('ask_info') + ' — ' + product.name) %>"><%= t('ask_info') %> <span aria-hidden="true">›</span></a>
-        <a class="apple-link" target="_blank" rel="noopener"
-           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('book_rdv') + ' — ' + product.name) %>"><%= t('book_rdv') %> <span aria-hidden="true">›</span></a>
+           href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('ask_info') + ' - ' + pName(product)) %>"><%= t('ask_info') %> <span aria-hidden="true">›</span></a>
+        <a class="apple-link" href="/contact#diagnostic"><%= t('book_rdv') %> <span aria-hidden="true">›</span></a>
       </div>
+      <p class="medical-note"><%= t('medical_disclaimer') %></p>
     </div>
   </section>
 

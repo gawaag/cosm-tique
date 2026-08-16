@@ -4,9 +4,9 @@
 
 <main>
   <div class="reserve-banner" id="reserveBanner" role="status" aria-live="polite">
-    <strong>Important :</strong>
-    <span>Validez votre réservation — sinon la demande n’est pas envoyée. Un rappel apparaît toutes les 4 minutes.</span>
-    <button type="button" class="reserve-banner-cta" id="reserveBannerFocus">Réserver maintenant</button>
+    <strong><%= t('reserve_now') %></strong>
+    <span><%= t('reserve_banner') %></span>
+    <button type="button" class="reserve-banner-cta" id="reserveBannerFocus"><%= t('submit_reservation') %></button>
   </div>
 
   <section class="page-head">

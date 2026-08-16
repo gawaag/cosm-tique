@@ -17,19 +17,23 @@
       <h3>Informations</h3>
       <div class="field-row">
         <div class="field grow">
-          <label for="name">Nom du modele *</label>
+          <label for="name">Nom (FR) *</label>
           <input type="text" id="name" name="name" required maxlength="160" value="<%= val('name') %>">
+        </div>
+        <div class="field grow">
+          <label for="name_ar">Nom (AR)</label>
+          <input type="text" id="name_ar" name="name_ar" maxlength="160" value="<%= val('name_ar') %>" dir="rtl">
         </div>
         <div class="field">
           <label for="brand">Marque</label>
           <input type="text" id="brand" name="brand" maxlength="80" value="<%= val('brand') %>">
         </div>
         <div class="field">
-          <label for="category">Categorie</label>
-          <input type="text" id="category" name="category" maxlength="60" list="categoryList" value="<%= p.category || 'PC Portable' %>" placeholder="PC Portable, PC Gamer, Telephone...">
+          <label for="category">Categorie (colon / hair / packs)</label>
+          <input type="text" id="category" name="category" maxlength="60" list="categoryList" value="<%= p.category || 'colon' %>" placeholder="colon, hair, packs">
           <datalist id="categoryList">
             <% (allCategories || []).forEach(function(c){ %><option value="<%= c.category %>"></option><% }) %>
-            <option value="PC Portable"></option><option value="PC Gamer"></option><option value="Telephone"></option><option value="Accessoire"></option>
+            <option value="colon"></option><option value="hair"></option><option value="packs"></option>
           </datalist>
         </div>
       </div>
@@ -54,18 +58,18 @@
     </div>
 
     <div class="form-section">
-      <h3>Specifications</h3>
+      <h3>Formule</h3>
       <div class="field-row">
-        <div class="field grow"><label for="cpu">Processeur</label><input type="text" id="cpu" name="cpu" maxlength="160" value="<%= val('cpu') %>"></div>
-        <div class="field"><label for="ram">RAM</label><input type="text" id="ram" name="ram" maxlength="80" value="<%= val('ram') %>"></div>
+        <div class="field grow"><label for="cpu">Format (ex. 60 gélules)</label><input type="text" id="cpu" name="cpu" maxlength="160" value="<%= val('cpu') %>"></div>
+        <div class="field"><label for="ram">Durée (ex. Cure 1 mois)</label><input type="text" id="ram" name="ram" maxlength="80" value="<%= val('ram') %>"></div>
       </div>
       <div class="field-row">
-        <div class="field grow"><label for="storage">Stockage</label><input type="text" id="storage" name="storage" maxlength="120" value="<%= val('storage') %>"></div>
-        <div class="field grow"><label for="gpu">Carte graphique</label><input type="text" id="gpu" name="gpu" maxlength="160" value="<%= val('gpu') %>"></div>
+        <div class="field grow"><label for="storage">Actifs clés</label><input type="text" id="storage" name="storage" maxlength="120" value="<%= val('storage') %>"></div>
+        <div class="field grow"><label for="gpu">Origine</label><input type="text" id="gpu" name="gpu" maxlength="160" value="<%= val('gpu') %>"></div>
       </div>
       <div class="field-row">
-        <div class="field grow"><label for="screen">Ecran</label><input type="text" id="screen" name="screen" maxlength="120" value="<%= val('screen') %>"></div>
-        <div class="field"><label for="os">Systeme</label><input type="text" id="os" name="os" maxlength="80" value="<%= val('os') %>"></div>
+        <div class="field grow"><label for="screen">Badges (séparés par |)</label><input type="text" id="screen" name="screen" maxlength="120" value="<%= val('screen') %>" placeholder="100% Naturel|Vegan|Fabriqué en France"></div>
+        <div class="field"><label for="os">Posologie</label><input type="text" id="os" name="os" maxlength="80" value="<%= val('os') %>"></div>
       </div>
     </div>
 
@@ -73,11 +77,11 @@
       <h3>Descriptions</h3>
       <div class="field-row">
         <div class="field grow"><label for="short_fr">Accroche (FR)</label><input type="text" id="short_fr" name="short_fr" maxlength="300" value="<%= val('short_fr') %>"></div>
-        <div class="field grow"><label for="short_en">Accroche (EN)</label><input type="text" id="short_en" name="short_en" maxlength="300" value="<%= val('short_en') %>"></div>
+        <div class="field grow"><label for="short_ar">Accroche (AR)</label><input type="text" id="short_ar" name="short_ar" maxlength="300" value="<%= val('short_ar') %>" dir="rtl"></div>
       </div>
       <div class="field-row">
         <div class="field grow"><label for="desc_fr">Description (FR)</label><textarea id="desc_fr" name="desc_fr" rows="3" maxlength="4000"><%= val('desc_fr') %></textarea></div>
-        <div class="field grow"><label for="desc_en">Description (EN)</label><textarea id="desc_en" name="desc_en" rows="3" maxlength="4000"><%= val('desc_en') %></textarea></div>
+        <div class="field grow"><label for="desc_ar">Description (AR)</label><textarea id="desc_ar" name="desc_ar" rows="3" maxlength="4000" dir="rtl"><%= val('desc_ar') %></textarea></div>
       </div>
     </div>
 

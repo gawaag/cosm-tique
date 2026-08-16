@@ -13,7 +13,8 @@ const Database = require('better-sqlite3');
 const SqliteStore = require('better-sqlite3-session-store')(session);
 
 const { getSettings, listCategories } = require('./src/store');
-const { resolveLang, translator, LANGS } = require('./src/i18n');
+const { resolveLang, translator, LANGS, htmlDir } = require('./src/i18n');
+const { catNavLabel, catFilterLabel, catShowcase, productName, productShort, productDesc, productBadges, productSpecLine } = require('./src/categories');
 const shopRoutes = require('./src/routes/shop');
 const adminRoutes = require('./src/routes/admin');
 
@@ -145,12 +146,21 @@ app.locals.verifyCsrf = verifyCsrf;
 app.use((req, res, next) => {
   let lang = req.cookies?.lang;
   if (!lang && req.query.lang) lang = req.query.lang;
-  lang = resolveLang(lang || parseCookie(req.headers.cookie).lang);
+  lang = resolveLang(lang || parseCookie(req.headers.cookie).lang || 'ar');
   res.locals.lang = lang;
   res.locals.langs = LANGS;
+  res.locals.dir = htmlDir(lang);
   res.locals.t = translator(lang);
   res.locals.settings = getSettings();
   res.locals.navCategories = listCategories({ activeOnly: true });
+  res.locals.catNav = (key) => catNavLabel(key, lang);
+  res.locals.catFilter = (key) => catFilterLabel(key, lang);
+  res.locals.catShow = (key) => catShowcase(key, lang);
+  res.locals.pName = (p) => productName(p, lang);
+  res.locals.pShort = (p) => productShort(p, lang);
+  res.locals.pDesc = (p) => productDesc(p, lang);
+  res.locals.pBadges = productBadges;
+  res.locals.pSpec = productSpecLine;
   res.locals.currentPath = req.path;
   res.locals.siteUrl = (process.env.SITE_URL || `${req.protocol}://${req.get('host')}`).replace(/\/+$/, '');
   res.locals.isAdmin = !!(req.session && req.session.adminId);

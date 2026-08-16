@@ -4,21 +4,27 @@
 <main>
   <section class="page-head">
     <div class="container">
-      <p class="page-kicker"><%= settings.brand_name %></p>
       <h1><%= t('contact_title') %></h1>
       <p class="page-sub"><%= t('contact_sub') %></p>
     </div>
   </section>
   <section class="section container narrow">
+    <div class="diag-card" id="diagnostic" data-reveal>
+      <h2><%= t('diag_title') %></h2>
+      <p><%= t('diag_lead') %></p>
+      <p class="diag-q"><%= t('diag_q1') %></p>
+      <div class="diag-actions">
+        <a class="btn btn-primary" href="/produits?cat=colon"><%= t('diag_colon') %></a>
+        <a class="btn btn-outline" href="/produits?cat=hair"><%= t('diag_hair') %></a>
+        <a class="btn btn-outline" href="/produits?cat=packs"><%= t('diag_respi') %></a>
+      </div>
+    </div>
+
     <div class="contact-cards">
       <a class="contact-card" data-reveal target="_blank" rel="noopener" href="https://wa.me/<%= settings.whatsapp_number %>?text=<%= encodeURIComponent(t('whatsapp_prefill')) %>">
         <span class="contact-ico wa"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2zm4.4 12.3c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 01-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5.2-.4v-.4l-.8-1.8c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.6 2.6 4 3.6.6.3 1 .4 1.4.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1z"/></svg></span>
         <div><strong>WhatsApp</strong><span>+<%= settings.whatsapp_number %></span></div>
       </a>
-      <div class="contact-card" data-reveal>
-        <span class="contact-ico"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z"/></svg></span>
-        <div><strong><%= t('about_point_pickup') %></strong><span>Montrouge (92120) · Île-de-France · <%= t('book_rdv') %></span></div>
-      </div>
       <% if (settings.contact_phone) { %>
       <a class="contact-card" data-reveal href="tel:<%= settings.contact_phone.replace(/[^+0-9]/g,'') %>">
         <span class="contact-ico"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2a1 1 0 011-.2 11 11 0 003.5.6 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.2.2 2.4.6 3.5a1 1 0 01-.2 1z"/></svg></span>
@@ -32,6 +38,7 @@
       </a>
       <% } %>
     </div>
+    <p class="medical-note"><%= t('medical_disclaimer') %></p>
     <%- include('../partials/trust-pay', { mode: 'compact' }) %>
   </section>
 </main>

@@ -39,12 +39,8 @@ function getPricing(settings) {
   };
 }
 
-function isConfigurablePc(product) {
-  const cat = String((product && product.category) || '');
-  const name = String((product && product.name) || '');
-  if (/smart|phone|t[eé]l[eé]phone|mobile/i.test(cat + ' ' + name)) return false;
-  if (/pc|ordinateur|laptop|gamer|gaming|portable|notebook/i.test(cat + ' ' + name)) return true;
-  return !!(parseGo(product && product.ram) || parseGo(product && product.storage));
+function isConfigurablePc() {
+  return false;
 }
 
 /** Base RAM effective pour le choix 8/16. */

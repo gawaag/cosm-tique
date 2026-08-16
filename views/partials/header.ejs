@@ -5,24 +5,24 @@
       <%- include('logo') %><span class="brand-name"><%= settings.brand_name %></span>
     </a>
 
-    <nav class="main-nav" id="mainNav" aria-label="<%= lang === 'en' ? 'Main' : 'Principal' %>">
+    <nav class="main-nav" id="mainNav" aria-label="<%= lang === 'ar' ? 'القائمة' : 'Principal' %>">
       <a href="/" class="<%= page === 'home' ? 'active' : '' %>"><%= t('home') %></a>
       <a href="/produits" class="<%= page === 'products' ? 'active' : '' %>"><%= t('nav_products') %></a>
       <% (navCategories || []).forEach(function(c){ %>
-        <a href="/produits?cat=<%= encodeURIComponent(c.category) %>"><%= c.category %></a>
+        <a href="/produits?cat=<%= encodeURIComponent(c.category) %>" class="<%= (typeof activeCat !== 'undefined' && activeCat === c.category) ? 'active' : '' %>"><%= catNav(c.category) %></a>
       <% }) %>
       <a href="/a-propos" class="<%= page === 'about' ? 'active' : '' %>"><%= t('nav_about') %></a>
       <a href="/contact" class="<%= page === 'contact' ? 'active' : '' %>"><%= t('nav_contact') %></a>
       <div class="nav-tools-mobile">
         <div class="lang-switch">
-          <% langs.forEach(function(l){ %><a href="/lang/<%= l %>" class="<%= lang === l ? 'active' : '' %>"><%= l.toUpperCase() %></a><% }) %>
+          <% langs.forEach(function(l){ %><a href="/lang/<%= l %>" class="<%= lang === l ? 'active' : '' %>"><%= l === 'ar' ? t('lang_ar') : t('lang_fr') %></a><% }) %>
         </div>
       </div>
     </nav>
 
     <div class="nav-tools">
       <div class="lang-switch lang-switch-desktop">
-        <% langs.forEach(function(l){ %><a href="/lang/<%= l %>" class="<%= lang === l ? 'active' : '' %>"><%= l.toUpperCase() %></a><% }) %>
+        <% langs.forEach(function(l){ %><a href="/lang/<%= l %>" class="<%= lang === l ? 'active' : '' %>"><%= l === 'ar' ? t('lang_ar') : t('lang_fr') %></a><% }) %>
       </div>
       <button class="theme-toggle" id="themeToggle" aria-label="<%= t('theme') %>" title="<%= t('theme') %>">
         <svg class="icon-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M12 17a5 5 0 100-10 5 5 0 000 10zm0 3a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm0-20a1 1 0 011 1v1a1 1 0 11-2 0V1a1 1 0 011-1zM4.2 4.2a1 1 0 011.4 0l.7.7A1 1 0 115 6.3l-.7-.7a1 1 0 010-1.4zm13.4 13.4a1 1 0 011.4 0l.7.7a1 1 0 01-1.4 1.4l-.7-.7a1 1 0 010-1.4zM0 12a1 1 0 011-1h1a1 1 0 110 2H1a1 1 0 01-1-1zm20 0a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zM4.9 17.6a1 1 0 010 1.4l-.7.7a1 1 0 01-1.4-1.4l.7-.7a1 1 0 011.4 0zM18.3 4.2a1 1 0 010 1.4l-.7.7A1 1 0 0116.2 5l.7-.7a1 1 0 011.4 0z"/></svg>
