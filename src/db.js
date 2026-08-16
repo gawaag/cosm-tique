@@ -119,8 +119,8 @@ const ATTEST_FR = "J'atteste sur l'honneur, à la date de cette commande, que je
 const ATTEST_AR = 'أُشهد على شرفي، بتاريخ هذا الطلب، أنني لا أعاني من أي مرض معدٍ في المعدة، ولا من السرطان، ولا من السكري، ولا من الضغط، ولا من غسيل الكلى، ولا من أي مرض خطير، وأنني لا أتناول أي علاج حالياً.';
 
 const DEFAULT_SETTINGS = {
-  brand_name: 'معشبات الأطلس',
-  brand_latin: 'Miichabat Al Atlas',
+  brand_name: 'معشبة الأطلس',
+  brand_latin: 'Maachabat Al Atlas',
   accent_color: '#2E8B57',
   whatsapp_number: '33744141908',
   contact_email: 'voltatech.contact@gmail.com',
@@ -130,23 +130,23 @@ const DEFAULT_SETTINGS = {
   smtp_secure: 'true',
   smtp_user: 'voltatech.contact@gmail.com',
   smtp_pass: '',
-  mail_from: 'معشبات الأطلس <voltatech.contact@gmail.com>',
+  mail_from: 'معشبة الأطلس <voltatech.contact@gmail.com>',
   resend_api_key: '',
   whatsapp_notify: '1',
   callmebot_apikey: '',
   notify_webhook_url: '',
   contact_phone: '+33 7 44 14 19 08',
-  hero_title_fr: 'Miichabat Al Atlas. Les plantes, simplement.',
-  hero_title_ar: 'معشبات الأطلس. الأعشاب، ببساطة.',
-  hero_title_en: 'معشبات الأطلس. الأعشاب، ببساطة.',
+  hero_title_fr: 'Les plantes, simplement.',
+  hero_title_ar: 'الأعشاب، ببساطة.',
+  hero_title_en: 'الأعشاب، ببساطة.',
   hero_sub_fr: 'Miel naturel, côlon, cheveux et asthme. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.',
   hero_sub_ar: 'عسل حر، راحة القولون، كثافة الشعر، ونفس مرتاح. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
   hero_sub_en: 'عسل حر، راحة القولون، كثافة الشعر، ونفس مرتاح. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
-  hero_image: 'hero-botanica.png',
+  hero_image: 'hero-honey-atlas.png',
   hero_video: '',
-  about_fr: "معشبات الأطلس (Miichabat Al Atlas) propose quatre formules naturelles : miel brut, confort du côlon, anti-chute, et confort respiratoire (asthme léger). Des packs réunissent les cures à tarif lot. Livraison 24 h à Rabat, Salé et Casablanca, 48 h dans le reste du Maroc. Paiement à la livraison. Les compléments ne se substituent pas à un traitement médical.",
-  about_ar: "معشبات الأطلس (Miichabat Al Atlas) أربع صيغ طبيعية: عسل حر، راحة القولون، مكافحة تساقط الشعر، وراحة التنفس (ربو خفيف). باقات تجمع العلاجات بسعر الجملة. توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام. المكمّلات لا تغني عن علاج طبي.",
-  about_en: "معشبات الأطلس (Miichabat Al Atlas) : miel, côlon, cheveux, asthme. Livraison Maroc 24 h / 48 h. Paiement à la livraison.",
+  about_fr: "معشبة الأطلس (Maachabat Al Atlas) propose quatre formules naturelles : miel brut, confort du côlon, anti-chute, et confort respiratoire (asthme léger). Des packs réunissent les cures à tarif lot. Livraison 24 h à Rabat, Salé et Casablanca, 48 h dans le reste du Maroc. Paiement à la livraison. Les compléments ne se substituent pas à un traitement médical.",
+  about_ar: "معشبة الأطلس (Maachabat Al Atlas) أربع صيغ طبيعية: عسل حر، راحة القولون، مكافحة تساقط الشعر، وراحة التنفس (ربو خفيف). باقات تجمع العلاجات بسعر الجملة. توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام. المكمّلات لا تغني عن علاج طبي.",
+  about_en: "معشبة الأطلس (Maachabat Al Atlas) : miel, côlon, cheveux, asthme. Livraison Maroc 24 h / 48 h. Paiement à la livraison.",
   attestation_fr: ATTEST_FR,
   attestation_ar: ATTEST_AR,
   delivery_fr: 'Paiement à la livraison. 24 h Rabat, Salé, Casablanca. 48 h dans le reste du Maroc.',
@@ -156,7 +156,7 @@ const DEFAULT_SETTINGS = {
   landing_honey_ritual: 'honey-ritual.png',
   currency: 'MAD',
   currency_symbol: 'د.م.',
-  catalog_version: 'miichabat-atlas-v1',
+  catalog_version: 'maachabat-atlas-v1',
 };
 
 const getSetting = db.prepare('SELECT value FROM settings WHERE key = ?');
@@ -175,32 +175,29 @@ function forceMoroccoCurrency() {
   if (!sym) upsertSetting.run('currency_symbol', 'د.م.');
 }
 
-function applyMiichabatBrand() {
-  const defaults = {
+function applyMaachabatBrand() {
+  const force = {
     brand_name: DEFAULT_SETTINGS.brand_name,
     brand_latin: DEFAULT_SETTINGS.brand_latin,
-    accent_color: DEFAULT_SETTINGS.accent_color,
     hero_title_fr: DEFAULT_SETTINGS.hero_title_fr,
     hero_title_ar: DEFAULT_SETTINGS.hero_title_ar,
     hero_title_en: DEFAULT_SETTINGS.hero_title_en,
-    hero_sub_fr: DEFAULT_SETTINGS.hero_sub_fr,
-    hero_sub_ar: DEFAULT_SETTINGS.hero_sub_ar,
-    hero_sub_en: DEFAULT_SETTINGS.hero_sub_en,
-    hero_image: DEFAULT_SETTINGS.hero_image,
-    hero_video: DEFAULT_SETTINGS.hero_video,
     about_fr: DEFAULT_SETTINGS.about_fr,
     about_ar: DEFAULT_SETTINGS.about_ar,
     about_en: DEFAULT_SETTINGS.about_en,
     mail_from: DEFAULT_SETTINGS.mail_from,
-    delivery_fr: DEFAULT_SETTINGS.delivery_fr,
-    delivery_ar: DEFAULT_SETTINGS.delivery_ar,
-    landing_honey_hero: DEFAULT_SETTINGS.landing_honey_hero,
-    landing_honey_ingredients: DEFAULT_SETTINGS.landing_honey_ingredients,
-    landing_honey_ritual: DEFAULT_SETTINGS.landing_honey_ritual,
+    hero_image: DEFAULT_SETTINGS.hero_image,
   };
-  // INSERT OR IGNORE — never overwrite owner edits from the atelier.
-  for (const [k, v] of Object.entries(defaults)) insertSetting.run(k, v);
+  for (const [k, v] of Object.entries(force)) upsertSetting.run(k, v);
+  db.prepare(`
+    UPDATE products SET brand = ?
+    WHERE brand IN ('معشبات الأطلس', 'Miichabat Al Atlas', 'Mi3chabat Al Atlas')
+       OR brand LIKE '%معشبات%'
+       OR brand LIKE '%Miichabat%'
+       OR brand LIKE '%Mi3chabat%'
+  `).run(DEFAULT_SETTINGS.brand_name);
 }
+const applyMiichabatBrand = applyMaachabatBrand;
 
 /** Contact boutique (email + WhatsApp France). */
 function ensureVoltaContactDefaults() {
@@ -232,7 +229,7 @@ function ensureVoltaContactDefaults() {
   }
   const mailFrom = String((getSetting.get('mail_from') || {}).value || '').trim();
   if (!mailFrom || mailFrom.includes('example.com') || mailFrom.includes('VOLTA') || mailFrom.includes('HERBALIS')) {
-    upsertSetting.run('mail_from', `معشبات الأطلس <${EMAIL}>`);
+    upsertSetting.run('mail_from', `معشبة الأطلس <${EMAIL}>`);
     changed = true;
   }
   if (changed) console.log(`[db] Contact boutique: ${EMAIL} / WhatsApp ${PHONE}`);
@@ -318,7 +315,7 @@ function seedFranceCatalog() {
 function ensureFranceCatalog() {
   forceMoroccoCurrency();
   ensureVoltaContactDefaults();
-  applyMiichabatBrand();
+  applyMaachabatBrand();
 
   const version = String((getSetting.get('catalog_version') || {}).value || '');
   const pcLeftover = db.prepare(`
@@ -333,11 +330,11 @@ function ensureFranceCatalog() {
   if (!attestFr) upsertSetting.run('attestation_fr', ATTEST_FR);
   if (!attestAr) upsertSetting.run('attestation_ar', ATTEST_AR);
 
-  if (version !== 'miichabat-atlas-v1' || total === 0 || pcLeftover > 0) {
+  if (version !== 'maachabat-atlas-v1' || total === 0 || pcLeftover > 0) {
     db.exec('DELETE FROM product_images; DELETE FROM products;');
     seedFranceCatalog();
-    upsertSetting.run('catalog_version', 'miichabat-atlas-v1');
-    console.log('[db] Catalogue معشبات الأطلس (miel / côlon / cheveux / asthme / packs) chargé');
+    upsertSetting.run('catalog_version', 'maachabat-atlas-v1');
+    console.log('[db] Catalogue معشبة الأطلس (miel / côlon / cheveux / asthme / packs) chargé');
   }
 }
 

@@ -19,43 +19,45 @@
     var heroVideo = (settings.hero_video && settings.hero_video.trim()) ? settings.hero_video.trim() : '';
     var heroImg = (settings.hero_image && settings.hero_image.trim())
       ? settings.hero_image.trim()
-      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-botanica.png');
+      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-honey-atlas.png');
     var hasVideo = !!heroVideo;
   %>
   <section class="hero<%= (hasVideo || heroImg) ? ' hero--photo' : ' hero--fallback' %>">
-    <% if (hasVideo) { %>
-      <div class="hero-media" aria-hidden="true">
-        <video
-          class="hero-bg hero-bg--video"
-          autoplay muted loop playsinline preload="auto"
-          <% if (heroImg) { %>poster="/uploads/<%= heroImg %>"<% } %>
-        >
-          <source src="/uploads/<%= heroVideo %>" type="video/mp4">
-        </video>
-      </div>
-      <div class="hero-scrim" aria-hidden="true"></div>
-    <% } else if (heroImg) { %>
-      <div class="hero-media" aria-hidden="true">
-        <img class="hero-bg" src="/uploads/<%= heroImg %>" alt="" loading="eager" fetchpriority="high">
-      </div>
-      <div class="hero-scrim" aria-hidden="true"></div>
-    <% } else { %>
-      <div class="hero-media hero-media--fallback" aria-hidden="true">
-        <div class="bottle-scene">
-          <div class="bottle bottle--a"></div>
-          <div class="bottle bottle--b"></div>
-          <div class="bottle bottle--c"></div>
-          <div class="leaf leaf--1"></div>
-          <div class="leaf leaf--2"></div>
-          <div class="capsules"></div>
+    <div class="hero-stage" data-hero-tilt aria-hidden="true">
+      <% if (hasVideo) { %>
+        <div class="hero-media">
+          <video
+            class="hero-bg hero-bg--video"
+            autoplay muted loop playsinline preload="auto"
+            <% if (heroImg) { %>poster="/uploads/<%= heroImg %>"<% } %>
+          >
+            <source src="/uploads/<%= heroVideo %>" type="video/mp4">
+          </video>
         </div>
-      </div>
-      <div class="hero-scrim" aria-hidden="true"></div>
-    <% } %>
+      <% } else if (heroImg) { %>
+        <div class="hero-media">
+          <img class="hero-bg" src="/uploads/<%= heroImg %>" alt="" loading="eager" fetchpriority="high">
+        </div>
+      <% } else { %>
+        <div class="hero-media hero-media--fallback">
+          <div class="bottle-scene">
+            <div class="bottle bottle--a"></div>
+            <div class="bottle bottle--b"></div>
+            <div class="bottle bottle--c"></div>
+            <div class="leaf leaf--1"></div>
+            <div class="leaf leaf--2"></div>
+            <div class="capsules"></div>
+          </div>
+        </div>
+      <% } %>
+      <div class="hero-scrim"></div>
+    </div>
 
-    <div class="hero-copy">
-      <p class="hero-brand"><%= settings.brand_name %> <span class="hero-brand-latin"><%= settings.brand_latin || 'Miichabat Al Atlas' %></span></p>
+    <div class="hero-copy hero-copy--top">
+      <p class="hero-brand"><%= settings.brand_name %> <span class="hero-brand-latin"><%= settings.brand_latin || 'Maachabat Al Atlas' %></span></p>
       <h1 class="hero-headline"><%= settings['hero_title_' + lang] || settings.hero_title_fr %></h1>
+    </div>
+    <div class="hero-copy hero-copy--bottom">
       <p class="hero-sub"><%= settings['hero_sub_' + lang] || settings.hero_sub_fr %></p>
       <div class="hero-links">
         <a href="/produits" class="hero-cta hero-cta--primary"><%= t('hero_cta') %></a>

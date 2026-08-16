@@ -1,5 +1,5 @@
 /* =========================================================================
-   معشبات الأطلس — Miichabat Al Atlas storefront
+   معشبة الأطلس — Maachabat Al Atlas storefront
    Forest / sage / cream / matte gold. Arabic RTL + French LTR.
    ========================================================================= */
 
@@ -192,42 +192,61 @@ h1, h2, h3 { line-height: 1.08; margin: 0 0 .45em; font-weight: 600; letter-spac
 }
 .nav-toggle span { width: 18px; height: 1.5px; background: var(--text); border-radius: 2px; }
 
-/* ---------- Hero plein ecran (photo + texte dessus) ---------- */
+/* ---------- Hero plein ecran (produits au centre, texte en bandeaux) ---------- */
 .hero {
+  --hero-rx: 0deg;
+  --hero-ry: 0deg;
   position: relative;
   min-height: calc(100svh - var(--header-h));
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: clamp(48px, 10vh, 96px) 22px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  text-align: start;
+  padding: clamp(22px, 5vh, 48px) clamp(22px, 5vw, 64px) clamp(32px, 6vh, 64px);
   overflow: hidden;
   background: #0F1A15;
   color: #f3f0e8;
+  perspective: 1600px;
+  perspective-origin: 50% 62%;
 }
-.hero-media { position: absolute; inset: 0; z-index: 0; }
+.hero-stage {
+  position: absolute;
+  inset: -8% -10%;
+  z-index: 0;
+  transform-style: preserve-3d;
+  transform: rotateY(var(--hero-ry)) rotateX(var(--hero-rx)) translateZ(0);
+  will-change: transform;
+  pointer-events: none;
+}
+.hero-media {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: hero-slide 18s ease-in-out infinite alternate;
+}
 .hero-bg {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
+  object-position: 50% 50%;
   display: block;
+  transform: translateZ(36px) scale(1.03);
 }
 img.hero-bg {
-  transform: scale(1.02);
-  animation: hero-ken 18s ease-in-out infinite alternate;
+  transform-origin: 50% 50%;
 }
 video.hero-bg--video {
-  /* Pas de zoom CSS : conserve la netteté de la vidéo */
-  transform: none;
+  transform: translateZ(20px) scale(1.02);
   animation: none;
   min-width: 100%;
   min-height: 100%;
   background: #0a0a0c;
+  object-position: 50% 62%;
 }
-@keyframes hero-ken {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.08); }
+@keyframes hero-slide {
+  from { transform: rotateY(-3.6deg) rotateX(.6deg) translate3d(-1.4%, .4%, 18px); }
+  to   { transform: rotateY(3.6deg) rotateX(-.4deg) translate3d(1.4%, -.3%, 42px); }
 }
 .hero-scrim {
   position: absolute;
@@ -235,8 +254,8 @@ video.hero-bg--video {
   z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(0,0,0,.42) 0%, rgba(0,0,0,.28) 45%, rgba(0,0,0,.62) 100%),
-    radial-gradient(900px 480px at 50% 35%, rgba(46,139,87,.22), transparent 65%);
+    linear-gradient(180deg, rgba(8,14,11,.55) 0%, rgba(8,14,11,.12) 28%, rgba(8,14,11,.04) 52%, rgba(8,14,11,.18) 72%, rgba(8,14,11,.62) 100%),
+    radial-gradient(720px 380px at 52% 70%, transparent 0%, transparent 42%, rgba(15,26,21,.18) 100%);
 }
 .hero--fallback .hero-media--fallback {
   display: flex;
@@ -247,50 +266,52 @@ video.hero-bg--video {
 .hero-copy {
   position: relative;
   z-index: 2;
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 0 8px;
+  max-width: min(36rem, 92%);
+  padding: 0;
 }
+.hero-copy--top { max-width: min(28rem, 54vw); }
+.hero-copy--bottom { max-width: min(34rem, 90%); }
 .hero-brand {
-  margin: 0 0 .2em;
-  font-size: clamp(3.4rem, 10vw, 6.4rem);
+  margin: 0 0 .15em;
+  font-size: clamp(1.7rem, 4.2vw, 2.85rem);
   font-weight: 700;
-  letter-spacing: -.05em;
-  line-height: .92;
+  letter-spacing: -.04em;
+  line-height: .95;
   color: #fff;
-  text-shadow: 0 8px 40px rgba(0,0,0,.45);
+  text-shadow: 0 6px 28px rgba(0,0,0,.5);
 }
 .hero-brand-latin {
   display: block;
-  font-size: clamp(.68rem, 1.5vw, .92rem);
-  letter-spacing: .16em;
+  font-size: clamp(.62rem, 1.2vw, .78rem);
+  letter-spacing: .18em;
   text-transform: uppercase;
   font-weight: 500;
-  opacity: .72;
-  margin-top: .28em;
+  opacity: .7;
+  margin-top: .32em;
 }
 .hero-headline {
-  font-size: clamp(1.3rem, 3vw, 2rem);
-  font-weight: 500;
-  letter-spacing: -.02em;
-  color: rgba(255,255,255,.94);
-  margin: 0 0 .4em;
-  text-shadow: 0 4px 24px rgba(0,0,0,.4);
+  font-size: clamp(1.02rem, 2vw, 1.38rem);
+  font-weight: 450;
+  letter-spacing: -.015em;
+  color: rgba(255,255,255,.9);
+  margin: 0;
+  text-shadow: 0 3px 18px rgba(0,0,0,.4);
 }
 .hero-sub {
-  font-size: clamp(1.02rem, 1.9vw, 1.28rem);
+  font-size: clamp(.95rem, 1.5vw, 1.12rem);
   color: rgba(255,255,255,.78);
-  max-width: 34ch;
-  margin: 0 auto 1.4em;
+  max-width: 38ch;
+  margin: 0 0 1.1em;
   font-weight: 400;
-  text-shadow: 0 2px 16px rgba(0,0,0,.35);
+  text-shadow: 0 2px 16px rgba(0,0,0,.4);
 }
 .hero-links {
   display: flex;
-  gap: 14px;
-  justify-content: center;
+  gap: 12px;
+  justify-content: flex-start;
   flex-wrap: wrap;
 }
+html[dir="rtl"] .hero-links { justify-content: flex-end; }
 .hero-cta {
   display: inline-flex;
   align-items: center;
@@ -424,16 +445,16 @@ body.page-home .cart-count { border-color: rgba(10,10,12,.6); }
 
 html.js .hero-copy > * {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(14px);
   animation: hero-rise .85s var(--ease-out) forwards;
 }
-html.js .hero-copy > *:nth-child(1) { animation-delay: .05s; }
-html.js .hero-copy > *:nth-child(2) { animation-delay: .14s; }
-html.js .hero-copy > *:nth-child(3) { animation-delay: .22s; }
-html.js .hero-copy > *:nth-child(4) { animation-delay: .3s; }
-html.js .hero-bg {
+html.js .hero-copy--top > *:nth-child(1) { animation-delay: .08s; }
+html.js .hero-copy--top > *:nth-child(2) { animation-delay: .16s; }
+html.js .hero-copy--bottom > *:nth-child(1) { animation-delay: .28s; }
+html.js .hero-copy--bottom > *:nth-child(2) { animation-delay: .36s; }
+html.js .hero-stage {
   opacity: 0;
-  animation: hero-fade 1.1s var(--ease-out) .05s forwards;
+  animation: hero-fade 1.2s var(--ease-out) .04s forwards;
 }
 @keyframes hero-rise { to { opacity: 1; transform: none; } }
 @keyframes hero-fade { to { opacity: 1; } }
@@ -1506,8 +1527,11 @@ html.js [data-reveal].is-visible { opacity: 1; transform: none; }
   }
   html.js [data-reveal],
   html.js .hero-copy > *,
+  html.js .hero-stage,
   html.js .hero-bg { opacity: 1 !important; transform: none !important; animation: none !important; }
-  .hero-bg { animation: none !important; }
+  .hero-bg,
+  .hero-media,
+  .hero-stage { animation: none !important; transform: none !important; }
   .bottle { animation: none !important; }
 }
 
@@ -1548,7 +1572,9 @@ html.js [data-reveal].is-visible { opacity: 1; transform: none; }
   .lang-switch-desktop { display: none; }
   .nav-tools-mobile { display: block; padding-top: 14px; }
   .header-inner { grid-template-columns: 1fr auto; }
-  .hero-brand { font-size: clamp(2.6rem, 14vw, 3.8rem); }
+  .hero-brand { font-size: clamp(1.55rem, 8vw, 2.2rem); }
+  .hero-copy--top { max-width: min(32rem, 92%); }
+  .hero-bg { object-position: 50% 48%; }
   body.page-home .main-nav {
     background: rgba(12, 12, 14, .96);
     border-bottom-color: rgba(255,255,255,.08);
@@ -1863,6 +1889,8 @@ p, .hero-sub, .page-sub, .product-tag, .lead { text-wrap: pretty; }
   height: 100%;
   position: relative;
   overflow: hidden;
+  perspective: 900px;
+  transform-style: preserve-3d;
   background:
     radial-gradient(ellipse at 50% 80%, rgba(46,139,87,.28), transparent 55%),
     linear-gradient(180deg, #1a2c22, #0F1A15);
@@ -1919,6 +1947,9 @@ p, .hero-sub, .page-sub, .product-tag, .lead { text-wrap: pretty; }
 html[dir="rtl"] .main-nav { direction: rtl; }
 html[dir="rtl"] .header-inner { direction: rtl; }
 html[dir="rtl"] .cat-chips { direction: rtl; }
+html[dir="rtl"] .hero { text-align: start; }
+html[dir="rtl"] .hero-copy--top,
+html[dir="rtl"] .hero-copy--bottom { margin-inline-start: 0; }
 [data-theme="dark"] .thumb-placeholder,
 [data-theme="dark"] .product-thumb {
   background: #121c17;
