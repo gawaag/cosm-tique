@@ -82,6 +82,7 @@ router.get('/produit/:slug', (req, res) => {
     product,
     gallery,
     page: 'products',
+    activeCat: product.category || '',
     configurable: pcConfig.isConfigurablePc(product),
     cfgBaseRam: pcConfig.parseGo(product.ram),
     cfgBaseStorage: pcConfig.parseGo(product.storage),

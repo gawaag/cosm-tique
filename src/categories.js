@@ -2,7 +2,7 @@
 
 const CATS = {
   honey: {
-    nav: { fr: 'Miel naturel', ar: 'العسل الطبيعي' },
+    nav: { fr: 'Miel', ar: 'عسل' },
     filter: { fr: 'Miel naturel', ar: 'العسل الطبيعي' },
     showcase: {
       fr: { title: 'Miel naturel', sub: 'Miel brut pour la gorge et le quotidien.' },
@@ -10,7 +10,7 @@ const CATS = {
     },
   },
   colon: {
-    nav: { fr: 'Côlon', ar: 'القولون' },
+    nav: { fr: 'Côlon', ar: 'قولون' },
     filter: { fr: 'Côlon', ar: 'القولون' },
     showcase: {
       fr: { title: 'Côlon', sub: 'Transit et confort intestinal.' },
@@ -18,7 +18,7 @@ const CATS = {
     },
   },
   hair: {
-    nav: { fr: 'Cheveux', ar: 'الشعر' },
+    nav: { fr: 'Cheveux', ar: 'شعر' },
     filter: { fr: 'Cheveux', ar: 'الشعر' },
     showcase: {
       fr: { title: 'Cheveux', sub: 'Anti-chute et densité.' },
@@ -26,7 +26,7 @@ const CATS = {
     },
   },
   respi: {
-    nav: { fr: 'Asthme', ar: 'الربو' },
+    nav: { fr: 'Asthme', ar: 'ربو' },
     filter: { fr: 'Asthme', ar: 'الربو' },
     showcase: {
       fr: { title: 'Asthme', sub: 'Confort respiratoire, en complément du suivi médical.' },
@@ -34,7 +34,7 @@ const CATS = {
     },
   },
   packs: {
-    nav: { fr: 'Packs', ar: 'الباقات' },
+    nav: { fr: 'Packs', ar: 'باقات' },
     filter: { fr: 'Packs', ar: 'الباقات' },
     showcase: {
       fr: { title: 'Packs', sub: 'Cures combinées, tarif lot.' },
