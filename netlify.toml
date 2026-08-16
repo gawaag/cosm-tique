@@ -1,0 +1,33 @@
+# Express + SQLite boutique on Netlify Functions (not a static site). Do not proxy to Render.
+
+[build]
+  command = "npm ci"
+  publish = "public"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+  AWS_LAMBDA_JS_RUNTIME = "nodejs20.x"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["better-sqlite3", "express", "ejs"]
+  included_files = [
+    "views/**",
+    "src/**",
+    "public/css/**",
+    "public/js/**"
+  ]
+
+# Express serves CSS/JS under /static/* ; publish dir is public/
+[[redirects]]
+  from = "/static/*"
+  to = "/:splat"
+  status = 200
+
+# Pages, cart, admin, API → serverless Express
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server/:splat"
+  status = 200

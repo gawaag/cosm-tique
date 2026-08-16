@@ -18,6 +18,7 @@ const { catNavLabel, catFilterLabel, catShowcase, productName, productShort, pro
 const shopRoutes = require('./src/routes/shop');
 const adminRoutes = require('./src/routes/admin');
 const { resolveAdminPath } = require('./src/admin-path');
+const { isServerless, ROOT, DATA_DIR, UPLOAD_DIR, PUBLIC_DIR, BUNDLED_UPLOADS } = require('./src/runtime-paths');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,11 +37,6 @@ if (isProd) {
   }
 }
 
-// Ensure upload/data dirs exist
-const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
-
 // Derrière un reverse proxy / hébergeur HTTPS
 if (secureCookies || isProd) app.set('trust proxy', 1);
 
@@ -48,7 +44,7 @@ if (secureCookies || isProd) app.set('trust proxy', 1);
 // View engine
 // ---------------------------------------------------------------------------
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(ROOT, 'views'));
 
 // ---------------------------------------------------------------------------
 // Security headers (Helmet + CSP with per-request nonce for inline scripts)
@@ -87,7 +83,7 @@ app.use(express.json({ limit: '200kb' }));
 // ---------------------------------------------------------------------------
 // Sessions
 // ---------------------------------------------------------------------------
-const sessionDb = new Database(path.join(__dirname, 'data', 'sessions.db'));
+const sessionDb = new Database(path.join(DATA_DIR, 'sessions.db'));
 app.use(session({
   store: new SqliteStore({
     client: sessionDb,
@@ -194,8 +190,11 @@ app.get('/lang/:lang', (req, res) => {
 // ---------------------------------------------------------------------------
 // Static assets
 // ---------------------------------------------------------------------------
-app.use('/static', express.static(path.join(__dirname, 'public'), { maxAge: isProd ? '7d' : 0 }));
+app.use('/static', express.static(PUBLIC_DIR, { maxAge: isProd ? '7d' : 0 }));
 app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: isProd ? '30d' : 0 }));
+if (isServerless && BUNDLED_UPLOADS !== UPLOAD_DIR && fs.existsSync(BUNDLED_UPLOADS)) {
+  app.use('/uploads', express.static(BUNDLED_UPLOADS, { maxAge: isProd ? '30d' : 0 }));
+}
 
 // ---------------------------------------------------------------------------
 // Routes
@@ -219,11 +218,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`\n  Boutique en ligne sur http://localhost:${PORT}`);
-  if (isProd) {
-    console.log('  Atelier: chemin secret (variable ADMIN_PATH)\n');
-  } else {
-    console.log(`  Atelier: http://localhost:${PORT}${ADMIN_PATH}\n`);
-  }
-});
+module.exports = app;
+
+if (!isServerless) {
+  app.listen(PORT, () => {
+    console.log(`\n  Boutique en ligne sur http://localhost:${PORT}`);
+    if (isProd) {
+      console.log('  Atelier: chemin secret (variable ADMIN_PATH)\n');
+    } else {
+      console.log(`  Atelier: http://localhost:${PORT}${ADMIN_PATH}\n`);
+    }
+  });
+}

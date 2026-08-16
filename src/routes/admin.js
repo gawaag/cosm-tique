@@ -8,9 +8,10 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
 const store = require('../store');
+const { UPLOAD_DIR, ensureDirs } = require('../runtime-paths');
 
 const router = express.Router();
-const UPLOAD_DIR = path.join(__dirname, '..', '..', 'public', 'uploads');
+ensureDirs();
 
 // ---------------------------------------------------------------------------
 // Upload config (images only, random names, size-limited)
