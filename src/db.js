@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config();
+
 const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
@@ -248,22 +250,32 @@ function slugifyName(str) {
 // Seed: admin from environment
 // ---------------------------------------------------------------------------
 function seedAdmin() {
+  const count = db.prepare('SELECT COUNT(*) AS c FROM admins').get().c;
+  if (count > 0) return;
   const username = (process.env.ADMIN_USERNAME || 'admin').trim() || 'admin';
   const password = process.env.ADMIN_PASSWORD || 'admin1234';
   const hash = bcrypt.hashSync(password, 12);
-  const count = db.prepare('SELECT COUNT(*) AS c FROM admins').get().c;
-  if (count === 0) {
-    db.prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)').run(username, hash);
-    console.log(`[db] Compte atelier cree: "${username}" (mot de passe depuis .env, defaut admin1234 si absent)`);
+  db.prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)').run(username, hash);
+  console.log(`[db] Compte atelier cree: "${username}" (mot de passe depuis .env)`);
+}
+
+/** Upsert the first admin row from ADMIN_USERNAME / ADMIN_PASSWORD on every start. */
+function alignAdminFromEnv() {
+  const username = (process.env.ADMIN_USERNAME || '').trim();
+  const password = process.env.ADMIN_PASSWORD;
+  if (!username || !password) return;
+  const row = db.prepare('SELECT id, username, password_hash FROM admins ORDER BY id LIMIT 1').get();
+  if (row) {
+    const passOk = bcrypt.compareSync(password, row.password_hash);
+    if (passOk && row.username === username) return;
+    const hash = bcrypt.hashSync(password, 12);
+    db.prepare('UPDATE admins SET username = ?, password_hash = ? WHERE id = ?').run(username, hash, row.id);
+    console.log('[db] Identifiants atelier alignes sur ADMIN_USERNAME / ADMIN_PASSWORD');
     return;
   }
-  if (!process.env.ADMIN_PASSWORD) return;
-  const row = db.prepare('SELECT id, username, password_hash FROM admins ORDER BY id LIMIT 1').get();
-  if (!row) return;
-  const passOk = bcrypt.compareSync(password, row.password_hash);
-  if (passOk && row.username === username) return;
-  db.prepare('UPDATE admins SET username = ?, password_hash = ? WHERE id = ?').run(username, hash, row.id);
-  console.log(`[db] Identifiants atelier alignes sur ADMIN_USERNAME / ADMIN_PASSWORD`);
+  const hash = bcrypt.hashSync(password, 12);
+  db.prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)').run(username, hash);
+  console.log(`[db] Compte atelier cree: "${username}"`);
 }
 
 // ---------------------------------------------------------------------------
@@ -330,6 +342,7 @@ function ensureFranceCatalog() {
 }
 
 seedAdmin();
+alignAdminFromEnv();
 ensureFranceCatalog();
 
 module.exports = { db, getSetting };
