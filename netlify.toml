@@ -12,12 +12,13 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["better-sqlite3", "express", "ejs"]
+  external_node_modules = ["better-sqlite3", "express", "ejs", "sql.js"]
   included_files = [
     "views/**",
     "src/**",
     "public/css/**",
-    "public/js/**"
+    "public/js/**",
+    "node_modules/sql.js/dist/sql-wasm.wasm"
   ]
 
 # Express serves CSS/JS under /static/* ; publish dir is public/

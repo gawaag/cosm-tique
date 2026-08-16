@@ -24,7 +24,8 @@
     "helmet": "^8.0.0",
     "multer": "^2.2.0",
     "nodemailer": "^9.0.5",
-    "serverless-http": "^4.0.0"
+    "serverless-http": "^4.0.0",
+    "sql.js": "^1.14.2"
   },
   "allowScripts": {
     "better-sqlite3@12.11.1": true

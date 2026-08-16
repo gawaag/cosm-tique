@@ -9,9 +9,6 @@ const express = require('express');
 const helmet = require('helmet');
 const session = require('express-session');
 const rateLimit = require('express-rate-limit');
-const Database = require('better-sqlite3');
-const SqliteStore = require('better-sqlite3-session-store')(session);
-
 const { getSettings, listCategories } = require('./src/store');
 const { resolveLang, translator, LANGS, htmlDir, formatReviewDate } = require('./src/i18n');
 const { catNavLabel, catFilterLabel, catShowcase, productName, productShort, productDesc, productBadges, productSpecLine } = require('./src/categories');
@@ -19,6 +16,8 @@ const shopRoutes = require('./src/routes/shop');
 const adminRoutes = require('./src/routes/admin');
 const { resolveAdminPath } = require('./src/admin-path');
 const { isServerless, ROOT, DATA_DIR, UPLOAD_DIR, PUBLIC_DIR, BUNDLED_UPLOADS } = require('./src/runtime-paths');
+const { openSqlite } = require('./src/sqlite');
+const SqlSessionStore = require('./src/sql-session-store')(session);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -83,11 +82,11 @@ app.use(express.json({ limit: '200kb' }));
 // ---------------------------------------------------------------------------
 // Sessions
 // ---------------------------------------------------------------------------
-const sessionDb = new Database(path.join(DATA_DIR, 'sessions.db'));
+const sessionDb = openSqlite(path.join(DATA_DIR, 'sessions.db'));
 app.use(session({
-  store: new SqliteStore({
+  store: new SqlSessionStore({
     client: sessionDb,
-    expired: { clear: true, intervalMs: 15 * 60 * 1000 },
+    expired: { clear: !isServerless, intervalMs: 15 * 60 * 1000 },
   }),
   name: 'sid',
   secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),

@@ -4,13 +4,13 @@ require('dotenv').config();
 
 const path = require('path');
 const fs = require('fs');
-const Database = require('better-sqlite3');
 const bcrypt = require('bcryptjs');
 const { DATA_DIR, ensureDirs } = require('./runtime-paths');
+const { openSqlite } = require('./sqlite');
 
 ensureDirs();
 
-const db = new Database(path.join(DATA_DIR, 'app.db'));
+const db = openSqlite(path.join(DATA_DIR, 'app.db'));
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 

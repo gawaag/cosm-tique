@@ -2,6 +2,7 @@
 
 const serverless = require('serverless-http');
 const { hydrateFromBlobs, persistToBlobs } = require('../../src/netlify-persist');
+const { ensureReady } = require('../../src/sqlite');
 
 let cachedHandler;
 
@@ -19,6 +20,7 @@ function normalizeEvent(event) {
 
 async function getHandler() {
   await hydrateFromBlobs();
+  await ensureReady();
   const app = require('../../server');
   return serverless(app, {
     binary: ['image/*', 'font/*', 'application/octet-stream'],
