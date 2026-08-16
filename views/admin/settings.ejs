@@ -10,7 +10,7 @@
     <h3>Identité</h3>
     <div class="field-row">
       <div class="field grow"><label for="brand_name">Nom de la boutique (arabe)</label><input type="text" id="brand_name" name="brand_name" value="<%= settings.brand_name %>" dir="rtl"></div>
-      <div class="field grow"><label for="brand_latin">Nom latin</label><input type="text" id="brand_latin" name="brand_latin" value="<%= settings.brand_latin || 'Miichabat Al Atlas' %>"></div>
+      <div class="field grow"><label for="brand_latin">Nom latin</label><input type="text" id="brand_latin" name="brand_latin" value="<%= settings.brand_latin || 'Maachabat Al Atlas' %>"></div>
       <div class="field"><label for="accent_color">Couleur principale</label><input type="color" id="accent_color" name="accent_color" value="<%= settings.accent_color %>"></div>
     </div>
     <div class="field-row">
@@ -22,7 +22,7 @@
   <div class="form-section">
     <h3>Contact</h3>
     <div class="field-row">
-      <div class="field"><label for="whatsapp_number">Numéro WhatsApp <span class="muted">(format international, ex: 33600000000)</span></label><input type="text" id="whatsapp_number" name="whatsapp_number" value="<%= settings.whatsapp_number %>"></div>
+      <div class="field"><label for="whatsapp_number">Numéro WhatsApp <span class="muted">(format wa.me, ex: 212619915492)</span></label><input type="text" id="whatsapp_number" name="whatsapp_number" value="<%= settings.whatsapp_number %>"></div>
       <div class="field"><label for="contact_phone">Téléphone affiché</label><input type="text" id="contact_phone" name="contact_phone" value="<%= settings.contact_phone %>"></div>
     </div>
     <div class="field"><label for="contact_email">Email de contact (affiché sur le site)</label><input type="email" id="contact_email" name="contact_email" value="<%= settings.contact_email %>"></div>

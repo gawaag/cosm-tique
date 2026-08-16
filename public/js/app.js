@@ -104,6 +104,30 @@
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
     }
+    var drops = document.querySelectorAll('.nav-dropdown');
+    drops.forEach(function (drop) {
+      var trigger = drop.querySelector('.nav-drop-trigger');
+      if (!trigger) return;
+      trigger.addEventListener('click', function (e) {
+        if (window.matchMedia('(max-width: 640px)').matches) {
+          e.preventDefault();
+          var open = !drop.classList.contains('open');
+          drops.forEach(function (d) { d.classList.remove('open'); });
+          if (open) drop.classList.add('open');
+          trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (window.matchMedia('(max-width: 640px)').matches) return;
+      drops.forEach(function (drop) {
+        if (!drop.contains(e.target)) {
+          drop.classList.remove('open');
+          var t = drop.querySelector('.nav-drop-trigger');
+          if (t) t.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
   }
 
   // ---- Product detail page ----
@@ -599,6 +623,50 @@
     if (play && play.catch) play.catch(function () { /* autoplay bloqué */ });
   }
 
+  // ---- Hero 3D tilt (pointer) — CSS orbit continues on .hero-media ----
+  function initHeroTilt() {
+    var stage = document.querySelector('[data-hero-tilt]');
+    var hero = stage && stage.closest('.hero');
+    if (!stage || !hero) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (reduce || !fine) return;
+
+    var rx = 0, ry = 0, tx = 0, ty = 0, ticking = false;
+    function apply() {
+      ticking = false;
+      rx += (tx - rx) * 0.1;
+      ry += (ty - ry) * 0.1;
+      stage.style.setProperty('--hero-rx', rx.toFixed(3) + 'deg');
+      stage.style.setProperty('--hero-ry', ry.toFixed(3) + 'deg');
+      if (Math.abs(tx - rx) > 0.02 || Math.abs(ty - ry) > 0.02) {
+        ticking = true;
+        requestAnimationFrame(apply);
+      }
+    }
+    function onMove(e) {
+      var r = hero.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      ty = px * 6.5;
+      tx = py * -3.5;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(apply);
+      }
+    }
+    function onLeave() {
+      tx = 0;
+      ty = 0;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(apply);
+      }
+    }
+    hero.addEventListener('pointermove', onMove);
+    hero.addEventListener('pointerleave', onLeave);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     initTheme();
     initNav();
@@ -609,6 +677,7 @@
     initClearCart();
     initReveal();
     initHeroVideo();
+    initHeroTilt();
     initReservationReminder();
   });
 })();

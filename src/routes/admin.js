@@ -432,7 +432,7 @@ router.post('/personnel/test-whatsapp', requireAuth, csrf, async (req, res) => {
   const fake = {
     id: 0,
     type: 'reservation',
-    customer_name: 'Test معشبات الأطلس',
+    customer_name: 'Test معشبة الأطلس',
     phone: settings.whatsapp_number || '',
     email: settings.notification_email || '',
     message: 'Message de test depuis l’espace Personnel.',

@@ -1,6 +1,6 @@
 'use strict';
 
-const BRAND = 'معشبات الأطلس';
+const BRAND = 'معشبة الأطلس';
 
 /** 4 produits + packs. Prix MAD. */
 module.exports = [
@@ -71,14 +71,14 @@ module.exports = [
     image: 'p-respi-calm.png', featured: 0, active: 1, sort_order: 6,
   },
   {
-    name: 'Pack Miichabat Al Atlas complet', name_ar: 'باقة معشبات الأطلس الكاملة',
+    name: 'Pack Maachabat Al Atlas complet', name_ar: 'باقة معشبة الأطلس الكاملة',
     brand: BRAND, category: 'packs', price: 699, old_price: 856, stock: 18,
     cpu: '4 formules', ram: 'Cure 30 jours', storage: 'عسل + قولون + شعر + ربو',
     gpu: 'المغرب', screen: '100% Naturel|Vegan', os: 'Livret de posologie dans le colis',
     short_fr: 'Les 4 produits, tarif famille.',
     short_ar: 'المنتجات الأربعة، سعر العائلة.',
-    desc_fr: 'Les quatre formules معشبات الأطلس : miel, côlon, cheveux, asthme. Économie vs à l\'unité. Paiement à la livraison.',
-    desc_ar: 'الصيغ الأربع ديال معشبات الأطلس: عسل، قولون، شعر، ربو. أوفر من الشراء فرادى. الدفع عند الاستلام.',
+    desc_fr: 'Les quatre formules معشبة الأطلس : miel, côlon, cheveux, asthme. Économie vs à l\'unité. Paiement à la livraison.',
+    desc_ar: 'الصيغ الأربع ديال معشبة الأطلس: عسل، قولون، شعر، ربو. أوفر من الشراء فرادى. الدفع عند الاستلام.',
     image: 'p-pack-cure.png', featured: 1, active: 1, sort_order: 7,
   },
 ];

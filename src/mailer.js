@@ -53,11 +53,11 @@ function fromAddress(settings, smtpUser) {
   if (resendKey(settings)) {
     // Compte Resend gratuit : expéditeur = onboarding@resend.dev (domaine non vérifié).
     if (custom && /resend\.dev/i.test(custom)) return custom;
-    return `${settings.brand_name || 'معشبات الأطلس'} <onboarding@resend.dev>`;
+    return `${settings.brand_name || 'معشبة الأطلس'} <onboarding@resend.dev>`;
   }
   if (custom) return custom;
   if (smtpUser) return `"${settings.brand_name || 'Boutique'}" <${smtpUser}>`;
-  return `${settings.brand_name || 'معشبات الأطلس'} <voltatech.contact@gmail.com>`;
+  return `${settings.brand_name || 'معشبة الأطلس'} <voltatech.contact@gmail.com>`;
 }
 
 function buildContent(reservation, settings) {

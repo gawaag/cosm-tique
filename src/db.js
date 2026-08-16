@@ -122,7 +122,7 @@ const DEFAULT_SETTINGS = {
   brand_name: 'معشبة الأطلس',
   brand_latin: 'Maachabat Al Atlas',
   accent_color: '#2E8B57',
-  whatsapp_number: '33744141908',
+  whatsapp_number: '212619915492',
   contact_email: 'voltatech.contact@gmail.com',
   notification_email: 'voltatech.contact@gmail.com',
   smtp_host: '',
@@ -135,7 +135,7 @@ const DEFAULT_SETTINGS = {
   whatsapp_notify: '1',
   callmebot_apikey: '',
   notify_webhook_url: '',
-  contact_phone: '+33 7 44 14 19 08',
+  contact_phone: '+212 6 19 91 54 92',
   hero_title_fr: 'Les plantes, simplement.',
   hero_title_ar: 'الأعشاب، ببساطة.',
   hero_title_en: 'الأعشاب، ببساطة.',
@@ -199,22 +199,40 @@ function applyMaachabatBrand() {
 }
 const applyMiichabatBrand = applyMaachabatBrand;
 
-/** Contact boutique (email + WhatsApp France). */
+/** Contact boutique (email Volta + WhatsApp Maroc). Never re-apply France numbers. */
 function ensureVoltaContactDefaults() {
   const EMAIL = 'voltatech.contact@gmail.com';
-  const WA = '33744141908';
-  const PHONE = '+33 7 44 14 19 08';
-  const targets = {
-    notification_email: EMAIL,
-    contact_email: EMAIL,
-    whatsapp_number: WA,
-    contact_phone: PHONE,
-  };
+  const WA = '212619915492';
+  const PHONE = '+212 6 19 91 54 92';
+  const staleWa = new Set([
+    '', '212600000000', '33600000000', '33744141908',
+  ]);
+  const stalePhone = new Set([
+    '', '+33 6 00 00 00 00', '+212 6 00 00 00 00', '+33 7 44 14 19 08',
+  ]);
   const placeholders = new Set([
     '', 'contact@example.com', '212600000000', '33600000000',
     '+33 6 00 00 00 00', '+212 6 00 00 00 00',
   ]);
   let changed = false;
+
+  const curWa = String((getSetting.get('whatsapp_number') || {}).value || '').trim();
+  const waDigits = curWa.replace(/[^0-9]/g, '');
+  if (curWa !== WA && (!curWa || staleWa.has(curWa) || waDigits.startsWith('33'))) {
+    upsertSetting.run('whatsapp_number', WA);
+    changed = true;
+  }
+  const curPhone = String((getSetting.get('contact_phone') || {}).value || '').trim();
+  const phoneDigits = curPhone.replace(/[^0-9]/g, '');
+  if (curPhone !== PHONE && (!curPhone || stalePhone.has(curPhone) || phoneDigits.startsWith('33'))) {
+    upsertSetting.run('contact_phone', PHONE);
+    changed = true;
+  }
+
+  const targets = {
+    notification_email: EMAIL,
+    contact_email: EMAIL,
+  };
   for (const [key, want] of Object.entries(targets)) {
     const cur = String((getSetting.get(key) || {}).value || '').trim();
     if (!cur || placeholders.has(cur)) {
