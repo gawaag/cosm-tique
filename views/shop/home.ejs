@@ -54,7 +54,7 @@
     <% } %>
 
     <div class="hero-copy">
-      <p class="hero-brand"><%= settings.brand_name %></p>
+      <p class="hero-brand"><%= settings.brand_name %> <span class="hero-brand-latin"><%= settings.brand_latin || 'Miichabat Al Atlas' %></span></p>
       <h1 class="hero-headline"><%= settings['hero_title_' + lang] || settings.hero_title_fr %></h1>
       <p class="hero-sub"><%= settings['hero_sub_' + lang] || settings.hero_sub_fr %></p>
       <div class="hero-links">
@@ -139,7 +139,8 @@
             <p class="review-text"><%= r.text %></p>
             <footer class="review-meta">
               <strong><%= r.name %></strong>
-              <% if (r.city) { %><span> - <%= r.city %></span><% } %>
+              <% if (r.city) { %><span> · <%= r.city %></span><% } %>
+              <% if (r.date) { %><time datetime="<%= r.date %>"><%= formatReviewDate(r.date) %></time><% } %>
             </footer>
           </blockquote>
         <% }) %>

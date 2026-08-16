@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= title %> | <%= settings.brand_name %></title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
   <style>
     :root { --text:#1d1d1f; --muted:#6e6e73; --border:#d2d2d7; --accent:<%= settings.accent_color || '#0071e3' %>; }
     * { box-sizing: border-box; }
@@ -34,7 +35,7 @@
 </head>
 <body>
   <div class="toolbar no-print">
-    <a href="/admin/personnel">Retour</a>
+    <a href="<%= adminBase %>/personnel">Retour</a>
     <button type="button" class="primary" onclick="window.print()">Imprimer / PDF</button>
   </div>
 

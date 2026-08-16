@@ -1,22 +1,23 @@
 <%- include('../partials/head', { bodyClass: 'login-body' }) %>
+<% var adminBase = (typeof adminBase !== 'undefined' && adminBase) ? adminBase : ''; %>
 <div class="login-wrap">
   <div class="login-card">
-    <a href="/" class="login-brand"><%- include('../partials/logo') %><span class="brand-name"><%= settings.brand_name %></span></a>
-    <h1>Espace administrateur</h1>
+    <a href="/" class="login-brand" referrerpolicy="no-referrer"><%- include('../partials/logo') %><span class="brand-name"><%= settings.brand_name %></span></a>
+    <h1>Espace privé</h1>
     <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
-    <form method="post" action="/admin/login">
+    <form method="post" action="<%= adminBase %>/login" autocomplete="on">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <div class="field">
         <label for="username">Identifiant</label>
-        <input type="text" id="username" name="username" required autofocus autocomplete="username">
+        <input type="text" id="username" name="username" required autofocus autocomplete="username" maxlength="80">
       </div>
       <div class="field">
         <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="password" required autocomplete="current-password">
+        <input type="password" id="password" name="password" required autocomplete="current-password" maxlength="200">
       </div>
       <button type="submit" class="btn btn-primary btn-block btn-lg">Se connecter</button>
     </form>
-    <a href="/" class="login-back">← Retour au site</a>
+    <a href="/" class="login-back" referrerpolicy="no-referrer">← Retour au site</a>
   </div>
 </div>
 <script nonce="<%= nonce %>">

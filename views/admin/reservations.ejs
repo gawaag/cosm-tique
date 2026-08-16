@@ -8,7 +8,7 @@
 
 <section class="admin-card">
   <div class="admin-card-head"><h2>Toutes les réservations</h2>
-    <a class="btn btn-outline btn-sm" href="/admin/reservations/imprimer" target="_blank" rel="noopener">Imprimer</a>
+    <a class="btn btn-outline btn-sm" href="<%= adminBase %>/reservations/imprimer" target="_blank" rel="noopener">Imprimer</a>
   </div>
 
   <% if (!reservations.length) { %>
@@ -48,7 +48,7 @@
         <% if (r.message) { %><blockquote class="res-message"><%= r.message %></blockquote><% } %>
 
         <footer class="res-card-foot">
-          <form method="post" action="/admin/reservations/<%= r.id %>/statut" class="inline-form status-form">
+          <form method="post" action="<%= adminBase %>/reservations/<%= r.id %>/statut" class="inline-form status-form">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <select name="status" onchange="this.form.submit()">
               <option value="nouveau" <%= r.status==='nouveau'?'selected':'' %>>Nouveau</option>
@@ -56,7 +56,7 @@
               <option value="annule" <%= r.status==='annule'?'selected':'' %>>Annulé</option>
             </select>
           </form>
-          <form method="post" action="/admin/reservations/<%= r.id %>/supprimer" class="inline-form js-confirm" data-confirm="Supprimer cette réservation ?">
+          <form method="post" action="<%= adminBase %>/reservations/<%= r.id %>/supprimer" class="inline-form js-confirm" data-confirm="Supprimer cette réservation ?">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit" class="btn btn-ghost btn-sm danger">Supprimer</button>
           </form>

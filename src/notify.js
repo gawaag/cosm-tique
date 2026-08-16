@@ -7,7 +7,7 @@ function fmt(n, sym) {
 }
 
 function buildWhatsAppText(reservation, settings) {
-  const sym = settings.currency_symbol || '€';
+  const sym = settings.currency_symbol || 'د.م.';
   const typeLabel = reservation.type === 'offer' ? 'OFFRE' : 'RÉSERVATION';
   const lines = [
     `🔔 Nouvelle ${typeLabel} — ${settings.brand_name || 'Boutique'}`,

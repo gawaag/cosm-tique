@@ -1,5 +1,20 @@
 <%- include('../partials/admin-header') %>
 
+<div class="admin-hub">
+  <a class="admin-hub-card" href="<%= adminBase %>/produits">
+    <strong>Produits</strong>
+    <span>Prix, stock, noms FR/AR, photos, catégories</span>
+  </a>
+  <a class="admin-hub-card" href="<%= adminBase %>/parametres">
+    <strong>Paramètres du site</strong>
+    <span>Titre, textes, WhatsApp, attestation, livraison</span>
+  </a>
+  <a class="admin-hub-card" href="<%= adminBase %>/photos">
+    <strong>Photos</strong>
+    <span>Bandeau d’accueil et visuels de la page miel</span>
+  </a>
+</div>
+
 <div class="stat-cards">
   <div class="stat-card">
     <span class="stat-label">Produits</span>
@@ -23,7 +38,7 @@
   <section class="admin-card">
     <div class="admin-card-head">
       <h2>Produits</h2>
-      <a href="/admin/produits/nouveau" class="btn btn-primary btn-sm">+ Nouveau produit</a>
+      <a href="<%= adminBase %>/produits/nouveau" class="btn btn-primary btn-sm">+ Nouveau produit</a>
     </div>
     <div class="table-scroll">
       <table class="admin-table">
@@ -35,14 +50,14 @@
               <td><%= p.name %></td>
               <td><span class="stock-pill <%= p.stock>0?'ok':'out' %>"><%= p.stock %></span></td>
               <td><%= Number(p.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></td>
-              <td class="cell-actions"><a href="/admin/produits/<%= p.id %>/modifier" class="icon-btn" title="Modifier">✎</a></td>
+              <td class="cell-actions"><a href="<%= adminBase %>/produits/<%= p.id %>/modifier" class="icon-btn" title="Modifier">✎</a></td>
             </tr>
           <% }) %>
           <% if (!products.length) { %><tr><td colspan="5" class="empty-cell">Aucun produit.</td></tr><% } %>
         </tbody>
       </table>
     </div>
-    <a href="/admin/produits" class="card-foot-link">Voir tous les produits →</a>
+    <a href="<%= adminBase %>/produits" class="card-foot-link">Voir tous les produits →</a>
   </section>
 
   <section class="admin-card">
@@ -59,7 +74,7 @@
       <% }) %>
       <% if (!reservations.length) { %><li class="empty-cell">Aucune reservation.</li><% } %>
     </ul>
-    <a href="/admin/reservations" class="card-foot-link">Voir toutes les reservations →</a>
+    <a href="<%= adminBase %>/reservations" class="card-foot-link">Voir toutes les reservations →</a>
   </section>
 </div>
 

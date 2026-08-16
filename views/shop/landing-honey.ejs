@@ -1,0 +1,205 @@
+<%
+  var honeyHero = (settings.landing_honey_hero && String(settings.landing_honey_hero).trim()) || 'honey-hero.png';
+  var honeyIngredients = (settings.landing_honey_ingredients && String(settings.landing_honey_ingredients).trim()) || 'honey-ingredients.png';
+  var honeyRitual = (settings.landing_honey_ritual && String(settings.landing_honey_ritual).trim()) || 'honey-ritual.png';
+%>
+<%- include('../partials/head', {
+  title: 'عسل الشفاء للجهاز التنفسي',
+  metaDesc: 'عسل طبيعي. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
+  ogImage: '/uploads/' + honeyHero,
+  ogType: 'product'
+}) %>
+<header class="lh-top">
+  <a href="/" class="lh-brand">
+    <%- include('../partials/logo') %>
+    <span>
+      <%= settings.brand_name %>
+      <small><%= settings.brand_latin || 'Miichabat Al Atlas' %></small>
+    </span>
+  </a>
+  <a href="#order" class="lh-top-cta">اطلب الآن</a>
+</header>
+
+<main class="lh">
+  <section class="lh-hero">
+    <div class="lh-hero-media">
+      <img src="/uploads/<%= honeyHero %>" alt="عسل الشفاء للجهاز التنفسي" width="1600" height="1200">
+    </div>
+    <div class="lh-hero-copy">
+      <p class="lh-kicker">صيغة تنفسية طبيعية</p>
+      <h1>عسل الشفاء للجهاز التنفسي</h1>
+      <p class="lh-lead">عسل حر مع حبة البركة، الزعتر والزنجبيل. لراحة الحلق، السعال الموسمي، والشعور بضيق التنفس. مكمل غذائي، ليس دواء ربو.</p>
+      <ul class="lh-perks">
+        <li>توصيل 24 ساعة الرباط سلا البيضاء</li>
+        <li>باقي المدن 48 ساعة</li>
+        <li>الدفع عند الاستلام</li>
+      </ul>
+      <div class="lh-price">
+        <strong>249 د.م</strong>
+        <s>349 د.م</s>
+        <span>علبة 250 غ</span>
+      </div>
+      <a href="#order" class="lh-cta">دير نية و اطلب دابا</a>
+    </div>
+  </section>
+
+  <section class="lh-bar" aria-label="ضمانات">
+    <p>24س الرباط سلا البيضاء</p>
+    <p>48س باقي المدن</p>
+    <p>الدفع عند الاستلام</p>
+    <p>تركيب واضح</p>
+  </section>
+
+  <section class="lh-need">
+    <div class="lh-need-copy">
+      <h2>الحلق، السعال، وضيق النفس كيعطلوك النهار والليل.</h2>
+      <p>هاد العسل ماشي سحر. هو خليط كثيف كيتاخد بالملعقة، باش تهدّ الحلق وترافق الجهاز التنفسي خصوصاً في البرد، الغبار، وموسم الحساسية. إلا كان عندك ربو، كمّل البخاخ ديالك وما تستبدلوش.</p>
+    </div>
+    <ul class="lh-need-list">
+      <li>
+        <strong>سعال ناشف أو بلغم</strong>
+        <span>العسل والزعتر كيرطبوا الحلق وكيساعدوا على الإحساس بالراحة.</span>
+      </li>
+      <li>
+        <strong>ضيق خفيف في التنفس</strong>
+        <span>حبة البركة والزنجبيل في صيغة يومية، بعيداً على نوبة الربو الحادة.</span>
+      </li>
+      <li>
+        <strong>حلق متهيّج من البرد أو الغبار</strong>
+        <span>ملعقة في المساء، أو في شاي دافئ بلا غليان باش ما يتفسدش العسل.</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="lh-ings">
+    <figure>
+      <img src="/uploads/<%= honeyIngredients %>" alt="مكوّنات عسل الشفاء: عسل، حبة البركة، زعتر، زنجبيل" width="1600" height="900">
+    </figure>
+    <div>
+      <h2>أربعة مكوّنات، بلا سكر مضاف.</h2>
+      <ol class="lh-ing-list">
+        <li><strong>عسل حر</strong> قاعدة كثيفة، تهدّئ الحلق وتعطي طاقة طبيعية.</li>
+        <li><strong>حبة البركة</strong> بذور الحبة السوداء، استعمال تقليدي للمناعة والتنفس.</li>
+        <li><strong>الزعتر</strong> نبتة معروفة لراحة الشعب والحلق.</li>
+        <li><strong>الزنجبيل</strong> دفء خفيف، مفيد بعد البرد أو الوجبة الثقيلة.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="lh-ritual">
+    <div>
+      <h2>كيف تستعملو</h2>
+      <ol class="lh-steps">
+        <li>ملعقة صغيرة في الصباح على الريق، أو قبل النوم.</li>
+        <li>قدر تخلطها في شاي دافئ، ماشي مغلي.</li>
+        <li>علبة 250 غ تكفي تقريباً 3 إلى 4 أسابيع باستعمال يومي.</li>
+      </ol>
+      <p class="lh-note">ما تعطيش العسل للأطفال أقل من سنة. الحوامل وأصحاب السكري: سؤال الطبيب.</p>
+    </div>
+    <figure>
+      <img src="/uploads/<%= honeyRitual %>" alt="ملعقة عسل في شاي عشبي دافئ" width="1200" height="900">
+    </figure>
+  </section>
+
+  <section class="lh-quotes">
+    <h2>شنو قالو اللي جرّبوه</h2>
+    <div class="lh-quote-grid">
+      <blockquote>
+        <p>السعال ديال الليل نقص من الأسبوع الثاني. المذاق قوي شوية بسبب حبة البركة، ولكن كيتحمّل.</p>
+        <footer>أمينة · سلا · <time datetime="2026-08-12">12 غشت 2026</time></footer>
+      </blockquote>
+      <blockquote>
+        <p>كنستعملو مع البخاخ ديال الربو، ما عوّضتو. الحلق ولي أقل حرقة من بعد الغبار.</p>
+        <footer>يوسف · الدار البيضاء · <time datetime="2026-08-09">9 غشت 2026</time></footer>
+      </blockquote>
+      <blockquote>
+        <p>الطلب وصل في يومين، الدفع مع الموصّل. العلبة زجاجية والكمية معقولة. معشبات الأطلس.</p>
+        <footer>ليلى · فاس · <time datetime="2026-07-21">21 يوليوز 2026</time></footer>
+      </blockquote>
+      <blockquote>
+        <p>العسل فالمساء والحلق ولي أهدى. بني ملال 48 ساعة. الدفع عند الاستلام.</p>
+        <footer>سمية · بني ملال · <time datetime="2026-04-27">27 أبريل 2026</time></footer>
+      </blockquote>
+      <blockquote>
+        <p>طلبت من أكدال، التوصيل 24 ساعة كما مكتوب. العلبة أنيقة والجرعة مكتوبة عربي وفرنسي.</p>
+        <footer>غيثة · الرباط · <time datetime="2026-02-16">16 فبراير 2026</time></footer>
+      </blockquote>
+      <blockquote>
+        <p>كازا عين السبع، الكولّي مع العشية. الثمن بالدرهم واضح.</p>
+        <footer>إدريس · الدار البيضاء · <time datetime="2026-02-05">5 فبراير 2026</time></footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="lh-order" id="order">
+    <div class="lh-order-card">
+      <h2>اطلب عسل الشفاء</h2>
+      <p class="lh-order-lead">التوصيل: 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. كتسوّل غير ملي يوصل الكولّي.</p>
+      <div class="lh-offer">
+        <span>علبة واحدة 250 غ</span>
+        <strong>249 د.م</strong>
+        <s>349 د.م</s>
+      </div>
+      <% if (typeof errors !== 'undefined' && errors.length) { %>
+        <div class="lh-errors"><% errors.forEach(function(e){ %><p><%= e %></p><% }) %></div>
+      <% } %>
+      <form method="post" action="/products/aasl-alshfa-lljhaz-altnfsy" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="hp-field" aria-hidden="true">
+          <label>Ne pas remplir<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+        <label>
+          الاسم الكامل
+          <input type="text" name="customer_name" required maxlength="120" value="<%= (form && form.customer_name) || '' %>" autocomplete="name">
+        </label>
+        <label>
+          رقم الهاتف
+          <input type="tel" name="phone" required maxlength="40" value="<%= (form && form.phone) || '' %>" autocomplete="tel" inputmode="tel">
+        </label>
+        <label>
+          المدينة
+          <input type="text" name="city" required maxlength="80" value="<%= (form && form.city) || '' %>" autocomplete="address-level2">
+        </label>
+        <label>
+          الكمية
+          <select name="qty">
+            <option value="1" <%= form && form.qty === '2' ? '' : 'selected' %>>1 علبة - 249 د.م</option>
+            <option value="2" <%= form && form.qty === '2' ? 'selected' : '' %>>2 علب - 449 د.م</option>
+          </select>
+        </label>
+        <%- include('../partials/attestation') %>
+        <button type="submit" class="lh-cta lh-cta-block">أكّد الطلب - الدفع عند الاستلام</button>
+        <p class="lh-fine">كنأكدوا معاك الهاتف قبل الإرسال. بلا التزام بالبطاقة.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="lh-faq">
+    <h2>أسئلة قصيرة</h2>
+    <details open>
+      <summary>واش كيعوّض دواء الربو؟</summary>
+      <p>لا. عسل الشفاء مكمل غذائي. نوبة الربو كتحتاج البروتوكول الطبي ديالك.</p>
+    </details>
+    <details>
+      <summary>شنو هي مدة التوصيل؟</summary>
+      <p>24 ساعة الرباط، سلا والبيضاء. 48 ساعة باقي المدن.</p>
+    </details>
+    <details>
+      <summary>قدر نرفض الكولّي؟</summary>
+      <p>نعم، كتسوّل غير إلا استلمتي. إلا ما عجبكش المذاق خلال 7 أيام، رجع العلبة.</p>
+    </details>
+  </section>
+</main>
+
+<footer class="lh-foot">
+  <p>© <%= new Date().getFullYear() %> <%= settings.brand_name %></p>
+  <p class="lh-disc">المكملات الغذائية لا تغني عن غذاء متنوع ولا عن علاج طبي. في حال الربو أو مرض مزمن أو الحمل، اطلب مشورة مختص.</p>
+  <p><a href="/">المتجر</a> · <a href="/confidentialite"><%= t('footer_privacy') %></a></p>
+</footer>
+
+<div class="lh-sticky">
+  <span>249 د.م · 24س / 48س</span>
+  <a href="#order">اطلب دابا</a>
+</div>
+</body>
+</html>

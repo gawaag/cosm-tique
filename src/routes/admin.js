@@ -36,10 +36,13 @@ const upload = multer({
 // ---------------------------------------------------------------------------
 function requireAuth(req, res, next) {
   if (req.session && req.session.adminId) return next();
-  return res.redirect('/admin/login');
+  return res.redirect(dest(req, '/login'));
 }
 function csrf(req, res, next) {
   return req.app.locals.verifyCsrf(req, res, next);
+}
+function dest(req, suffix = '') {
+  return (req.baseUrl || '') + suffix;
 }
 
 const loginLimiter = rateLimit({
@@ -50,10 +53,14 @@ const loginLimiter = rateLimit({
   message: 'Trop de tentatives de connexion. Reessayez dans 15 minutes.',
 });
 
-// Layout flag for admin pages
+// Layout flag for admin pages — never expose this path on the public site
 router.use((req, res, next) => {
   res.locals.admin = true;
+  res.locals.adminBase = req.baseUrl || '';
   res.locals.allCategories = store.listCategories({ activeOnly: false });
+  res.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Referrer-Policy', 'no-referrer');
   next();
 });
 
@@ -61,8 +68,8 @@ router.use((req, res, next) => {
 // Login / logout
 // ---------------------------------------------------------------------------
 router.get('/login', (req, res) => {
-  if (req.session.adminId) return res.redirect('/admin');
-  res.render('admin/login', { title: 'Connexion admin', error: null, layout: false });
+  if (req.session.adminId) return res.redirect(dest(req));
+  res.render('admin/login', { title: 'Connexion', error: null, layout: false });
 });
 
 router.post('/login', loginLimiter, csrf, (req, res) => {
@@ -72,23 +79,23 @@ router.post('/login', loginLimiter, csrf, (req, res) => {
   const ok = admin && bcrypt.compareSync(password, admin.password_hash);
   if (!ok) {
     return res.status(401).render('admin/login', {
-      title: 'Connexion admin',
+      title: 'Connexion',
       error: 'Identifiants incorrects.',
       layout: false,
     });
   }
   // Prevent session fixation
   req.session.regenerate((err) => {
-    if (err) return res.status(500).render('admin/login', { title: 'Connexion admin', error: 'Erreur de session.', layout: false });
+    if (err) return res.status(500).render('admin/login', { title: 'Connexion', error: 'Erreur de session.', layout: false });
     req.session.adminId = admin.id;
     req.session.username = admin.username;
     req.session.csrf = crypto.randomBytes(24).toString('hex');
-    res.redirect('/admin');
+    res.redirect(dest(req));
   });
 });
 
 router.post('/logout', requireAuth, csrf, (req, res) => {
-  req.session.destroy(() => res.redirect('/admin/login'));
+  req.session.destroy(() => res.redirect(dest(req, '/login')));
 });
 
 // ---------------------------------------------------------------------------
@@ -130,7 +137,7 @@ router.get('/produits/nouveau', requireAuth, (req, res) => {
 
 router.get('/produits/:id/modifier', requireAuth, (req, res) => {
   const product = store.getProductById(Number(req.params.id));
-  if (!product) return res.redirect('/admin/produits');
+  if (!product) return res.redirect(dest(req, '/produits'));
   res.render('admin/product-form', {
     title: 'Modifier ' + product.name,
     product,
@@ -191,13 +198,13 @@ router.post('/produits/nouveau', requireAuth, handleUploadErrors, csrf, (req, re
   }
   if (req.file) data.image = req.file.filename;
   store.createProduct(data);
-  res.redirect('/admin/produits');
+  res.redirect(dest(req, '/produits'));
 });
 
 router.post('/produits/:id/modifier', requireAuth, handleUploadErrors, csrf, (req, res) => {
   const id = Number(req.params.id);
   const current = store.getProductById(id);
-  if (!current) return res.redirect('/admin/produits');
+  if (!current) return res.redirect(dest(req, '/produits'));
   const data = parseProductBody(req.body);
   if (!data.name) {
     if (req.file) fs.unlink(path.join(UPLOAD_DIR, req.file.filename), () => {});
@@ -217,7 +224,7 @@ router.post('/produits/:id/modifier', requireAuth, handleUploadErrors, csrf, (re
     data.image = current.image;
   }
   store.updateProduct(id, data);
-  res.redirect('/admin/produits');
+  res.redirect(dest(req, '/produits'));
 });
 
 router.post('/produits/:id/supprimer', requireAuth, csrf, (req, res) => {
@@ -228,7 +235,7 @@ router.post('/produits/:id/supprimer', requireAuth, csrf, (req, res) => {
     for (const img of store.getProductImages(id)) fs.unlink(path.join(UPLOAD_DIR, img.filename), () => {});
     store.deleteProduct(id);
   }
-  res.redirect('/admin/produits');
+  res.redirect(dest(req, '/produits'));
 });
 
 // ---------------------------------------------------------------------------
@@ -256,12 +263,12 @@ router.get('/reservations/imprimer', requireAuth, (req, res) => {
 router.post('/reservations/:id/statut', requireAuth, csrf, (req, res) => {
   const status = ['nouveau', 'traite', 'annule'].includes(req.body.status) ? req.body.status : 'nouveau';
   store.setReservationStatus(Number(req.params.id), status);
-  res.redirect('/admin/reservations');
+  res.redirect(dest(req, '/reservations'));
 });
 
 router.post('/reservations/:id/supprimer', requireAuth, csrf, (req, res) => {
   store.deleteReservation(Number(req.params.id));
-  res.redirect('/admin/reservations');
+  res.redirect(dest(req, '/reservations'));
 });
 
 // ---------------------------------------------------------------------------
@@ -270,13 +277,16 @@ router.post('/reservations/:id/supprimer', requireAuth, csrf, (req, res) => {
 const SETTING_KEYS = [
   'brand_name', 'accent_color', 'whatsapp_number', 'contact_email', 'notification_email', 'contact_phone',
   'hero_title_fr', 'hero_title_ar', 'hero_sub_fr', 'hero_sub_ar',
-  'about_fr', 'about_ar', 'currency', 'currency_symbol',
+  'about_fr', 'about_ar', 'currency', 'currency_symbol', 'brand_latin',
+  'attestation_fr', 'attestation_ar',
   'hero_image', 'hero_video',
+  'delivery_fr', 'delivery_ar',
+  'landing_honey_hero', 'landing_honey_ingredients', 'landing_honey_ritual',
 ];
 
 router.get('/parametres', requireAuth, (req, res) => {
   res.render('admin/settings', {
-    title: 'Paramètres',
+    title: 'Paramètres du site',
     settings: store.getSettings(),
     section: 'settings',
     notice: req.query.ok ? 'Paramètres enregistrés.' : null,
@@ -294,7 +304,7 @@ router.post('/parametres', requireAuth, csrf, (req, res) => {
   if (update.notification_email != null) update.notification_email = String(update.notification_email).trim();
   if (update.contact_email != null) update.contact_email = String(update.contact_email).trim();
   store.setSettings(update);
-  res.redirect('/admin/parametres?ok=1');
+  res.redirect(dest(req, '/parametres?ok=1'));
 });
 
 router.post('/parametres/mot-de-passe', requireAuth, csrf, (req, res) => {
@@ -303,7 +313,7 @@ router.post('/parametres/mot-de-passe', requireAuth, csrf, (req, res) => {
   const confirm = String(req.body.confirm_password || '');
   const admin = store.getAdminById(req.session.adminId);
   const render = (pwError, pwOk) => res.render('admin/settings', {
-    title: 'Paramètres', settings: store.getSettings(), section: 'settings', notice: null, pwError, pwOk,
+    title: 'Paramètres du site', settings: store.getSettings(), section: 'settings', notice: null, pwError, pwOk,
   });
   if (!admin || !bcrypt.compareSync(current, admin.password_hash)) return render('Mot de passe actuel incorrect.', null);
   if (next.length < 8) return render('Le nouveau mot de passe doit contenir au moins 8 caractères.', null);
@@ -392,28 +402,28 @@ router.post('/personnel', requireAuth, csrf, (req, res) => {
   const mailer = require('../mailer');
   const after = store.getSettings();
   if (!mailer.isConfigured(after)) {
-    return res.redirect('/admin/personnel?ok=1&incomplete=1');
+    return res.redirect(dest(req, '/personnel?ok=1&incomplete=1'));
   }
-  res.redirect('/admin/personnel?ok=1');
+  res.redirect(dest(req, '/personnel?ok=1'));
 });
 
 router.post('/personnel/test-email', requireAuth, csrf, async (req, res) => {
   const mailer = require('../mailer');
   const settings = store.getSettings();
   if (!mailer.isConfigured(settings)) {
-    return res.redirect('/admin/personnel?test=mail-fail&msg=' + encodeURIComponent(
+    return res.redirect(dest(req, '/personnel?test=mail-fail&msg=') + encodeURIComponent(
       'Email incomplet. Sur Render gratuit : ajoutez RESEND_API_KEY. Sinon : Identifiant SMTP + mot de passe d’application Gmail, puis Enregistrer.'
     ));
   }
   if (!mailer.recipientOf(settings)) {
-    return res.redirect('/admin/personnel?test=mail-fail&msg=' + encodeURIComponent(
+    return res.redirect(dest(req, '/personnel?test=mail-fail&msg=') + encodeURIComponent(
       'Indiquez l’adresse email qui reçoit les formulaires.'
     ));
   }
   const result = await mailer.sendTestEmail(settings);
-  if (result.sent) return res.redirect('/admin/personnel?test=mail-ok');
+  if (result.sent) return res.redirect(dest(req, '/personnel?test=mail-ok'));
   const msg = encodeURIComponent(result.error || 'Échec');
-  return res.redirect('/admin/personnel?test=mail-fail&msg=' + msg);
+  return res.redirect(dest(req, '/personnel?test=mail-fail&msg=') + msg);
 });
 
 router.post('/personnel/test-whatsapp', requireAuth, csrf, async (req, res) => {
@@ -422,7 +432,7 @@ router.post('/personnel/test-whatsapp', requireAuth, csrf, async (req, res) => {
   const fake = {
     id: 0,
     type: 'reservation',
-    customer_name: 'Test HERBALIS',
+    customer_name: 'Test معشبات الأطلس',
     phone: settings.whatsapp_number || '',
     email: settings.notification_email || '',
     message: 'Message de test depuis l’espace Personnel.',
@@ -431,9 +441,60 @@ router.post('/personnel/test-whatsapp', requireAuth, csrf, async (req, res) => {
     created_at: new Date().toISOString(),
   };
   const result = await notify.sendWhatsAppCallMeBot(fake, settings);
-  if (result.sent) return res.redirect('/admin/personnel?test=wa-ok');
+  if (result.sent) return res.redirect(dest(req, '/personnel?test=wa-ok'));
   const msg = encodeURIComponent(result.error || result.reason || 'Échec');
-  return res.redirect('/admin/personnel?test=wa-fail&msg=' + msg);
+  return res.redirect(dest(req, '/personnel?test=wa-fail&msg=') + msg);
+});
+
+// ---------------------------------------------------------------------------
+// Photos (hero + landing)
+// ---------------------------------------------------------------------------
+const PHOTO_SLOTS = {
+  hero: { key: 'hero_image', label: 'Bandeau d’accueil' },
+  honey_hero: { key: 'landing_honey_hero', label: 'Page miel — visuel principal' },
+  honey_ingredients: { key: 'landing_honey_ingredients', label: 'Page miel — ingrédients' },
+  honey_ritual: { key: 'landing_honey_ritual', label: 'Page miel — rituel' },
+};
+
+function isGeneratedUpload(name) {
+  return /^[a-f0-9]{32}\.(jpe?g|png|webp|gif)$/i.test(String(name || ''));
+}
+
+function safeUnlinkUpload(filename) {
+  if (!filename || !isGeneratedUpload(filename)) return;
+  fs.unlink(path.join(UPLOAD_DIR, filename), () => {});
+}
+
+router.get('/photos', requireAuth, (req, res) => {
+  res.render('admin/photos', {
+    title: 'Photos',
+    settings: store.getSettings(),
+    products: store.listProducts(),
+    section: 'photos',
+    notice: req.query.ok ? 'Photo enregistrée.' : null,
+    error: req.query.err || null,
+  });
+});
+
+router.post('/photos/:slot', requireAuth, handleUploadErrors, csrf, (req, res) => {
+  const slot = PHOTO_SLOTS[req.params.slot];
+  if (!slot) return res.redirect(dest(req, '/photos'));
+  if (req._uploadError || !req.file) {
+    return res.redirect(dest(req, '/photos?err=') + encodeURIComponent(req._uploadError || 'Choisissez une image (JPEG, PNG, WEBP, GIF, max 4 Mo).'));
+  }
+  const current = store.getSettings();
+  safeUnlinkUpload(current[slot.key]);
+  store.setSettings({ [slot.key]: req.file.filename });
+  res.redirect(dest(req, '/photos?ok=1'));
+});
+
+router.post('/photos/:slot/supprimer', requireAuth, csrf, (req, res) => {
+  const slot = PHOTO_SLOTS[req.params.slot];
+  if (!slot) return res.redirect(dest(req, '/photos'));
+  const current = store.getSettings();
+  safeUnlinkUpload(current[slot.key]);
+  store.setSettings({ [slot.key]: '' });
+  res.redirect(dest(req, '/photos?ok=1'));
 });
 
 module.exports = router;

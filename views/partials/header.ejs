@@ -2,7 +2,11 @@
 <header class="site-header">
   <div class="container header-inner">
     <a href="/" class="brand" aria-label="<%= settings.brand_name %>">
-      <%- include('logo') %><span class="brand-name"><%= settings.brand_name %></span>
+      <%- include('logo') %>
+      <span class="brand-stack">
+        <span class="brand-name"><%= settings.brand_name %></span>
+        <span class="brand-latin"><%= settings.brand_latin || 'Miichabat Al Atlas' %></span>
+      </span>
     </a>
 
     <nav class="main-nav" id="mainNav" aria-label="<%= lang === 'ar' ? 'القائمة' : 'Principal' %>">

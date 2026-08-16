@@ -9,4 +9,4 @@ cp .env.example .env
 npm start
 ```
 
-Admin : `/admin`
+Atelier (réglages) : chemin secret défini par `ADMIN_PATH` dans `.env` (pas de lien public).

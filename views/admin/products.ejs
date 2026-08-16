@@ -3,7 +3,7 @@
 <section class="admin-card">
   <div class="admin-card-head">
     <h2>Gestion des produits</h2>
-    <a href="/admin/produits/nouveau" class="btn btn-primary btn-sm">+ Nouveau produit</a>
+    <a href="<%= adminBase %>/produits/nouveau" class="btn btn-primary btn-sm">+ Nouveau produit</a>
   </div>
   <div class="table-scroll">
     <table class="admin-table">
@@ -20,8 +20,8 @@
             <td><%= Number(p.price).toLocaleString('fr-FR') %> <%= settings.currency_symbol %></td>
             <td><%- p.active ? '<span class="dot dot-ok"></span> Actif' : '<span class="dot dot-out"></span> Masque' %></td>
             <td class="cell-actions">
-              <a href="/admin/produits/<%= p.id %>/modifier" class="icon-btn" title="Modifier">✎</a>
-              <form method="post" action="/admin/produits/<%= p.id %>/supprimer" class="inline-form js-confirm" data-confirm="Supprimer &quot;<%= p.name %>&quot; ?">
+              <a href="<%= adminBase %>/produits/<%= p.id %>/modifier" class="icon-btn" title="Modifier">✎</a>
+              <form method="post" action="<%= adminBase %>/produits/<%= p.id %>/supprimer" class="inline-form js-confirm" data-confirm="Supprimer &quot;<%= p.name %>&quot; ?">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit" class="icon-btn danger" title="Supprimer">🗑</button>
               </form>

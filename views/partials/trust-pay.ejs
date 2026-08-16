@@ -6,7 +6,7 @@
   <div class="container">
     <div class="reassure-head" data-reveal>
       <h2 id="reassure-title"><%= t('trust_pay_title') %></h2>
-      <p class="reassure-lead"><%= t('trust_pay_lead') %></p>
+      <p class="reassure-lead"><%= (lang === 'ar' ? (settings.delivery_ar || '') : (settings.delivery_fr || '')) || t('trust_pay_lead') %></p>
     </div>
     <ul class="reassure-grid" data-reveal>
       <li>
@@ -40,17 +40,17 @@
     </ul>
     <p class="reassure-platforms" data-reveal>
       <span><%= t('trust_platforms_label') %></span>
-      <strong>CB</strong>
-      <strong>Apple Pay</strong>
+      <strong>COD</strong>
+      <strong>24h</strong>
       <strong>48h</strong>
-      <strong>30j</strong>
+      <strong>د.م.</strong>
     </p>
   </div>
 </section>
 <% } else { %>
 <aside class="trust-pay<%= mode === 'inline' ? ' trust-pay--inline' : '' %>" aria-label="<%= t('trust_pay_title') %>">
   <p class="trust-pay-title"><%= t('trust_pay_title') %></p>
-  <p class="trust-pay-text"><%= t('trust_pay_compact') %></p>
+  <p class="trust-pay-text"><%= (lang === 'ar' ? (settings.delivery_ar || '') : (settings.delivery_fr || '')) || t('trust_pay_compact') %></p>
   <ul class="trust-pay-badges">
     <li><%= t('trust_pay_secure') %></li>
     <li><%= t('trust_pay_handoff') %></li>

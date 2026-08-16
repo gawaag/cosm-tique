@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var CURRENCY = window.__CURRENCY__ || '€';
+  var CURRENCY = window.__CURRENCY__ || 'د.م.';
   var LANG = window.__LANG__ || 'fr';
   var CART_KEY = 'tp_cart_v2';
 
@@ -257,6 +257,14 @@
     }
 
     function doAdd() {
+      var attest = document.getElementById('pdpAttest');
+      if (attest && !attest.checked) {
+        var wrap = attest.closest('.attest-option');
+        if (wrap) wrap.classList.add('is-error');
+        if (attest.reportValidity) attest.reportValidity();
+        attest.focus();
+        return;
+      }
       addToCart(buildItem());
       var msg = document.getElementById('addedMsg');
       if (msg) { msg.hidden = false; msg.textContent = '✓ Ajouté au panier'; }

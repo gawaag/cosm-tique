@@ -1,0 +1,14 @@
+<%
+  var attestText = lang === 'ar' ? (settings.attestation_ar || '') : (settings.attestation_fr || '');
+  var attestId = (typeof attestId !== 'undefined' && attestId) ? attestId : 'attestation';
+  var needName = (typeof attestNamed === 'undefined' || attestNamed);
+  var checked = typeof form !== 'undefined' && form && form.attestation;
+%>
+<label class="attest-option" for="<%= attestId %>">
+  <input type="checkbox" id="<%= attestId %>" <%= needName ? 'name="attestation"' : '' %> value="1" required <%= checked ? 'checked' : '' %>>
+  <span>
+    <strong><%= t('attest_title') %></strong>
+    <em><%= t('attest_hint') %></em>
+    <%= attestText %>
+  </span>
+</label>

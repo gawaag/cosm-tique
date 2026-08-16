@@ -19,7 +19,7 @@
   <div class="admin-card-head"><h2>1. Destinataire des réservations</h2></div>
   <p class="muted" style="margin-top:0">Chaque réservation est <strong>toujours enregistrée</strong> dans Admin → Réservations, puis notifiée ici.</p>
 
-  <form method="post" action="/admin/personnel" id="personnelForm">
+  <form method="post" action="<%= adminBase %>/personnel" id="personnelForm">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="form-section">
@@ -54,7 +54,7 @@
 
       <ol class="smtp-steps">
         <li>Ouvrez <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">Google → Mots de passe des applications</a>.</li>
-        <li>Créez un mot de passe « Mail » / HERBALIS — 16 caractères.</li>
+        <li>Créez un mot de passe « Mail » / Miichabat — 16 caractères.</li>
         <li>Collez-le ci-dessous (sans espaces) — utile surtout en local.</li>
       </ol>
 
@@ -94,7 +94,7 @@
       </div>
       <div class="field">
         <label for="mail_from">Expéditeur affiché (optionnel)</label>
-        <input type="text" id="mail_from" name="mail_from" value="<%= settings.mail_from || '' %>" placeholder='HERBALIS &lt;onboarding@resend.dev&gt;'>
+        <input type="text" id="mail_from" name="mail_from" value="<%= settings.mail_from || '' %>" placeholder='معشبات الأطلس &lt;onboarding@resend.dev&gt;'>
       </div>
     </div>
 
@@ -103,7 +103,7 @@
       <p class="muted">
         Utilise <a href="https://www.callmebot.com/blog/free-api-whatsapp-messages/" target="_blank" rel="noopener">CallMeBot</a> :
         ajoutez le contact, envoyez le message d’activation, puis collez la clé API reçue.
-        Le numéro WhatsApp boutique est celui des <a href="/admin/parametres">Paramètres</a>
+        Le numéro WhatsApp boutique est celui des <a href="<%= adminBase %>/parametres">Paramètres</a>
         (actuellement <code><%= settings.whatsapp_number || 'non défini' %></code>).
       </p>
       <div class="check-row" style="margin-bottom:14px">
@@ -158,11 +158,11 @@
   </form>
 
   <div class="form-actions" style="gap:10px;flex-wrap:wrap">
-    <form method="post" action="/admin/personnel/test-email" class="inline-form">
+    <form method="post" action="<%= adminBase %>/personnel/test-email" class="inline-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button type="submit" class="btn btn-outline" <%= mailConfigured && recipient ? '' : 'disabled' %>>Tester l’email</button>
     </form>
-    <form method="post" action="/admin/personnel/test-whatsapp" class="inline-form">
+    <form method="post" action="<%= adminBase %>/personnel/test-whatsapp" class="inline-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button type="submit" class="btn btn-outline" <%= waConfigured ? '' : 'disabled' %>>Tester WhatsApp</button>
     </form>
@@ -173,8 +173,8 @@
   <div class="admin-card-head"><h2>Impression personnelle</h2></div>
   <p class="muted" style="margin-top:0">Liste imprimable / PDF des réservations (données sensibles — à usage personnel uniquement).</p>
   <div class="form-actions" style="padding-top:0">
-    <a class="btn btn-outline" href="/admin/reservations/imprimer" target="_blank" rel="noopener">Ouvrir la version imprimable</a>
-    <a class="btn btn-ghost" href="/admin/reservations">Voir les réservations</a>
+    <a class="btn btn-outline" href="<%= adminBase %>/reservations/imprimer" target="_blank" rel="noopener">Ouvrir la version imprimable</a>
+    <a class="btn btn-ghost" href="<%= adminBase %>/reservations">Voir les réservations</a>
   </div>
 </section>
 

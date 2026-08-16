@@ -6,6 +6,7 @@ const store = require('../store');
 const notify = require('../notify');
 const pcConfig = require('../pc-config');
 const { productName } = require('../categories');
+const { translator, htmlDir } = require('../i18n');
 
 const router = express.Router();
 
@@ -16,6 +17,14 @@ const reservationLimiter = rateLimit({
   legacyHeaders: false,
   message: 'Trop de tentatives. Reessayez dans quelques minutes.',
 });
+
+function attestationBlock(settings, lang) {
+  const text = lang === 'ar'
+    ? (settings.attestation_ar || '')
+    : (settings.attestation_fr || '');
+  const today = new Date().toISOString().slice(0, 10);
+  return `Attestation ${today}:\n${text}`;
+}
 
 // ---------------------------------------------------------------------------
 // Home
@@ -114,7 +123,7 @@ router.post('/reservation', reservationLimiter, (req, res) => {
 
     const PAY_LABELS = {
       leboncoin: 'Carte bancaire',
-      ebay: 'Apple Pay',
+      ebay: 'Carte bancaire',
       paypal: 'Virement bancaire',
       handoff: 'Paiement à la livraison',
     };
@@ -139,6 +148,8 @@ router.post('/reservation', reservationLimiter, (req, res) => {
     if (!name) errors.push('Le nom est obligatoire.');
     if (!phone) errors.push('Le telephone est obligatoire.');
     if (email && !isEmail(email)) errors.push('Email invalide.');
+    const attested = req.body.attestation === '1';
+    if (!attested) errors.push(res.locals.t('attest_required'));
 
     // Parse cart sent by client (JSON string). Prices are re-validated from DB.
     let rawItems = [];
@@ -190,16 +201,19 @@ router.post('/reservation', reservationLimiter, (req, res) => {
           req_photos: reqPhotos,
           req_info: reqInfo,
           offer_total: req.body.offer_total || '',
+          attestation: attested,
         },
       });
     }
 
     const type = (globalOffer != null || items.some((i) => i.offer_price != null)) ? 'offer' : 'reservation';
+    const settings = store.getSettings();
+    const attestLine = attestationBlock(settings, res.locals.lang);
+    message = message ? (message + '\n\n' + attestLine) : attestLine;
     const id = store.createReservation({ customer_name: name, phone, email, message, type, items, offer_total: globalOffer });
 
     // Toujours enregistré en admin, puis notifications email + WhatsApp (async).
     const full = store.getReservation(id);
-    const settings = store.getSettings();
     notify.notifyReservation(full, settings)
       .then((r) => {
         console.log(`[notify] #${id} email=${r.email.sent} whatsapp=${r.whatsapp.sent} webhook=${r.webhook.sent}`);
@@ -215,6 +229,91 @@ router.post('/reservation', reservationLimiter, (req, res) => {
       })
       .catch((err) => console.error('[notify] erreur', err.message));
 
+    return res.render('shop/confirmation', {
+      title: res.locals.t('reservation_ok_title'),
+      page: 'confirm',
+      reservationId: id,
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ads landing: عسل الشفاء للجهاز التنفسي
+// ---------------------------------------------------------------------------
+const HONEY_LANDING = {
+  name: 'عسل الشفاء للجهاز التنفسي',
+  unit: 249,
+  duo: 449,
+};
+
+function renderHoneyLanding(res, extra) {
+  res.locals.lang = 'ar';
+  res.locals.dir = 'rtl';
+  res.locals.t = translator('ar');
+  return res.render('shop/landing-honey', {
+    title: HONEY_LANDING.name,
+    page: 'landing',
+    bodyClass: 'page-landing',
+    form: {},
+    errors: [],
+    ...extra,
+  });
+}
+
+router.get(['/products/aasl-alshfa-lljhaz-altnfsy', '/aasl-alshfa-lljhaz-altnfsy'], (req, res) => {
+  renderHoneyLanding(res);
+});
+
+router.post('/products/aasl-alshfa-lljhaz-altnfsy', reservationLimiter, (req, res) => {
+  const verifyCsrf = req.app.locals.verifyCsrf;
+  return verifyCsrf(req, res, () => {
+    if (clean(req.body.website, 100)) {
+      return res.render('shop/confirmation', {
+        title: res.locals.t('reservation_ok_title'), page: 'confirm', reservationId: 0,
+      });
+    }
+    const name = clean(req.body.customer_name, 120);
+    const phone = clean(req.body.phone, 40);
+    const city = clean(req.body.city, 80);
+    const qty = Math.min(Math.max(toInt(req.body.qty, 1), 1), 2);
+    const attested = req.body.attestation === '1';
+    const errors = [];
+    if (!name) errors.push('الاسم مطلوب.');
+    if (!phone) errors.push('رقم الهاتف مطلوب.');
+    if (!city) errors.push('المدينة مطلوبة.');
+    if (!attested) errors.push(translator('ar')('attest_required'));
+    if (errors.length) {
+      return renderHoneyLanding(res.status(400), {
+        errors,
+        form: { customer_name: name, phone, city, qty: String(qty), attestation: attested },
+      });
+    }
+    const settings = store.getSettings();
+    const unit = qty === 2 ? HONEY_LANDING.duo / 2 : HONEY_LANDING.unit;
+    const message = [
+      'Landing: عسل الشفاء للجهاز التنفسي',
+      'المدينة: ' + city,
+      'الدفع عند الاستلام · توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن',
+      attestationBlock(settings, 'ar'),
+    ].join('\n');
+    const id = store.createReservation({
+      customer_name: name,
+      phone,
+      email: '',
+      message,
+      type: 'reservation',
+      items: [{
+        product_id: null,
+        product_name: HONEY_LANDING.name + (qty === 2 ? ' x 2' : ''),
+        unit_price: unit,
+        quantity: qty,
+      }],
+    });
+    const full = store.getReservation(id);
+    notify.notifyReservation(full, settings).catch((err) => console.error('[notify] landing', err.message));
+    res.locals.lang = 'ar';
+    res.locals.dir = htmlDir('ar');
+    res.locals.t = translator('ar');
     return res.render('shop/confirmation', {
       title: res.locals.t('reservation_ok_title'),
       page: 'confirm',
@@ -244,14 +343,16 @@ router.get('/confidentialite', (req, res) => {
 // ---------------------------------------------------------------------------
 router.get('/robots.txt', (req, res) => {
   const base = res.locals.siteUrl;
+  const secret = req.app.locals.adminPath;
+  const extra = (secret && secret !== '/admin') ? `Disallow: ${secret}\n` : '';
   res.type('text/plain').send(
-    `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${base}/sitemap.xml\n`
+    `User-agent: *\nAllow: /\nDisallow: /admin\n${extra}\nSitemap: ${base}/sitemap.xml\n`
   );
 });
 
 router.get('/sitemap.xml', (req, res) => {
   const base = res.locals.siteUrl;
-  const staticPaths = ['/', '/produits', '/a-propos', '/contact'];
+  const staticPaths = ['/', '/produits', '/a-propos', '/contact', '/products/aasl-alshfa-lljhaz-altnfsy'];
   const products = store.listProducts({ activeOnly: true });
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]));
   const urls = [];

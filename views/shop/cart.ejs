@@ -73,20 +73,12 @@
           <legend><%= t('pay_pref_title') %></legend>
           <p class="field-hint"><%= t('pay_pref_hint') %></p>
           <label class="pay-option">
-            <input type="radio" name="payment_pref" value="leboncoin" <%= form.payment_pref === 'leboncoin' ? 'checked' : '' %>>
-            <span><%= t('pay_leboncoin') %></span>
-          </label>
-          <label class="pay-option">
-            <input type="radio" name="payment_pref" value="ebay" <%= form.payment_pref === 'ebay' ? 'checked' : '' %>>
-            <span><%= t('pay_ebay') %></span>
-          </label>
-          <label class="pay-option">
-            <input type="radio" name="payment_pref" value="paypal" <%= form.payment_pref === 'paypal' ? 'checked' : '' %>>
-            <span><%= t('pay_paypal') %></span>
-          </label>
-          <label class="pay-option">
             <input type="radio" name="payment_pref" value="handoff" <%= form.payment_pref === 'handoff' || !form.payment_pref ? 'checked' : '' %>>
             <span><%= t('pay_handoff') %></span>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="payment_pref" value="leboncoin" <%= form.payment_pref === 'leboncoin' ? 'checked' : '' %>>
+            <span><%= t('pay_leboncoin') %></span>
           </label>
         </fieldset>
 
@@ -115,6 +107,8 @@
           <label for="message"><%= t('your_message') %></label>
           <textarea id="message" name="message" rows="4" maxlength="2000"><%= form.message || '' %></textarea>
         </div>
+
+        <%- include('../partials/attestation') %>
 
         <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitReservation"><%= t('submit_reservation') %></button>
 

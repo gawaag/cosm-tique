@@ -13,15 +13,18 @@ const Database = require('better-sqlite3');
 const SqliteStore = require('better-sqlite3-session-store')(session);
 
 const { getSettings, listCategories } = require('./src/store');
-const { resolveLang, translator, LANGS, htmlDir } = require('./src/i18n');
+const { resolveLang, translator, LANGS, htmlDir, formatReviewDate } = require('./src/i18n');
 const { catNavLabel, catFilterLabel, catShowcase, productName, productShort, productDesc, productBadges, productSpecLine } = require('./src/categories');
 const shopRoutes = require('./src/routes/shop');
 const adminRoutes = require('./src/routes/admin');
+const { resolveAdminPath } = require('./src/admin-path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === 'production';
 const secureCookies = process.env.SECURE_COOKIES === 'true' || isProd;
+const ADMIN_PATH = resolveAdminPath();
+app.locals.adminPath = ADMIN_PATH;
 
 if (isProd) {
   if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET === 'change-me') {
@@ -104,7 +107,7 @@ app.use(session({
 }));
 
 // ---------------------------------------------------------------------------
-// Rate limiting (general + plus strict sur /admin)
+// Rate limiting (general + plus strict sur le chemin atelier)
 // ---------------------------------------------------------------------------
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -112,12 +115,12 @@ app.use(rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 }));
-app.use('/admin', rateLimit({
+app.use(ADMIN_PATH, rateLimit({
   windowMs: 15 * 60 * 1000,
   max: isProd ? 120 : 300,
   standardHeaders: true,
   legacyHeaders: false,
-  message: 'Trop de requêtes admin. Réessayez plus tard.',
+  message: 'Trop de requetes. Reessayez plus tard.',
 }));
 
 // ---------------------------------------------------------------------------
@@ -161,6 +164,7 @@ app.use((req, res, next) => {
   res.locals.pDesc = (p) => productDesc(p, lang);
   res.locals.pBadges = productBadges;
   res.locals.pSpec = productSpecLine;
+  res.locals.formatReviewDate = (iso) => formatReviewDate(iso, lang);
   res.locals.currentPath = req.path;
   res.locals.siteUrl = (process.env.SITE_URL || `${req.protocol}://${req.get('host')}`).replace(/\/+$/, '');
   res.locals.isAdmin = !!(req.session && req.session.adminId);
@@ -196,7 +200,7 @@ app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: isProd ? '30d' : 0 }));
 // Routes
 // ---------------------------------------------------------------------------
 app.use('/', shopRoutes);
-app.use('/admin', adminRoutes);
+app.use(ADMIN_PATH, adminRoutes);
 
 // 404
 app.use((req, res) => {
@@ -216,5 +220,9 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`\n  Boutique en ligne sur http://localhost:${PORT}`);
-  console.log(`  Admin: http://localhost:${PORT}/admin\n`);
+  if (isProd) {
+    console.log('  Atelier: chemin secret (variable ADMIN_PATH)\n');
+  } else {
+    console.log(`  Atelier: http://localhost:${PORT}${ADMIN_PATH}\n`);
+  }
 });

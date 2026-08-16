@@ -2,14 +2,15 @@
 
 <% if (notice) { %><div class="alert alert-ok"><%= notice %></div><% } %>
 
-<form method="post" action="/admin/parametres" class="admin-card form-card">
+<form method="post" action="<%= adminBase %>/parametres" class="admin-card form-card">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <div class="admin-card-head"><h2>Contenu du site</h2><button type="submit" class="btn btn-primary btn-sm">Enregistrer</button></div>
 
   <div class="form-section">
     <h3>Identité</h3>
     <div class="field-row">
-      <div class="field grow"><label for="brand_name">Nom de la boutique</label><input type="text" id="brand_name" name="brand_name" value="<%= settings.brand_name %>"></div>
+      <div class="field grow"><label for="brand_name">Nom de la boutique (arabe)</label><input type="text" id="brand_name" name="brand_name" value="<%= settings.brand_name %>" dir="rtl"></div>
+      <div class="field grow"><label for="brand_latin">Nom latin</label><input type="text" id="brand_latin" name="brand_latin" value="<%= settings.brand_latin || 'Miichabat Al Atlas' %>"></div>
       <div class="field"><label for="accent_color">Couleur principale</label><input type="color" id="accent_color" name="accent_color" value="<%= settings.accent_color %>"></div>
     </div>
     <div class="field-row">
@@ -25,7 +26,7 @@
       <div class="field"><label for="contact_phone">Téléphone affiché</label><input type="text" id="contact_phone" name="contact_phone" value="<%= settings.contact_phone %>"></div>
     </div>
     <div class="field"><label for="contact_email">Email de contact (affiché sur le site)</label><input type="email" id="contact_email" name="contact_email" value="<%= settings.contact_email %>"></div>
-    <p class="muted" style="margin:0">Pour l’email qui <strong>reçoit</strong> les formulaires de réservation, allez dans <a href="/admin/personnel">Personnel</a>.</p>
+    <p class="muted" style="margin:0">Pour l’email qui <strong>reçoit</strong> les formulaires de réservation, allez dans <a href="<%= adminBase %>/personnel">Personnel</a>.</p>
   </div>
 
   <div class="form-section">
@@ -38,6 +39,15 @@
       <div class="field grow"><label for="hero_sub_fr">Sous-titre (FR)</label><input type="text" id="hero_sub_fr" name="hero_sub_fr" value="<%= settings.hero_sub_fr %>"></div>
       <div class="field grow"><label for="hero_sub_ar">Sous-titre (AR)</label><input type="text" id="hero_sub_ar" name="hero_sub_ar" value="<%= settings.hero_sub_ar || '' %>" dir="rtl"></div>
     </div>
+    <p class="muted" style="margin:0">Photo du bandeau : <a href="<%= adminBase %>/photos">Photos</a>.</p>
+  </div>
+
+  <div class="form-section">
+    <h3>Livraison / paiement (texte affiché)</h3>
+    <div class="field-row">
+      <div class="field grow"><label for="delivery_fr">Texte (FR)</label><textarea id="delivery_fr" name="delivery_fr" rows="3"><%= settings.delivery_fr || '' %></textarea></div>
+      <div class="field grow"><label for="delivery_ar">Texte (AR)</label><textarea id="delivery_ar" name="delivery_ar" rows="3" dir="rtl"><%= settings.delivery_ar || '' %></textarea></div>
+    </div>
   </div>
 
   <div class="form-section">
@@ -48,10 +58,19 @@
     </div>
   </div>
 
+  <div class="form-section">
+    <h3>Attestation sur l'honneur (commande)</h3>
+    <p class="muted">Texte affiché et enregistré avec chaque commande. Modifiable ici.</p>
+    <div class="field-row">
+      <div class="field grow"><label for="attestation_fr">Attestation (FR)</label><textarea id="attestation_fr" name="attestation_fr" rows="5"><%= settings.attestation_fr || '' %></textarea></div>
+      <div class="field grow"><label for="attestation_ar">Attestation (AR)</label><textarea id="attestation_ar" name="attestation_ar" rows="5" dir="rtl"><%= settings.attestation_ar || '' %></textarea></div>
+    </div>
+  </div>
+
   <div class="form-actions"><button type="submit" class="btn btn-primary btn-lg">Enregistrer les paramètres</button></div>
 </form>
 
-<form method="post" action="/admin/parametres/mot-de-passe" class="admin-card form-card">
+<form method="post" action="<%= adminBase %>/parametres/mot-de-passe" class="admin-card form-card">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <div class="admin-card-head"><h2>Sécurité — Mot de passe</h2></div>
   <% if (pwError) { %><div class="alert alert-error"><%= pwError %></div><% } %>

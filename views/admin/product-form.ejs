@@ -5,12 +5,12 @@
 <section class="admin-card form-card">
   <div class="admin-card-head">
     <h2><%= isEdit ? 'Modifier le produit' : 'Nouveau produit' %></h2>
-    <a href="/admin/produits" class="btn btn-ghost btn-sm">← Retour</a>
+    <a href="<%= adminBase %>/produits" class="btn btn-ghost btn-sm">← Retour</a>
   </div>
 
   <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
 
-  <form method="post" action="<%= isEdit ? '/admin/produits/' + p.id + '/modifier' : '/admin/produits/nouveau' %>" enctype="multipart/form-data">
+  <form method="post" action="<%= isEdit ? adminBase + '/produits/' + p.id + '/modifier' : adminBase + '/produits/nouveau' %>" enctype="multipart/form-data">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="form-section">
@@ -68,7 +68,7 @@
         <div class="field grow"><label for="gpu">Origine</label><input type="text" id="gpu" name="gpu" maxlength="160" value="<%= val('gpu') %>"></div>
       </div>
       <div class="field-row">
-        <div class="field grow"><label for="screen">Badges (séparés par |)</label><input type="text" id="screen" name="screen" maxlength="120" value="<%= val('screen') %>" placeholder="100% Naturel|Vegan|Fabriqué en France"></div>
+        <div class="field grow"><label for="screen">Badges (séparés par |)</label><input type="text" id="screen" name="screen" maxlength="120" value="<%= val('screen') %>" placeholder="100% Naturel|Vegan"></div>
         <div class="field"><label for="os">Posologie</label><input type="text" id="os" name="os" maxlength="80" value="<%= val('os') %>"></div>
       </div>
     </div>
@@ -108,7 +108,7 @@
 
     <div class="form-actions">
       <button type="submit" class="btn btn-primary btn-lg"><%= isEdit ? 'Enregistrer' : 'Creer le produit' %></button>
-      <a href="/admin/produits" class="btn btn-ghost">Annuler</a>
+      <a href="<%= adminBase %>/produits" class="btn btn-ghost">Annuler</a>
     </div>
   </form>
 </section>

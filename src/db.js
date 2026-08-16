@@ -113,8 +113,12 @@ CREATE INDEX IF NOT EXISTS idx_res_items_res ON reservation_items(reservation_id
 // ---------------------------------------------------------------------------
 // Seed: settings
 // ---------------------------------------------------------------------------
+const ATTEST_FR = "J'atteste sur l'honneur, à la date de cette commande, que je ne souffre d'aucune maladie infectieuse de l'estomac, ni de cancer, ni de diabète, ni d'hypertension, ni de dialyse, ni d'aucune maladie dangereuse, et que je ne suis actuellement aucun traitement.";
+const ATTEST_AR = 'أُشهد على شرفي، بتاريخ هذا الطلب، أنني لا أعاني من أي مرض معدٍ في المعدة، ولا من السرطان، ولا من السكري، ولا من الضغط، ولا من غسيل الكلى، ولا من أي مرض خطير، وأنني لا أتناول أي علاج حالياً.';
+
 const DEFAULT_SETTINGS = {
-  brand_name: 'HERBALIS',
+  brand_name: 'معشبات الأطلس',
+  brand_latin: 'Miichabat Al Atlas',
   accent_color: '#2E8B57',
   whatsapp_number: '33744141908',
   contact_email: 'voltatech.contact@gmail.com',
@@ -124,26 +128,33 @@ const DEFAULT_SETTINGS = {
   smtp_secure: 'true',
   smtp_user: 'voltatech.contact@gmail.com',
   smtp_pass: '',
-  mail_from: 'HERBALIS <voltatech.contact@gmail.com>',
+  mail_from: 'معشبات الأطلس <voltatech.contact@gmail.com>',
   resend_api_key: '',
   whatsapp_notify: '1',
   callmebot_apikey: '',
   notify_webhook_url: '',
   contact_phone: '+33 7 44 14 19 08',
-  hero_title_fr: 'La santé naturelle, simplement.',
-  hero_title_ar: 'الصحة الطبيعية، ببساطة.',
-  hero_title_en: 'La santé naturelle, simplement.',
-  hero_sub_fr: 'Compléments naturels ciblés pour le confort intestinal et la vitalité capillaire. Formules concentrées, fabriquées en France.',
-  hero_sub_ar: 'مكملات طبيعية موجّهة لراحة الأمعاء وحيوية الشعر. صيغ مركّزة، مصنوعة في فرنسا.',
-  hero_sub_en: 'Compléments naturels ciblés pour le confort intestinal et la vitalité capillaire. Formules concentrées, fabriquées en France.',
+  hero_title_fr: 'Miichabat Al Atlas. Les plantes, simplement.',
+  hero_title_ar: 'معشبات الأطلس. الأعشاب، ببساطة.',
+  hero_title_en: 'معشبات الأطلس. الأعشاب، ببساطة.',
+  hero_sub_fr: 'Miel naturel, côlon, cheveux et asthme. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.',
+  hero_sub_ar: 'عسل حر، راحة القولون، كثافة الشعر، ونفس مرتاح. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
+  hero_sub_en: 'عسل حر، راحة القولون، كثافة الشعر، ونفس مرتاح. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
   hero_image: 'hero-botanica.png',
   hero_video: '',
-  about_fr: "HERBALIS formule des compléments ciblés : confort du côlon et du microbiote, anti-chute et pousse capillaire, confort des voies respiratoires (asthme léger, gorges irritées). Gélules végétales, dosages utiles, fabrication française. Chaque lot est contrôlé en laboratoire indépendant. Paiement sécurisé (CB, Apple Pay), livraison 48 h, satisfait ou remboursé 30 jours. Les compléments ne se substituent pas à un traitement médical.",
-  about_ar: "هيرباليس يصيغ مكمّلات موجّهة: راحة القولون والميكروبيوتا، مكافحة التساقط وإنبات الشعر، وراحة الجهاز التنفسي (ربو خفيف، حلق متهيّج). كبسولات نباتية، جرعات نافعة، تصنيع فرنسي. كل دفعة تُفحص في مختبر مستقل. دفع آمن (بطاقة، آبل باي)، توصيل 48 ساعة، رضا أو استرداد 30 يوماً. المكمّلات لا تغني عن علاج طبي.",
-  about_en: "HERBALIS formule des compléments ciblés : confort du côlon, anti-chute, confort respiratoire. Fabrication française.",
-  currency: 'EUR',
-  currency_symbol: '€',
-  catalog_version: 'herbalis-v1',
+  about_fr: "معشبات الأطلس (Miichabat Al Atlas) propose quatre formules naturelles : miel brut, confort du côlon, anti-chute, et confort respiratoire (asthme léger). Des packs réunissent les cures à tarif lot. Livraison 24 h à Rabat, Salé et Casablanca, 48 h dans le reste du Maroc. Paiement à la livraison. Les compléments ne se substituent pas à un traitement médical.",
+  about_ar: "معشبات الأطلس (Miichabat Al Atlas) أربع صيغ طبيعية: عسل حر، راحة القولون، مكافحة تساقط الشعر، وراحة التنفس (ربو خفيف). باقات تجمع العلاجات بسعر الجملة. توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام. المكمّلات لا تغني عن علاج طبي.",
+  about_en: "معشبات الأطلس (Miichabat Al Atlas) : miel, côlon, cheveux, asthme. Livraison Maroc 24 h / 48 h. Paiement à la livraison.",
+  attestation_fr: ATTEST_FR,
+  attestation_ar: ATTEST_AR,
+  delivery_fr: 'Paiement à la livraison. 24 h Rabat, Salé, Casablanca. 48 h dans le reste du Maroc.',
+  delivery_ar: 'الدفع عند الاستلام. 24 ساعة الرباط وسلا والبيضاء. 48 ساعة باقي المغرب.',
+  landing_honey_hero: 'honey-hero.png',
+  landing_honey_ingredients: 'honey-ingredients.png',
+  landing_honey_ritual: 'honey-ritual.png',
+  currency: 'MAD',
+  currency_symbol: 'د.م.',
+  catalog_version: 'miichabat-atlas-v1',
 };
 
 const getSetting = db.prepare('SELECT value FROM settings WHERE key = ?');
@@ -154,20 +165,18 @@ const upsertSetting = db.prepare(`
 `);
 for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) insertSetting.run(k, v);
 
-/** Vente France uniquement : toujours forcer EUR / € (jamais MAD / DH). */
-function forceFranceCurrency() {
-  const cur = (getSetting.get('currency') || {}).value;
-  const sym = (getSetting.get('currency_symbol') || {}).value;
-  if (cur !== 'EUR' || sym !== '€') {
-    upsertSetting.run('currency', 'EUR');
-    upsertSetting.run('currency_symbol', '€');
-    console.log('[db] Devise forcee: EUR / € (vente France)');
-  }
+/** Vente Maroc : MAD par défaut, sans écraser un symbole déjà choisi. */
+function forceMoroccoCurrency() {
+  const cur = String((getSetting.get('currency') || {}).value || '').trim();
+  const sym = String((getSetting.get('currency_symbol') || {}).value || '').trim();
+  if (!cur) upsertSetting.run('currency', 'MAD');
+  if (!sym) upsertSetting.run('currency_symbol', 'د.م.');
 }
 
-function applyHerbalisBrand() {
-  const force = {
+function applyMiichabatBrand() {
+  const defaults = {
     brand_name: DEFAULT_SETTINGS.brand_name,
+    brand_latin: DEFAULT_SETTINGS.brand_latin,
     accent_color: DEFAULT_SETTINGS.accent_color,
     hero_title_fr: DEFAULT_SETTINGS.hero_title_fr,
     hero_title_ar: DEFAULT_SETTINGS.hero_title_ar,
@@ -181,8 +190,14 @@ function applyHerbalisBrand() {
     about_ar: DEFAULT_SETTINGS.about_ar,
     about_en: DEFAULT_SETTINGS.about_en,
     mail_from: DEFAULT_SETTINGS.mail_from,
+    delivery_fr: DEFAULT_SETTINGS.delivery_fr,
+    delivery_ar: DEFAULT_SETTINGS.delivery_ar,
+    landing_honey_hero: DEFAULT_SETTINGS.landing_honey_hero,
+    landing_honey_ingredients: DEFAULT_SETTINGS.landing_honey_ingredients,
+    landing_honey_ritual: DEFAULT_SETTINGS.landing_honey_ritual,
   };
-  for (const [k, v] of Object.entries(force)) upsertSetting.run(k, v);
+  // INSERT OR IGNORE — never overwrite owner edits from the atelier.
+  for (const [k, v] of Object.entries(defaults)) insertSetting.run(k, v);
 }
 
 /** Contact boutique (email + WhatsApp France). */
@@ -203,7 +218,7 @@ function ensureVoltaContactDefaults() {
   let changed = false;
   for (const [key, want] of Object.entries(targets)) {
     const cur = String((getSetting.get(key) || {}).value || '').trim();
-    if (!cur || placeholders.has(cur) || cur !== want) {
+    if (!cur || placeholders.has(cur)) {
       upsertSetting.run(key, want);
       changed = true;
     }
@@ -214,8 +229,8 @@ function ensureVoltaContactDefaults() {
     changed = true;
   }
   const mailFrom = String((getSetting.get('mail_from') || {}).value || '').trim();
-  if (!mailFrom || mailFrom.includes('example.com') || mailFrom.includes('VOLTA')) {
-    upsertSetting.run('mail_from', `HERBALIS <${EMAIL}>`);
+  if (!mailFrom || mailFrom.includes('example.com') || mailFrom.includes('VOLTA') || mailFrom.includes('HERBALIS')) {
+    upsertSetting.run('mail_from', `معشبات الأطلس <${EMAIL}>`);
     changed = true;
   }
   if (changed) console.log(`[db] Contact boutique: ${EMAIL} / WhatsApp ${PHONE}`);
@@ -233,17 +248,26 @@ function slugifyName(str) {
 // Seed: admin from environment
 // ---------------------------------------------------------------------------
 function seedAdmin() {
-  const count = db.prepare('SELECT COUNT(*) AS c FROM admins').get().c;
-  if (count > 0) return;
-  const username = (process.env.ADMIN_USERNAME || 'admin').trim();
+  const username = (process.env.ADMIN_USERNAME || 'admin').trim() || 'admin';
   const password = process.env.ADMIN_PASSWORD || 'admin1234';
   const hash = bcrypt.hashSync(password, 12);
-  db.prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)').run(username, hash);
-  console.log(`[db] Compte admin cree: "${username}" (mot de passe depuis .env)`);
+  const count = db.prepare('SELECT COUNT(*) AS c FROM admins').get().c;
+  if (count === 0) {
+    db.prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)').run(username, hash);
+    console.log(`[db] Compte atelier cree: "${username}" (mot de passe depuis .env, defaut admin1234 si absent)`);
+    return;
+  }
+  if (!process.env.ADMIN_PASSWORD) return;
+  const row = db.prepare('SELECT id, username, password_hash FROM admins ORDER BY id LIMIT 1').get();
+  if (!row) return;
+  const passOk = bcrypt.compareSync(password, row.password_hash);
+  if (passOk && row.username === username) return;
+  db.prepare('UPDATE admins SET username = ?, password_hash = ? WHERE id = ?').run(username, hash, row.id);
+  console.log(`[db] Identifiants atelier alignes sur ADMIN_USERNAME / ADMIN_PASSWORD`);
 }
 
 // ---------------------------------------------------------------------------
-// Seed: catalogue France (€) + photos
+// Seed: catalogue Maroc (MAD) + photos
 // ---------------------------------------------------------------------------
 function insertCatalogRows(rows) {
   const insert = db.prepare(`
@@ -276,13 +300,13 @@ function insertCatalogRows(rows) {
 function seedFranceCatalog() {
   const catalog = require('./catalog-seed');
   insertCatalogRows(catalog);
-  console.log(`[db] ${catalog.length} produits catalogue France (€) ajoutes`);
+  console.log(`[db] ${catalog.length} produits catalogue Maroc (MAD) ajoutes`);
 }
 
 function ensureFranceCatalog() {
-  forceFranceCurrency();
+  forceMoroccoCurrency();
   ensureVoltaContactDefaults();
-  applyHerbalisBrand();
+  applyMiichabatBrand();
 
   const version = String((getSetting.get('catalog_version') || {}).value || '');
   const pcLeftover = db.prepare(`
@@ -292,11 +316,16 @@ function ensureFranceCatalog() {
   `).get().c;
   const total = db.prepare('SELECT COUNT(*) AS c FROM products').get().c;
 
-  if (version !== 'herbalis-v1' || total === 0 || pcLeftover > 0) {
+  const attestFr = String((getSetting.get('attestation_fr') || {}).value || '').trim();
+  const attestAr = String((getSetting.get('attestation_ar') || {}).value || '').trim();
+  if (!attestFr) upsertSetting.run('attestation_fr', ATTEST_FR);
+  if (!attestAr) upsertSetting.run('attestation_ar', ATTEST_AR);
+
+  if (version !== 'miichabat-atlas-v1' || total === 0 || pcLeftover > 0) {
     db.exec('DELETE FROM product_images; DELETE FROM products;');
     seedFranceCatalog();
-    upsertSetting.run('catalog_version', 'herbalis-v1');
-    console.log('[db] Catalogue HERBALIS (côlon / cheveux / respiration) chargé');
+    upsertSetting.run('catalog_version', 'miichabat-atlas-v1');
+    console.log('[db] Catalogue معشبات الأطلس (miel / côlon / cheveux / asthme / packs) chargé');
   }
 }
 

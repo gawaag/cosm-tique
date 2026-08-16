@@ -1,6 +1,6 @@
 'use strict';
 /*
- * Recharge le catalogue HERBALIS (côlon, cheveux, respiration).
+ * Recharge le catalogue معشبات الأطلس (miel, côlon, cheveux, asthme, packs).
  * Usage: node scripts/load-inventory.js
  */
 require('dotenv').config();
@@ -8,17 +8,18 @@ const store = require('../src/store');
 const catalog = require('../src/catalog-seed');
 
 store.setSettings({
-  currency: 'EUR',
-  currency_symbol: '€',
-  brand_name: 'HERBALIS',
+  currency: 'MAD',
+  currency_symbol: 'د.م.',
+  brand_name: 'معشبات الأطلس',
+  brand_latin: 'Miichabat Al Atlas',
   accent_color: '#2E8B57',
-  catalog_version: 'herbalis-v1',
-  hero_title_fr: 'La santé naturelle, simplement.',
-  hero_title_ar: 'الصحة الطبيعية، ببساطة.',
-  hero_sub_fr: 'Compléments naturels ciblés pour le confort intestinal et la vitalité capillaire. Formules concentrées, fabriquées en France.',
-  hero_sub_ar: 'مكملات طبيعية موجّهة لراحة الأمعاء وحيوية الشعر. صيغ مركّزة، مصنوعة في فرنسا.',
-  about_fr: 'HERBALIS formule des compléments ciblés : côlon, anti-chute, confort respiratoire. Fabrication française.',
-  about_ar: 'هيرباليس يصيغ مكمّلات موجّهة: القولون، مكافحة التساقط، الراحة التنفسية. تصنيع فرنسي.',
+  catalog_version: 'miichabat-atlas-v1',
+  hero_title_fr: 'Miichabat Al Atlas. Les plantes, simplement.',
+  hero_title_ar: 'معشبات الأطلس. الأعشاب، ببساطة.',
+  hero_sub_fr: 'Miel naturel, côlon, cheveux et asthme. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.',
+  hero_sub_ar: 'عسل حر، راحة القولون، كثافة الشعر، ونفس مرتاح. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
+  about_fr: 'معشبات الأطلس (Miichabat Al Atlas) propose quatre formules naturelles : miel, côlon, cheveux, asthme. Packs à tarif lot. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs.',
+  about_ar: 'معشبات الأطلس (Miichabat Al Atlas) أربع صيغ طبيعية: عسل، قولون، شعر، ربو. باقات بسعر الجملة. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن.',
 });
 
 for (const p of store.listProducts()) {
@@ -33,4 +34,4 @@ for (const row of catalog) {
   });
 }
 
-console.log(catalog.length + ' produits HERBALIS charges.');
+console.log(catalog.length + ' produits معشبات الأطلس charges.');

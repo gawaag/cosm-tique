@@ -1,5 +1,5 @@
 /* =========================================================================
-   HERBALIS — medical-modern natural health storefront
+   معشبات الأطلس — Miichabat Al Atlas storefront
    Forest / sage / cream / matte gold. Arabic RTL + French LTR.
    ========================================================================= */
 
@@ -131,7 +131,20 @@ h1, h2, h3 { line-height: 1.08; margin: 0 0 .45em; font-weight: 600; letter-spac
   display: inline-flex; align-items: center; gap: 8px;
   color: var(--text); font-size: 1.05rem; font-weight: 600; z-index: 2;
 }
-.brand-name { letter-spacing: .04em; font-weight: 600; text-transform: none; }
+.brand-name { letter-spacing: 0; font-weight: 600; text-transform: none; }
+.brand-stack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.08;
+  min-width: 0;
+}
+.brand-latin {
+  font-size: .58rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  opacity: .62;
+  font-weight: 500;
+}
 .logo-mark { display: block; flex: none; color: var(--text); }
 .main-nav {
   display: flex; align-items: center; justify-content: center; gap: 2px; flex-wrap: wrap;
@@ -247,6 +260,15 @@ video.hero-bg--video {
   color: #fff;
   text-shadow: 0 8px 40px rgba(0,0,0,.45);
 }
+.hero-brand-latin {
+  display: block;
+  font-size: clamp(.68rem, 1.5vw, .92rem);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  opacity: .72;
+  margin-top: .28em;
+}
 .hero-headline {
   font-size: clamp(1.3rem, 3vw, 2rem);
   font-weight: 500;
@@ -297,6 +319,7 @@ body.page-home .site-header {
 }
 body.page-home .brand,
 body.page-home .brand-name,
+body.page-home .brand-latin,
 body.page-home .theme-toggle,
 body.page-home .cart-link { color: #f5f5f7; }
 body.page-home .nav-toggle span { background: #f5f5f7; }
@@ -921,7 +944,33 @@ html.js .hero-bg {
   font-weight: 400;
 }
 .review-meta { font-size: .86rem; color: var(--muted); }
-.review-meta strong { color: var(--text); font-weight: 600; }
+.review-meta time { display: block; margin-top: 4px; font-size: .78rem; opacity: .9; }
+
+.attest-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  cursor: pointer;
+  text-align: start;
+}
+.attest-option.is-error,
+.attest-option:has(input:focus:invalid) { border-color: var(--danger); }
+.attest-option input { margin-top: 4px; accent-color: var(--accent); flex: none; }
+.attest-option span { font-size: .86rem; line-height: 1.5; font-weight: 400; }
+.attest-option strong { display: block; font-size: .92rem; margin-bottom: 2px; }
+.attest-option em {
+  display: block;
+  font-style: normal;
+  font-size: .78rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.detail-actions .attest-option { max-width: none; }
 .product-body {
   padding: 20px 18px 22px;
   display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; flex: 1;
@@ -1535,6 +1584,40 @@ html.js [data-reveal].is-visible { opacity: 1; transform: none; }
 }
 .admin-nav a:hover { background: var(--surface-2); color: var(--text); }
 .admin-nav a.active { background: color-mix(in srgb, var(--accent), transparent 88%); color: var(--accent); }
+.admin-nav-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--muted); padding: 16px 12px 4px; margin: 0;
+}
+.admin-nav-label:first-child { padding-top: 0; }
+.admin-hub {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;
+}
+.admin-hub-card {
+  display: flex; flex-direction: column; gap: 6px; padding: 20px 22px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); color: var(--text);
+}
+.admin-hub-card:hover { border-color: var(--accent); }
+.admin-hub-card strong { font-size: 1.05rem; }
+.admin-hub-card span { color: var(--muted); font-size: .88rem; line-height: 1.4; }
+.photo-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px;
+}
+.photo-slot h2 { font-size: 1rem; margin: 0 0 6px; }
+.photo-slot-preview {
+  margin: 12px 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  background: var(--surface-2); aspect-ratio: 16 / 10;
+}
+.photo-slot-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-slot-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted); }
+.photo-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.photo-product {
+  display: flex; flex-direction: column; gap: 8px; color: var(--text); font-size: .85rem; font-weight: 600;
+}
+.photo-product img, .photo-product .mini-ph {
+  width: 100%; aspect-ratio: 1; object-fit: contain; border-radius: 10px;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
 .admin-view-site { margin-top: auto; padding: 11px 12px; color: var(--muted); font-size: .9rem; font-weight: 600; }
 .admin-view-site:hover { color: var(--accent); }
 .admin-main { display: flex; flex-direction: column; min-width: 0; }
@@ -1682,6 +1765,7 @@ input[type="color"] { height: 44px; padding: 4px; cursor: pointer; }
   .admin-sidebar.open { transform: translateX(0); }
   .admin-menu-btn { display: inline-flex; }
   .admin-cols { grid-template-columns: 1fr; }
+  .admin-hub { grid-template-columns: 1fr; }
 }
 
 /* =========================================================================
@@ -1714,7 +1798,7 @@ p, .hero-sub, .page-sub, .product-tag, .lead { text-wrap: pretty; }
 
 /* Slightly tighter, more intentional display tracking with Geist */
 .hero-headline, .pdp-title, .page-head h1, .section-head h2 { letter-spacing: -.03em; }
-.brand-name { letter-spacing: .14em; }
+.brand-name { letter-spacing: 0; }
 
 /* Softer, tinted card elevation on hover (premium feel) */
 .product-card:hover, .cat-card:hover, .contact-card:hover { box-shadow: var(--shadow); }

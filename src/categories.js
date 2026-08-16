@@ -1,28 +1,44 @@
 'use strict';
 
 const CATS = {
-  colon: {
-    nav: { fr: 'Côlon & Digestion', ar: 'القولون والهضم' },
-    filter: { fr: 'Côlon & Microbiote', ar: 'القولون والميكروبيوتا' },
+  honey: {
+    nav: { fr: 'Miel naturel', ar: 'العسل الطبيعي' },
+    filter: { fr: 'Miel naturel', ar: 'العسل الطبيعي' },
     showcase: {
-      fr: { title: 'Côlon & Digestion', sub: 'Transit, microbiote et confort intestinal, formules ciblées.' },
-      ar: { title: 'القولون والهضم', sub: 'عبور هضمي، ميكروبيوتا وراحة معوية بصيغ مركّزة.' },
+      fr: { title: 'Miel naturel', sub: 'Miel brut pour la gorge et le quotidien.' },
+      ar: { title: 'العسل الطبيعي', sub: 'عسل حر للحلق والاستعمال اليومي.' },
+    },
+  },
+  colon: {
+    nav: { fr: 'Côlon', ar: 'القولون' },
+    filter: { fr: 'Côlon', ar: 'القولون' },
+    showcase: {
+      fr: { title: 'Côlon', sub: 'Transit et confort intestinal.' },
+      ar: { title: 'القولون', sub: 'عبور هضمي وراحة معوية.' },
     },
   },
   hair: {
-    nav: { fr: 'Cheveux & Vitalité', ar: 'الشعر والحيوية' },
-    filter: { fr: 'Anti-chute & Pousse', ar: 'مكافحة التساقط والإنبات' },
+    nav: { fr: 'Cheveux', ar: 'الشعر' },
+    filter: { fr: 'Cheveux', ar: 'الشعر' },
     showcase: {
-      fr: { title: 'Cheveux & Vitalité', sub: 'Anti-chute, densité et pousse, actifs concentrés.' },
-      ar: { title: 'الشعر والحيوية', sub: 'مكافحة التساقط والكثافة والإنبات بمكوّنات مركّزة.' },
+      fr: { title: 'Cheveux', sub: 'Anti-chute et densité.' },
+      ar: { title: 'الشعر', sub: 'مكافحة التساقط والكثافة.' },
+    },
+  },
+  respi: {
+    nav: { fr: 'Asthme', ar: 'الربو' },
+    filter: { fr: 'Asthme', ar: 'الربو' },
+    showcase: {
+      fr: { title: 'Asthme', sub: 'Confort respiratoire, en complément du suivi médical.' },
+      ar: { title: 'الربو', sub: 'راحة تنفسية، إلى جانب المتابعة الطبية.' },
     },
   },
   packs: {
-    nav: { fr: 'Packs & Cures', ar: 'الباقات والعلاجات' },
-    filter: { fr: 'Cures Complètes', ar: 'علاجات كاملة' },
+    nav: { fr: 'Packs', ar: 'الباقات' },
+    filter: { fr: 'Packs', ar: 'الباقات' },
     showcase: {
-      fr: { title: 'Packs & Cures', sub: 'Protocoles 30 à 90 jours, y compris confort respiratoire.' },
-      ar: { title: 'الباقات والعلاجات', sub: 'بروتوكولات من 30 إلى 90 يوماً، بما فيها راحة الجهاز التنفسي.' },
+      fr: { title: 'Packs', sub: 'Cures combinées, tarif lot.' },
+      ar: { title: 'الباقات', sub: 'علاجات مجمّعة بسعر الجملة.' },
     },
   },
 };

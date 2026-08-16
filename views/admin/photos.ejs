@@ -1,0 +1,66 @@
+<%- include('../partials/admin-header') %>
+<%
+  function slotFile(key, fallback) {
+    var v = settings[key];
+    return (v && String(v).trim()) ? String(v).trim() : fallback;
+  }
+  var slots = [
+    { id: 'hero', key: 'hero_image', fallback: 'hero-botanica.png', title: 'Bandeau d’accueil', hint: 'Grande photo de la page d’accueil.' },
+    { id: 'honey_hero', key: 'landing_honey_hero', fallback: 'honey-hero.png', title: 'Page miel — visuel principal', hint: 'Photo du pot / hero de la landing miel.' },
+    { id: 'honey_ingredients', key: 'landing_honey_ingredients', fallback: 'honey-ingredients.png', title: 'Page miel — ingrédients', hint: 'Illustration des ingrédients.' },
+    { id: 'honey_ritual', key: 'landing_honey_ritual', fallback: 'honey-ritual.png', title: 'Page miel — rituel', hint: 'Photo du rituel (cuillère, tisane…).' }
+  ];
+%>
+
+<% if (notice) { %><div class="alert alert-ok"><%= notice %></div><% } %>
+<% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<p class="muted" style="margin-top:0">Photos du site (accueil + landing miel). Les photos de chaque produit se changent dans <a href="<%= adminBase %>/produits">Produits</a>.</p>
+
+<div class="photo-grid">
+  <% slots.forEach(function(s){ var file = slotFile(s.key, s.fallback); %>
+    <article class="photo-slot admin-card">
+      <h2><%= s.title %></h2>
+      <p class="muted"><%= s.hint %></p>
+      <div class="photo-slot-preview">
+        <% if (file) { %>
+          <img src="/uploads/<%= file %>" alt="">
+        <% } else { %>
+          <div class="photo-slot-empty">Aucune photo</div>
+        <% } %>
+      </div>
+      <form method="post" action="<%= adminBase %>/photos/<%= s.id %>" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="field">
+          <label for="image-<%= s.id %>">Nouvelle image</label>
+          <input type="file" id="image-<%= s.id %>" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Remplacer</button>
+      </form>
+      <% if (settings[s.key]) { %>
+        <form method="post" action="<%= adminBase %>/photos/<%= s.id %>/supprimer" class="inline-form js-confirm" data-confirm="Retirer cette photo ?">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="btn btn-ghost btn-sm">Retirer</button>
+        </form>
+      <% } %>
+    </article>
+  <% }) %>
+</div>
+
+<section class="admin-card">
+  <div class="admin-card-head">
+    <h2>Photos des produits</h2>
+    <a href="<%= adminBase %>/produits" class="btn btn-outline btn-sm">Gérer les produits</a>
+  </div>
+  <div class="photo-products">
+    <% products.forEach(function(p){ %>
+      <a class="photo-product" href="<%= adminBase %>/produits/<%= p.id %>/modifier" title="<%= p.name %>">
+        <% if (p.image) { %><img src="/uploads/<%= p.image %>" alt=""><% } else { %><span class="mini-ph"></span><% } %>
+        <span><%= p.name %></span>
+      </a>
+    <% }) %>
+    <% if (!products.length) { %><p class="empty-cell">Aucun produit.</p><% } %>
+  </div>
+</section>
+
+<%- include('../partials/admin-footer') %>

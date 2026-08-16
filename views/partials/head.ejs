@@ -3,12 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <% var _isAdmin = typeof admin !== 'undefined' && admin; %>
   <% var _desc = (typeof metaDesc !== 'undefined' && metaDesc) ? metaDesc : (settings['hero_sub_' + lang] || settings.hero_sub_fr || ''); %>
   <% var _title = (typeof title !== 'undefined' && title) ? (title + ' | ' + settings.brand_name) : settings.brand_name; %>
   <% var _url = siteUrl + (currentPath === '/' ? '' : currentPath); %>
   <% var _ogImage = (typeof ogImage !== 'undefined' && ogImage) ? (siteUrl + ogImage) : ''; %>
   <meta name="description" content="<%= _desc %>">
   <title><%= _title %></title>
+  <% if (_isAdmin) { %>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <% } else { %>
   <link rel="canonical" href="<%= _url %>">
   <meta property="og:type" content="<%= (typeof ogType !== 'undefined' ? ogType : 'website') %>">
   <meta property="og:site_name" content="<%= settings.brand_name %>">
@@ -19,12 +23,16 @@
   <meta name="twitter:card" content="<%= _ogImage ? 'summary_large_image' : 'summary' %>">
   <meta name="twitter:title" content="<%= _title %>">
   <meta name="twitter:description" content="<%= _desc %>">
+  <% } %>
   <link rel="icon" href="data:image/svg+xml,<%= encodeURIComponent('<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 32\'><rect width=\'32\' height=\'32\' rx=\'8\' fill=\'#0F1A15\'/><path d=\'M16 6c2.4 3.2 3.6 6 3.6 8.4A3.6 3.6 0 1112.4 14.4C12.4 12 13.6 9.2 16 6z\' fill=\'#2E8B57\'/><path d=\'M16 14.4V26\' stroke=\'#D4AF37\' stroke-width=\'1.6\' fill=\'none\' stroke-linecap=\'round\'/></svg>') %>">
   <link rel="preload" href="/static/fonts/geist-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="/static/css/styles.css">
+  <% if (typeof bodyClass !== 'undefined' && bodyClass === 'page-landing') { %>
+  <link rel="stylesheet" href="/static/css/landing-honey.css">
+  <% } %>
   <style nonce="<%= nonce %>">:root{--accent: <%= settings.accent_color || '#2E8B57' %>;}</style>
   <script nonce="<%= nonce %>">
     (function(){
