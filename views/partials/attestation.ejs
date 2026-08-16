@@ -1,5 +1,7 @@
 <%
-  var attestText = lang === 'ar' ? (settings.attestation_ar || '') : (settings.attestation_fr || '');
+  var attestText = lang === 'ar'
+    ? (settings.attestation_ar || t('attest_text'))
+    : (settings.attestation_fr || t('attest_text'));
   var attestId = (typeof attestId !== 'undefined' && attestId) ? attestId : 'attestation';
   var needName = (typeof attestNamed === 'undefined' || attestNamed);
   var checked = typeof form !== 'undefined' && form && form.attestation;

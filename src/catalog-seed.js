@@ -2,7 +2,19 @@
 
 const BRAND = 'معشبة الأطلس';
 
-/** 4 produits + packs. Prix MAD. */
+const COLON_PRODUCT = {
+  name: 'Confort côlon', name_ar: 'راحة القولون',
+  brand: BRAND, category: 'colon', price: 189, old_price: 229, stock: 64,
+  cpu: '60 gélules', ram: 'Cure 1 mois', storage: 'Inuline, fenouil, menthe',
+  gpu: 'المغرب', screen: '100% Naturel|Vegan', os: '1 gélule matin et soir',
+  short_fr: 'Ballonnements et transit, plantes douces.',
+  short_ar: 'انتفاخ وعبور معوي، نباتات لطيفة.',
+  desc_fr: 'Formule côlon : fibres et plantes (fenouil, menthe) pour un ventre plus calme. Cure 30 jours. Beaucoup d\'eau. Avis médical si douleur persistante.',
+  desc_ar: 'صيغة القولون: ألياف ونباتات (شمر، نعناع) لبطن أهدأ. علاج 30 يوماً. ماء كثير. استشارة طبية إذا استمر الألم.',
+  image: 'p-colon-flora.png', featured: 1, active: 1, sort_order: 2,
+};
+
+/** 4 produits + 2 extra SKUs côlon + packs. Prix MAD. */
 module.exports = [
   {
     name: 'Miel naturel', name_ar: 'عسل حر طبيعي',
@@ -15,17 +27,9 @@ module.exports = [
     desc_ar: 'عسل حر غير مسخّن. يهدّئ الحلق ويعوّض السكر. ملعقة في اليوم، أو في شاي دافئ. ممنوع للأطفال أقل من سنة. مكمّل، ليس دواء.',
     image: 'honey-hero.png', featured: 1, active: 1, sort_order: 1,
   },
-  {
-    name: 'Confort côlon', name_ar: 'راحة القولون',
-    brand: BRAND, category: 'colon', price: 189, old_price: 229, stock: 64,
-    cpu: '60 gélules', ram: 'Cure 1 mois', storage: 'Inuline, fenouil, menthe',
-    gpu: 'المغرب', screen: '100% Naturel|Vegan', os: '1 gélule matin et soir',
-    short_fr: 'Ballonnements et transit, plantes douces.',
-    short_ar: 'انتفاخ وعبور معوي، نباتات لطيفة.',
-    desc_fr: 'Formule côlon : fibres et plantes (fenouil, menthe) pour un ventre plus calme. Cure 30 jours. Beaucoup d\'eau. Avis médical si douleur persistante.',
-    desc_ar: 'صيغة القولون: ألياف ونباتات (شمر، نعناع) لبطن أهدأ. علاج 30 يوماً. ماء كثير. استشارة طبية إذا استمر الألم.',
-    image: 'p-colon-flora.png', featured: 1, active: 1, sort_order: 2,
-  },
+  COLON_PRODUCT,
+  { ...COLON_PRODUCT, sort_order: 8 },
+  { ...COLON_PRODUCT, sort_order: 9 },
   {
     name: 'Anti-chute', name_ar: 'كثافة الشعر',
     brand: BRAND, category: 'hair', price: 199, old_price: 249, stock: 70,

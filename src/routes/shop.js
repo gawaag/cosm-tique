@@ -19,9 +19,10 @@ const reservationLimiter = rateLimit({
 });
 
 function attestationBlock(settings, lang) {
+  const t = translator(lang);
   const text = lang === 'ar'
-    ? (settings.attestation_ar || '')
-    : (settings.attestation_fr || '');
+    ? (settings.attestation_ar || t('attest_text'))
+    : (settings.attestation_fr || t('attest_text'));
   const today = new Date().toISOString().slice(0, 10);
   return `Attestation ${today}:\n${text}`;
 }

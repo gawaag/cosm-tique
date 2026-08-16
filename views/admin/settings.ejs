@@ -62,8 +62,8 @@
     <h3>Attestation sur l'honneur (commande)</h3>
     <p class="muted">Texte affiché et enregistré avec chaque commande. Modifiable ici.</p>
     <div class="field-row">
-      <div class="field grow"><label for="attestation_fr">Attestation (FR)</label><textarea id="attestation_fr" name="attestation_fr" rows="5"><%= settings.attestation_fr || '' %></textarea></div>
-      <div class="field grow"><label for="attestation_ar">Attestation (AR)</label><textarea id="attestation_ar" name="attestation_ar" rows="5" dir="rtl"><%= settings.attestation_ar || '' %></textarea></div>
+      <div class="field grow"><label for="attestation_fr">Attestation (FR)</label><textarea id="attestation_fr" name="attestation_fr" rows="5" placeholder="J'atteste sur l'honneur, à la date de cette commande, que je ne souffre d'aucune maladie de l'estomac, ni de cancer, ni de diabète, ni d'hypertension, ni de dialyse, ni d'aucune maladie dangereuse."><%= settings.attestation_fr || '' %></textarea></div>
+      <div class="field grow"><label for="attestation_ar">Attestation (AR)</label><textarea id="attestation_ar" name="attestation_ar" rows="5" dir="rtl" placeholder="أُشهد على شرفي، بتاريخ هذا الطلب، أنني لا أعاني من أي مرض في المعدة، ولا من السرطان، ولا من السكري، ولا من الضغط، ولا من غسيل الكلى، ولا من أي مرض خطير."><%= settings.attestation_ar || '' %></textarea></div>
     </div>
   </div>
 

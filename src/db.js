@@ -115,8 +115,8 @@ CREATE INDEX IF NOT EXISTS idx_res_items_res ON reservation_items(reservation_id
 // ---------------------------------------------------------------------------
 // Seed: settings
 // ---------------------------------------------------------------------------
-const ATTEST_FR = "J'atteste sur l'honneur, à la date de cette commande, que je ne souffre d'aucune maladie infectieuse de l'estomac, ni de cancer, ni de diabète, ni d'hypertension, ni de dialyse, ni d'aucune maladie dangereuse, et que je ne suis actuellement aucun traitement.";
-const ATTEST_AR = 'أُشهد على شرفي، بتاريخ هذا الطلب، أنني لا أعاني من أي مرض معدٍ في المعدة، ولا من السرطان، ولا من السكري، ولا من الضغط، ولا من غسيل الكلى، ولا من أي مرض خطير، وأنني لا أتناول أي علاج حالياً.';
+const ATTEST_FR = "J'atteste sur l'honneur, à la date de cette commande, que je ne souffre d'aucune maladie de l'estomac, ni de cancer, ni de diabète, ni d'hypertension, ni de dialyse, ni d'aucune maladie dangereuse.";
+const ATTEST_AR = 'أُشهد على شرفي، بتاريخ هذا الطلب، أنني لا أعاني من أي مرض في المعدة، ولا من السرطان، ولا من السكري، ولا من الضغط، ولا من غسيل الكلى، ولا من أي مرض خطير.';
 
 const DEFAULT_SETTINGS = {
   brand_name: 'معشبة الأطلس',
@@ -330,30 +330,143 @@ function seedFranceCatalog() {
   console.log(`[db] ${catalog.length} produits catalogue Maroc (MAD) ajoutes`);
 }
 
+function isColonSku(row) {
+  const cat = String(row.category || '').toLowerCase();
+  const name = String(row.name || '');
+  if (cat === 'packs' || /^pack\b/i.test(name)) return false;
+  if (cat === 'colon') return true;
+  return /c[oô]lon/i.test(name);
+}
+
+function pickColonSource(rows) {
+  const sku = rows.filter(isColonSku);
+  if (!sku.length) return null;
+  const named = sku.filter((p) => p.name === 'Confort côlon');
+  const pool = named.length ? named : sku;
+  const priced = pool.filter((p) => Number(p.price) === 199);
+  return priced[0] || pool[0];
+}
+
+function nextColonSlug(taken) {
+  for (const slug of ['confort-colon-2', 'confort-colon-3']) {
+    if (!taken.has(slug)) return slug;
+  }
+  let n = 4;
+  while (taken.has(`confort-colon-${n}`)) n += 1;
+  return `confort-colon-${n}`;
+}
+
+function isConfortColonClone(row, source) {
+  const name = String(row.name || '');
+  if (source && name === source.name) return true;
+  return /^confort\s+c[oô]lon/i.test(name);
+}
+
+function insertProductCopy(source, slug) {
+  const insert = db.prepare(`
+    INSERT INTO products
+      (slug, name, name_ar, brand, category, price, old_price, stock, cpu, ram, storage, gpu, screen, os,
+       short_fr, short_en, short_ar, desc_fr, desc_en, desc_ar, image, featured, active, sort_order)
+    VALUES
+      (@slug, @name, @name_ar, @brand, @category, @price, @old_price, @stock, @cpu, @ram, @storage, @gpu, @screen, @os,
+       @short_fr, @short_en, @short_ar, @desc_fr, @desc_en, @desc_ar, @image, @featured, @active, @sort_order)
+  `);
+  const info = insert.run({
+    slug,
+    name: source.name,
+    name_ar: source.name_ar || '',
+    brand: 'معشبة الأطلس',
+    category: source.category || 'colon',
+    price: source.price,
+    old_price: source.old_price == null ? null : source.old_price,
+    stock: source.stock,
+    cpu: source.cpu || '',
+    ram: source.ram || '',
+    storage: source.storage || '',
+    gpu: source.gpu || '',
+    screen: source.screen || '',
+    os: source.os || '',
+    short_fr: source.short_fr || '',
+    short_en: source.short_en || '',
+    short_ar: source.short_ar || '',
+    desc_fr: source.desc_fr || '',
+    desc_en: source.desc_en || '',
+    desc_ar: source.desc_ar || '',
+    image: source.image || '',
+    featured: source.featured ? 1 : 0,
+    active: source.active == null ? 1 : source.active,
+    sort_order: source.sort_order || 0,
+  });
+  const newId = info.lastInsertRowid;
+  if (source.id) {
+    const imgs = db.prepare(
+      'SELECT filename, sort_order FROM product_images WHERE product_id = ? ORDER BY sort_order, id'
+    ).all(source.id);
+    const insertImg = db.prepare(
+      'INSERT INTO product_images (product_id, filename, sort_order) VALUES (?, ?, ?)'
+    );
+    for (const img of imgs) insertImg.run(newId, img.filename, img.sort_order);
+  }
+  return newId;
+}
+
+/** Additive only: keep existing products, add Confort côlon copies until 3 SKUs. */
+function ensureColonSkuCopies() {
+  const candidates = db.prepare(`
+    SELECT * FROM products
+    WHERE lower(category) = 'colon'
+       OR name LIKE '%côlon%'
+       OR name LIKE '%Côlon%'
+       OR name LIKE '%colon%'
+       OR name LIKE '%Colon%'
+       OR name LIKE '%COLON%'
+  `).all();
+
+  let source = pickColonSource(candidates);
+  if (!source) {
+    const catalog = require('./catalog-seed');
+    const seedRow = catalog.find((p) => p.category === 'colon');
+    if (!seedRow) return;
+    const existingSlugs = new Set(db.prepare('SELECT slug FROM products').all().map((r) => r.slug));
+    let slug = existingSlugs.has('confort-colon') ? nextColonSlug(existingSlugs) : 'confort-colon';
+    insertProductCopy(seedRow, slug);
+    source = db.prepare('SELECT * FROM products WHERE slug = ?').get(slug);
+    if (!source) return;
+    console.log('[db] Confort côlon inséré depuis le catalogue (base sans produit côlon)');
+  }
+
+  const taken = new Set(db.prepare('SELECT slug FROM products').all().map((r) => r.slug));
+  let copies = db.prepare('SELECT * FROM products').all()
+    .filter((row) => isConfortColonClone(row, source));
+  let added = 0;
+  while (copies.length < 3 && added < 5) {
+    const slug = nextColonSlug(taken);
+    taken.add(slug);
+    insertProductCopy(source, slug);
+    added += 1;
+    copies = db.prepare('SELECT * FROM products').all()
+      .filter((row) => isConfortColonClone(row, source));
+  }
+  if (added) {
+    console.log(`[db] ${added} copie(s) Confort côlon ajoutée(s) (total ${copies.length})`);
+  }
+}
+
 function ensureFranceCatalog() {
   forceMoroccoCurrency();
   ensureVoltaContactDefaults();
   applyMaachabatBrand();
 
-  const version = String((getSetting.get('catalog_version') || {}).value || '');
-  const pcLeftover = db.prepare(`
-    SELECT COUNT(*) AS c FROM products
-    WHERE category IN ('Ordinateurs','Gaming','Smartphones','PC Portable','PC Gamer','Telephone')
-       OR name LIKE '%RTX%' OR name LIKE '%Galaxy%' OR name LIKE '%Dell%' OR name LIKE '%i5%'
-  `).get().c;
   const total = db.prepare('SELECT COUNT(*) AS c FROM products').get().c;
-
-  const attestFr = String((getSetting.get('attestation_fr') || {}).value || '').trim();
-  const attestAr = String((getSetting.get('attestation_ar') || {}).value || '').trim();
-  if (!attestFr) upsertSetting.run('attestation_fr', ATTEST_FR);
-  if (!attestAr) upsertSetting.run('attestation_ar', ATTEST_AR);
-
-  if (version !== 'maachabat-atlas-v1' || total === 0 || pcLeftover > 0) {
-    db.exec('DELETE FROM product_images; DELETE FROM products;');
+  if (total === 0) {
     seedFranceCatalog();
-    upsertSetting.run('catalog_version', 'maachabat-atlas-v1');
     console.log('[db] Catalogue معشبة الأطلس (miel / côlon / cheveux / asthme / packs) chargé');
   }
+
+  upsertSetting.run('attestation_fr', ATTEST_FR);
+  upsertSetting.run('attestation_ar', ATTEST_AR);
+
+  ensureColonSkuCopies();
 }
 
 seedAdmin();

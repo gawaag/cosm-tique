@@ -140,6 +140,7 @@ const DICT = {
     attest_title: 'Attestation sur l\'honneur',
     attest_required: 'Veuillez cocher l\'attestation sur l\'honneur pour commander.',
     attest_hint: 'Obligatoire pour toute commande.',
+    attest_text: "J'atteste sur l'honneur, à la date de cette commande, que je ne souffre d'aucune maladie de l'estomac, ni de cancer, ni de diabète, ni d'hypertension, ni de dialyse, ni d'aucune maladie dangereuse.",
   },
   ar: {
     nav_products: 'المتجر',
@@ -280,6 +281,7 @@ const DICT = {
     attest_title: 'شهادة على الشرف',
     attest_required: 'يجب التأشير على الشهادة على الشرف لإتمام الطلب.',
     attest_hint: 'إلزامية لكل طلب.',
+    attest_text: 'أُشهد على شرفي، بتاريخ هذا الطلب، أنني لا أعاني من أي مرض في المعدة، ولا من السرطان، ولا من السكري، ولا من الضغط، ولا من غسيل الكلى، ولا من أي مرض خطير.',
   },
 };
 
