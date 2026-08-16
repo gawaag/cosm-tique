@@ -1,20 +1,12 @@
 'use strict';
 
 const CATS = {
-  honey: {
-    nav: { fr: 'Miel', ar: 'عسل' },
-    filter: { fr: 'Miel naturel', ar: 'العسل الطبيعي' },
-    showcase: {
-      fr: { title: 'Miel naturel', sub: 'Miel brut pour la gorge et le quotidien.' },
-      ar: { title: 'العسل الطبيعي', sub: 'عسل حر للحلق والاستعمال اليومي.' },
-    },
-  },
   colon: {
     nav: { fr: 'Côlon', ar: 'قولون' },
     filter: { fr: 'Côlon', ar: 'القولون' },
     showcase: {
-      fr: { title: 'Côlon', sub: 'Transit et confort intestinal.' },
-      ar: { title: 'القولون', sub: 'عبور هضمي وراحة معوية.' },
+      fr: { title: 'Côlon', sub: 'Miel de confort intestinal, 250 g, 500 g et 1 kg.' },
+      ar: { title: 'القولون', sub: 'عسل راحة القولون، 250 غ و 500 غ و 1 كغ.' },
     },
   },
   hair: {
@@ -23,14 +15,6 @@ const CATS = {
     showcase: {
       fr: { title: 'Cheveux', sub: 'Anti-chute et densité.' },
       ar: { title: 'الشعر', sub: 'مكافحة التساقط والكثافة.' },
-    },
-  },
-  respi: {
-    nav: { fr: 'Asthme', ar: 'ربو' },
-    filter: { fr: 'Asthme', ar: 'الربو' },
-    showcase: {
-      fr: { title: 'Asthme', sub: 'Confort respiratoire, en complément du suivi médical.' },
-      ar: { title: 'الربو', sub: 'راحة تنفسية، إلى جانب المتابعة الطبية.' },
     },
   },
   packs: {

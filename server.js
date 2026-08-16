@@ -155,7 +155,8 @@ app.use((req, res, next) => {
   res.locals.dir = htmlDir(lang);
   res.locals.t = translator(lang);
   res.locals.settings = getSettings();
-  res.locals.navCategories = listCategories({ activeOnly: true });
+  res.locals.navCategories = listCategories({ activeOnly: true })
+    .filter((c) => !['respi', 'honey'].includes(String(c.category || '').toLowerCase()));
   res.locals.catNav = (key) => catNavLabel(key, lang);
   res.locals.catFilter = (key) => catFilterLabel(key, lang);
   res.locals.catShow = (key) => catShowcase(key, lang);

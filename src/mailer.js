@@ -57,7 +57,7 @@ function fromAddress(settings, smtpUser) {
   }
   if (custom) return custom;
   if (smtpUser) return `"${settings.brand_name || 'Boutique'}" <${smtpUser}>`;
-  return `${settings.brand_name || 'معشبة الأطلس'} <voltatech.contact@gmail.com>`;
+  return `${settings.brand_name || 'معشبة الأطلس'} <anas.bouaita2027@gmail.com>`;
 }
 
 function buildContent(reservation, settings) {

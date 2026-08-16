@@ -118,45 +118,53 @@ CREATE INDEX IF NOT EXISTS idx_res_items_res ON reservation_items(reservation_id
 const ATTEST_FR = "J'atteste sur l'honneur, à la date de cette commande, que je ne souffre d'aucune maladie de l'estomac, ni de cancer, ni de diabète, ni d'hypertension, ni de dialyse, ni d'aucune maladie dangereuse.";
 const ATTEST_AR = 'أُشهد على شرفي، بتاريخ هذا الطلب، أنني لا أعاني من أي مرض في المعدة، ولا من السرطان، ولا من السكري، ولا من الضغط، ولا من غسيل الكلى، ولا من أي مرض خطير.';
 
+const SHOP_EMAIL = 'anas.bouaita2027@gmail.com';
+const SHOP_WA = '212619915492';
+const SHOP_PHONE = '+212 619 915 492';
+const SHOP_SOCIAL = 'https://wa.me/212619915492';
+const CATALOG_VERSION = 'maachabat-colon-v1';
+
 const DEFAULT_SETTINGS = {
   brand_name: 'معشبة الأطلس',
   brand_latin: 'Maachabat Al Atlas',
   accent_color: '#2E8B57',
-  whatsapp_number: '212619915492',
-  contact_email: 'voltatech.contact@gmail.com',
-  notification_email: 'voltatech.contact@gmail.com',
+  whatsapp_number: SHOP_WA,
+  contact_email: SHOP_EMAIL,
+  notification_email: SHOP_EMAIL,
   smtp_host: '',
   smtp_port: '465',
   smtp_secure: 'true',
-  smtp_user: 'voltatech.contact@gmail.com',
+  smtp_user: SHOP_EMAIL,
   smtp_pass: '',
-  mail_from: 'معشبة الأطلس <voltatech.contact@gmail.com>',
+  mail_from: `معشبة الأطلس <${SHOP_EMAIL}>`,
   resend_api_key: '',
   whatsapp_notify: '1',
   callmebot_apikey: '',
   notify_webhook_url: '',
-  contact_phone: '+212 6 19 91 54 92',
+  contact_phone: SHOP_PHONE,
+  instagram: SHOP_SOCIAL,
+  facebook: SHOP_SOCIAL,
   hero_title_fr: 'Les plantes, simplement.',
   hero_title_ar: 'الأعشاب، ببساطة.',
   hero_title_en: 'الأعشاب، ببساطة.',
-  hero_sub_fr: 'Miel naturel, côlon, cheveux et asthme. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.',
-  hero_sub_ar: 'عسل حر، راحة القولون، كثافة الشعر، ونفس مرتاح. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
-  hero_sub_en: 'عسل حر، راحة القولون، كثافة الشعر، ونفس مرتاح. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
-  hero_image: 'hero-honey-atlas.png',
+  hero_sub_fr: 'Miel du côlon, anti-chute et packs. Boutique au Maroc. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.',
+  hero_sub_ar: 'عسل راحة القولون، كثافة الشعر، وباقات. متجر في المغرب. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
+  hero_sub_en: 'عسل راحة القولون، كثافة الشعر، وباقات. متجر في المغرب. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
+  hero_image: 'hero-atlas-colon.png',
   hero_video: '',
-  about_fr: "معشبة الأطلس (Maachabat Al Atlas) propose quatre formules naturelles : miel brut, confort du côlon, anti-chute, et confort respiratoire (asthme léger). Des packs réunissent les cures à tarif lot. Livraison 24 h à Rabat, Salé et Casablanca, 48 h dans le reste du Maroc. Paiement à la livraison. Les compléments ne se substituent pas à un traitement médical.",
-  about_ar: "معشبة الأطلس (Maachabat Al Atlas) أربع صيغ طبيعية: عسل حر، راحة القولون، مكافحة تساقط الشعر، وراحة التنفس (ربو خفيف). باقات تجمع العلاجات بسعر الجملة. توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام. المكمّلات لا تغني عن علاج طبي.",
-  about_en: "معشبة الأطلس (Maachabat Al Atlas) : miel, côlon, cheveux, asthme. Livraison Maroc 24 h / 48 h. Paiement à la livraison.",
+  about_fr: "معشبة الأطلس (Maachabat Al Atlas) est une boutique au Maroc : miel de confort du côlon (250 g, 500 g, 1 kg), anti-chute, et pack côlon + cheveux. Livraison 24 h à Rabat, Salé et Casablanca, 48 h dans le reste du Maroc. Paiement à la livraison. Les compléments ne se substituent pas à un traitement médical.",
+  about_ar: "معشبة الأطلس (Maachabat Al Atlas) متجر في المغرب: عسل راحة القولون (250 غ، 500 غ، 1 كغ)، مكافحة تساقط الشعر، وباقة القولون والشعر. توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام. المكمّلات لا تغني عن علاج طبي.",
+  about_en: "معشبة الأطلس (Maachabat Al Atlas) : côlon, cheveux, packs. Boutique au Maroc. Livraison 24 h / 48 h. Paiement à la livraison.",
   attestation_fr: ATTEST_FR,
   attestation_ar: ATTEST_AR,
-  delivery_fr: 'Paiement à la livraison. 24 h Rabat, Salé, Casablanca. 48 h dans le reste du Maroc.',
-  delivery_ar: 'الدفع عند الاستلام. 24 ساعة الرباط وسلا والبيضاء. 48 ساعة باقي المغرب.',
+  delivery_fr: 'Boutique au Maroc. Paiement à la livraison. 24 h Rabat, Salé, Casablanca. 48 h dans le reste du Maroc.',
+  delivery_ar: 'متجر في المغرب. الدفع عند الاستلام. 24 ساعة الرباط وسلا والبيضاء. 48 ساعة باقي المغرب.',
   landing_honey_hero: 'honey-hero.png',
   landing_honey_ingredients: 'honey-ingredients.png',
   landing_honey_ritual: 'honey-ritual.png',
   currency: 'MAD',
   currency_symbol: 'د.م.',
-  catalog_version: 'maachabat-atlas-v1',
+  catalog_version: CATALOG_VERSION,
 };
 
 const getSetting = db.prepare('SELECT value FROM settings WHERE key = ?');
@@ -182,11 +190,23 @@ function applyMaachabatBrand() {
     hero_title_fr: DEFAULT_SETTINGS.hero_title_fr,
     hero_title_ar: DEFAULT_SETTINGS.hero_title_ar,
     hero_title_en: DEFAULT_SETTINGS.hero_title_en,
+    hero_sub_fr: DEFAULT_SETTINGS.hero_sub_fr,
+    hero_sub_ar: DEFAULT_SETTINGS.hero_sub_ar,
+    hero_sub_en: DEFAULT_SETTINGS.hero_sub_en,
     about_fr: DEFAULT_SETTINGS.about_fr,
     about_ar: DEFAULT_SETTINGS.about_ar,
     about_en: DEFAULT_SETTINGS.about_en,
+    delivery_fr: DEFAULT_SETTINGS.delivery_fr,
+    delivery_ar: DEFAULT_SETTINGS.delivery_ar,
     mail_from: DEFAULT_SETTINGS.mail_from,
     hero_image: DEFAULT_SETTINGS.hero_image,
+    contact_email: DEFAULT_SETTINGS.contact_email,
+    notification_email: DEFAULT_SETTINGS.notification_email,
+    smtp_user: DEFAULT_SETTINGS.smtp_user,
+    whatsapp_number: DEFAULT_SETTINGS.whatsapp_number,
+    contact_phone: DEFAULT_SETTINGS.contact_phone,
+    instagram: DEFAULT_SETTINGS.instagram,
+    facebook: DEFAULT_SETTINGS.facebook,
   };
   for (const [k, v] of Object.entries(force)) upsertSetting.run(k, v);
   db.prepare(`
@@ -199,20 +219,20 @@ function applyMaachabatBrand() {
 }
 const applyMiichabatBrand = applyMaachabatBrand;
 
-/** Contact boutique (email Volta + WhatsApp Maroc). Never re-apply France numbers. */
-function ensureVoltaContactDefaults() {
-  const EMAIL = 'voltatech.contact@gmail.com';
-  const WA = '212619915492';
-  const PHONE = '+212 6 19 91 54 92';
+/** Contact boutique Maroc (email + WhatsApp 212). Never re-apply France +33 or Volta emails. */
+function ensureAtlasContactDefaults() {
+  const EMAIL = SHOP_EMAIL;
+  const WA = SHOP_WA;
+  const PHONE = SHOP_PHONE;
   const staleWa = new Set([
     '', '212600000000', '33600000000', '33744141908',
   ]);
   const stalePhone = new Set([
     '', '+33 6 00 00 00 00', '+212 6 00 00 00 00', '+33 7 44 14 19 08',
+    '+212 6 19 91 54 92',
   ]);
-  const placeholders = new Set([
-    '', 'contact@example.com', '212600000000', '33600000000',
-    '+33 6 00 00 00 00', '+212 6 00 00 00 00',
+  const staleEmails = new Set([
+    '', 'contact@example.com', 'voltatech.contact@gmail.com',
   ]);
   let changed = false;
 
@@ -235,23 +255,31 @@ function ensureVoltaContactDefaults() {
   };
   for (const [key, want] of Object.entries(targets)) {
     const cur = String((getSetting.get(key) || {}).value || '').trim();
-    if (!cur || placeholders.has(cur)) {
+    if (!cur || staleEmails.has(cur) || /volta/i.test(cur) || /example\.com/i.test(cur)) {
       upsertSetting.run(key, want);
       changed = true;
     }
   }
   const smtpUser = String((getSetting.get('smtp_user') || {}).value || '').trim();
-  if (!smtpUser || placeholders.has(smtpUser) || smtpUser.includes('example.com')) {
+  if (!smtpUser || staleEmails.has(smtpUser) || /volta/i.test(smtpUser) || /example\.com/i.test(smtpUser)) {
     upsertSetting.run('smtp_user', EMAIL);
     changed = true;
   }
   const mailFrom = String((getSetting.get('mail_from') || {}).value || '').trim();
-  if (!mailFrom || mailFrom.includes('example.com') || mailFrom.includes('VOLTA') || mailFrom.includes('HERBALIS')) {
+  if (!mailFrom || /example\.com/i.test(mailFrom) || /volta/i.test(mailFrom) || /HERBALIS/i.test(mailFrom) || /voltatech/i.test(mailFrom)) {
     upsertSetting.run('mail_from', `معشبة الأطلس <${EMAIL}>`);
     changed = true;
   }
+  for (const key of ['instagram', 'facebook']) {
+    const cur = String((getSetting.get(key) || {}).value || '').trim();
+    if (!cur) {
+      upsertSetting.run(key, SHOP_SOCIAL);
+      changed = true;
+    }
+  }
   if (changed) console.log(`[db] Contact boutique: ${EMAIL} / WhatsApp ${PHONE}`);
 }
+const ensureVoltaContactDefaults = ensureAtlasContactDefaults;
 
 function slugifyName(str) {
   return String(str)
@@ -296,6 +324,21 @@ function alignAdminFromEnv() {
 // ---------------------------------------------------------------------------
 // Seed: catalogue Maroc (MAD) + photos
 // ---------------------------------------------------------------------------
+function catalogRowPayload(row, slug) {
+  return {
+    ...row,
+    slug,
+    name_ar: row.name_ar || '',
+    short_ar: row.short_ar || '',
+    desc_ar: row.desc_ar || '',
+    short_en: row.short_ar || row.short_en || '',
+    desc_en: row.desc_ar || row.desc_en || '',
+    old_price: row.old_price == null ? null : row.old_price,
+    featured: row.featured ? 1 : 0,
+    active: row.active == null ? 1 : row.active,
+  };
+}
+
 function insertCatalogRows(rows) {
   const insert = db.prepare(`
     INSERT INTO products
@@ -305,22 +348,14 @@ function insertCatalogRows(rows) {
       (@slug, @name, @name_ar, @brand, @category, @price, @old_price, @stock, @cpu, @ram, @storage, @gpu, @screen, @os,
        @short_fr, @short_en, @short_ar, @desc_fr, @desc_en, @desc_ar, @image, @featured, @active, @sort_order)
   `);
-  const used = new Set();
+  const used = new Set(db.prepare('SELECT slug FROM products').all().map((r) => r.slug));
   for (const row of rows) {
-    let slug = slugifyName(row.name);
+    let slug = row.slug || slugifyName(row.name);
     let n = 2;
-    while (used.has(slug)) slug = `${slugifyName(row.name)}-${n++}`;
+    const base = slug;
+    while (used.has(slug)) slug = `${base}-${n++}`;
     used.add(slug);
-    insert.run({
-      ...row,
-      slug,
-      name_ar: row.name_ar || '',
-      short_ar: row.short_ar || '',
-      desc_ar: row.desc_ar || '',
-      short_en: row.short_ar || row.short_en || '',
-      desc_en: row.desc_ar || row.desc_en || '',
-      old_price: row.old_price == null ? null : row.old_price,
-    });
+    insert.run(catalogRowPayload(row, slug));
   }
 }
 
@@ -330,39 +365,23 @@ function seedFranceCatalog() {
   console.log(`[db] ${catalog.length} produits catalogue Maroc (MAD) ajoutes`);
 }
 
-function isColonSku(row) {
-  const cat = String(row.category || '').toLowerCase();
-  const name = String(row.name || '');
-  if (cat === 'packs' || /^pack\b/i.test(name)) return false;
-  if (cat === 'colon') return true;
-  return /c[oô]lon/i.test(name);
-}
-
-function pickColonSource(rows) {
-  const sku = rows.filter(isColonSku);
-  if (!sku.length) return null;
-  const named = sku.filter((p) => p.name === 'Confort côlon');
-  const pool = named.length ? named : sku;
-  const priced = pool.filter((p) => Number(p.price) === 199);
-  return priced[0] || pool[0];
-}
-
-function nextColonSlug(taken) {
-  for (const slug of ['confort-colon-2', 'confort-colon-3']) {
-    if (!taken.has(slug)) return slug;
+function upsertProductBySlug(row) {
+  const slug = row.slug || slugifyName(row.name);
+  const payload = catalogRowPayload(row, slug);
+  const existing = db.prepare('SELECT id FROM products WHERE slug = ?').get(slug);
+  if (existing) {
+    db.prepare(`
+      UPDATE products SET
+        name=@name, name_ar=@name_ar, brand=@brand, category=@category,
+        price=@price, old_price=@old_price, stock=@stock,
+        cpu=@cpu, ram=@ram, storage=@storage, gpu=@gpu, screen=@screen, os=@os,
+        short_fr=@short_fr, short_en=@short_en, short_ar=@short_ar,
+        desc_fr=@desc_fr, desc_en=@desc_en, desc_ar=@desc_ar,
+        image=@image, featured=@featured, active=@active, sort_order=@sort_order
+      WHERE slug=@slug
+    `).run(payload);
+    return existing.id;
   }
-  let n = 4;
-  while (taken.has(`confort-colon-${n}`)) n += 1;
-  return `confort-colon-${n}`;
-}
-
-function isConfortColonClone(row, source) {
-  const name = String(row.name || '');
-  if (source && name === source.name) return true;
-  return /^confort\s+c[oô]lon/i.test(name);
-}
-
-function insertProductCopy(source, slug) {
   const insert = db.prepare(`
     INSERT INTO products
       (slug, name, name_ar, brand, category, price, old_price, stock, cpu, ram, storage, gpu, screen, os,
@@ -371,102 +390,47 @@ function insertProductCopy(source, slug) {
       (@slug, @name, @name_ar, @brand, @category, @price, @old_price, @stock, @cpu, @ram, @storage, @gpu, @screen, @os,
        @short_fr, @short_en, @short_ar, @desc_fr, @desc_en, @desc_ar, @image, @featured, @active, @sort_order)
   `);
-  const info = insert.run({
-    slug,
-    name: source.name,
-    name_ar: source.name_ar || '',
-    brand: 'معشبة الأطلس',
-    category: source.category || 'colon',
-    price: source.price,
-    old_price: source.old_price == null ? null : source.old_price,
-    stock: source.stock,
-    cpu: source.cpu || '',
-    ram: source.ram || '',
-    storage: source.storage || '',
-    gpu: source.gpu || '',
-    screen: source.screen || '',
-    os: source.os || '',
-    short_fr: source.short_fr || '',
-    short_en: source.short_en || '',
-    short_ar: source.short_ar || '',
-    desc_fr: source.desc_fr || '',
-    desc_en: source.desc_en || '',
-    desc_ar: source.desc_ar || '',
-    image: source.image || '',
-    featured: source.featured ? 1 : 0,
-    active: source.active == null ? 1 : source.active,
-    sort_order: source.sort_order || 0,
-  });
-  const newId = info.lastInsertRowid;
-  if (source.id) {
-    const imgs = db.prepare(
-      'SELECT filename, sort_order FROM product_images WHERE product_id = ? ORDER BY sort_order, id'
-    ).all(source.id);
-    const insertImg = db.prepare(
-      'INSERT INTO product_images (product_id, filename, sort_order) VALUES (?, ?, ?)'
-    );
-    for (const img of imgs) insertImg.run(newId, img.filename, img.sort_order);
-  }
-  return newId;
+  return insert.run(payload).lastInsertRowid;
 }
 
-/** Additive only: keep existing products, add Confort côlon copies until 3 SKUs. */
-function ensureColonSkuCopies() {
-  const candidates = db.prepare(`
-    SELECT * FROM products
-    WHERE lower(category) = 'colon'
-       OR name LIKE '%côlon%'
-       OR name LIKE '%Côlon%'
-       OR name LIKE '%colon%'
-       OR name LIKE '%Colon%'
-       OR name LIKE '%COLON%'
-  `).all();
+/** Keep only the 5 canonical SKUs. Upsert by slug; deactivate the rest (orders stay intact). */
+function ensureMaachabatCatalog() {
+  const catalog = require('./catalog-seed');
+  const keep = catalog.map((p) => p.slug).filter(Boolean);
+  if (!keep.length) return;
 
-  let source = pickColonSource(candidates);
-  if (!source) {
-    const catalog = require('./catalog-seed');
-    const seedRow = catalog.find((p) => p.category === 'colon');
-    if (!seedRow) return;
-    const existingSlugs = new Set(db.prepare('SELECT slug FROM products').all().map((r) => r.slug));
-    let slug = existingSlugs.has('confort-colon') ? nextColonSlug(existingSlugs) : 'confort-colon';
-    insertProductCopy(seedRow, slug);
-    source = db.prepare('SELECT * FROM products WHERE slug = ?').get(slug);
-    if (!source) return;
-    console.log('[db] Confort côlon inséré depuis le catalogue (base sans produit côlon)');
+  const ver = String((getSetting.get('catalog_version') || {}).value || '');
+  const reseed = ver !== CATALOG_VERSION;
+
+  for (const row of catalog) {
+    const existing = db.prepare('SELECT id FROM products WHERE slug = ?').get(row.slug);
+    if (!existing || reseed) upsertProductBySlug(row);
   }
 
-  const taken = new Set(db.prepare('SELECT slug FROM products').all().map((r) => r.slug));
-  let copies = db.prepare('SELECT * FROM products').all()
-    .filter((row) => isConfortColonClone(row, source));
-  let added = 0;
-  while (copies.length < 3 && added < 5) {
-    const slug = nextColonSlug(taken);
-    taken.add(slug);
-    insertProductCopy(source, slug);
-    added += 1;
-    copies = db.prepare('SELECT * FROM products').all()
-      .filter((row) => isConfortColonClone(row, source));
-  }
-  if (added) {
-    console.log(`[db] ${added} copie(s) Confort côlon ajoutée(s) (total ${copies.length})`);
+  const placeholders = keep.map(() => '?').join(',');
+  db.prepare(`UPDATE products SET active = 0 WHERE slug NOT IN (${placeholders})`).run(...keep);
+
+  upsertSetting.run('catalog_version', CATALOG_VERSION);
+  if (reseed) {
+    console.log(`[db] Catalogue ${CATALOG_VERSION} : ${keep.length} produits actifs, autres désactivés`);
   }
 }
 
 function ensureFranceCatalog() {
   forceMoroccoCurrency();
-  ensureVoltaContactDefaults();
+  ensureAtlasContactDefaults();
   applyMaachabatBrand();
 
   const total = db.prepare('SELECT COUNT(*) AS c FROM products').get().c;
   if (total === 0) {
     seedFranceCatalog();
-    console.log('[db] Catalogue معشبة الأطلس (miel / côlon / cheveux / asthme / packs) chargé');
+    console.log('[db] Catalogue معشبة الأطلس (côlon / cheveux / packs) chargé');
   }
 
   upsertSetting.run('attestation_fr', ATTEST_FR);
   upsertSetting.run('attestation_ar', ATTEST_AR);
 
-  ensureColonSkuCopies();
+  ensureMaachabatCatalog();
 }
 
 seedAdmin();

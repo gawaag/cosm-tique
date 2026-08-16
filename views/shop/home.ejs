@@ -19,7 +19,7 @@
     var heroVideo = (settings.hero_video && settings.hero_video.trim()) ? settings.hero_video.trim() : '';
     var heroImg = (settings.hero_image && settings.hero_image.trim())
       ? settings.hero_image.trim()
-      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-honey-atlas.png');
+      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-atlas-colon.png');
     var hasVideo = !!heroVideo;
   %>
   <section class="hero<%= (hasVideo || heroImg) ? ' hero--photo' : ' hero--fallback' %>">

@@ -27,14 +27,14 @@
         <label for="notification_email">Adresse email qui reçoit les formulaires *</label>
         <input type="email" id="notification_email" name="notification_email"
                value="<%= settings.notification_email || '' %>"
-               placeholder="ex: voltatech.contact@gmail.com" autocomplete="email" required>
+               placeholder="ex: anas.bouaita2027@gmail.com" autocomplete="email" required>
       </div>
     </div>
 
     <div class="form-section">
       <h3>2. Resend (recommandé sur Render)</h3>
       <ol class="smtp-steps">
-        <li>Créez un compte gratuit sur <a href="https://resend.com/signup" target="_blank" rel="noopener">resend.com</a> avec <strong>voltatech.contact@gmail.com</strong>.</li>
+        <li>Créez un compte gratuit sur <a href="https://resend.com/signup" target="_blank" rel="noopener">resend.com</a> avec <strong>anas.bouaita2027@gmail.com</strong>.</li>
         <li>Allez dans <a href="https://resend.com/api-keys" target="_blank" rel="noopener">API Keys</a> → Create API Key.</li>
         <li>Collez la clé ici <em>ou</em> dans Render → Environment → <code>RESEND_API_KEY</code>.</li>
         <li>Enregistrer → Tester l’email.</li>
@@ -80,7 +80,7 @@
           <label for="smtp_user">Identifiant SMTP <span class="muted">(votre Gmail)</span></label>
           <input type="email" id="smtp_user" name="smtp_user"
                  value="<%= settings.smtp_user || settings.notification_email || '' %>"
-                 placeholder="voltatech.contact@gmail.com" autocomplete="username">
+                 placeholder="anas.bouaita2027@gmail.com" autocomplete="username">
           <button type="button" class="btn btn-ghost btn-sm" id="copySmtpUser" style="margin-top:8px">Copier l’email destinataire</button>
         </div>
         <div class="field grow">

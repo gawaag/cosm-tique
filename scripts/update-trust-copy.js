@@ -2,8 +2,8 @@
 require('dotenv').config();
 const { db } = require('../src/db');
 
-const aboutFr = "معشبة الأطلس (Maachabat Al Atlas) propose quatre formules naturelles : miel brut, confort du côlon, anti-chute, et confort respiratoire. Packs à tarif lot. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.";
-const aboutAr = "معشبة الأطلس (Maachabat Al Atlas) أربع صيغ طبيعية: عسل حر، راحة القولون، مكافحة تساقط الشعر، وراحة التنفس. باقات بسعر الجملة. توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام.";
+const aboutFr = "معشبة الأطلس (Maachabat Al Atlas) est une boutique au Maroc : miel de confort du côlon (250 g, 500 g, 1 kg), anti-chute, et pack côlon + cheveux. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.";
+const aboutAr = "معشبة الأطلس (Maachabat Al Atlas) متجر في المغرب: عسل راحة القولون، مكافحة تساقط الشعر، وباقة القولون والشعر. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام.";
 
 const upsert = db.prepare(`
   INSERT INTO settings (key, value) VALUES (?, ?)

@@ -244,12 +244,13 @@ h1, h2, h3 { line-height: 1.08; margin: 0 0 .45em; font-weight: 600; letter-spac
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 50%;
+  object-position: 50% 46%;
   display: block;
   transform: translateZ(36px) scale(1.03);
 }
 img.hero-bg {
-  transform-origin: 50% 50%;
+  transform-origin: 50% 46%;
+  object-position: 50% 46%;
 }
 video.hero-bg--video {
   transform: translateZ(20px) scale(1.02);
@@ -1495,8 +1496,16 @@ body.has-cfg-sticky .site-header { box-shadow: none; }
 .footer-brand {
   display: inline-flex; align-items: center; gap: 10px; font-weight: 600; margin-bottom: 4px;
 }
-.footer-tag { margin: 0; color: var(--muted); font-size: .92rem; max-width: 28ch; }
+.footer-tag { margin: 0; color: var(--muted); font-size: .92rem; max-width: 32ch; }
 .footer-trust { margin: 10px 0 0; color: var(--muted); font-size: .8rem; line-height: 1.4; max-width: 36ch; }
+.footer-social {
+  display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 14px;
+}
+.footer-social-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .9rem; font-weight: 600;
+}
+.footer-social-note { margin: 4px 0 0; color: var(--muted); font-size: .82rem; }
 .footer-bottom {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding: 18px 22px 28px; border-top: 1px solid var(--border);
@@ -1573,7 +1582,7 @@ html.js [data-reveal].is-visible { opacity: 1; transform: none; }
 @media (max-width: 860px) {
   .hero-brand { font-size: clamp(1.55rem, 8vw, 2.2rem); }
   .hero-copy--top { max-width: min(32rem, 92%); }
-  .hero-bg { object-position: 50% 48%; }
+  .hero-bg { object-position: 50% 42%; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .footer-inner { flex-direction: column; text-align: center; }

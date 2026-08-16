@@ -10,6 +10,32 @@
         </a>
         <p class="footer-tag"><%= t('footer_tag') %></p>
         <p class="footer-trust"><%= (lang === 'ar' ? (settings.delivery_ar || '') : (settings.delivery_fr || '')) || t('trust_pay_compact') %></p>
+        <%
+          var waDigits = String((settings && settings.whatsapp_number) || '212619915492').replace(/[^0-9]/g, '') || '212619915492';
+          var phoneShow = (settings && settings.contact_phone) || '+212 619 915 492';
+          function socialHref(raw) {
+            var v = String(raw || '').trim();
+            if (!v) return 'https://wa.me/' + waDigits;
+            if (/^https?:\/\//i.test(v)) return v;
+            if (/instagram\.com|facebook\.com|fb\.me|fb\.com/i.test(v)) return 'https://' + v.replace(/^https?:\/\//i, '').replace(/^\/+/, '');
+            var d = v.replace(/[^0-9]/g, '');
+            if (d.length >= 8) return 'https://wa.me/' + d;
+            return v;
+          }
+          var igHref = socialHref(settings.instagram);
+          var fbHref = socialHref(settings.facebook);
+        %>
+        <div class="footer-social">
+          <a href="<%= igHref %>" target="_blank" rel="noopener" class="footer-social-link">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm10 2H7a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3zm-5 3.5A4.5 4.5 0 1112 16.5 4.5 4.5 0 0112 7.5zm0 2A2.5 2.5 0 1014.5 12 2.5 2.5 0 0012 9.5zm5.2-3.1a1 1 0 11-1 1 1 1 0 011-1z"/></svg>
+            <span>Instagram</span>
+          </a>
+          <a href="<%= fbHref %>" target="_blank" rel="noopener" class="footer-social-link">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg>
+            <span>Facebook</span>
+          </a>
+        </div>
+        <p class="footer-social-note"><%= phoneShow %></p>
       </div>
       <div class="footer-col">
         <h3><%= t('nav_products') %></h3>

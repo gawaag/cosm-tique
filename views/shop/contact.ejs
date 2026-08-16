@@ -16,7 +16,7 @@
       <div class="diag-actions">
         <a class="btn btn-primary" href="/produits?cat=colon"><%= t('diag_colon') %></a>
         <a class="btn btn-outline" href="/produits?cat=hair"><%= t('diag_hair') %></a>
-        <a class="btn btn-outline" href="/produits?cat=packs"><%= t('diag_respi') %></a>
+        <a class="btn btn-outline" href="/produits?cat=packs"><%= t('diag_packs') %></a>
       </div>
     </div>
 
@@ -37,6 +37,26 @@
         <div><strong><%= t('email') %></strong><span><%= settings.contact_email %></span></div>
       </a>
       <% } %>
+      <%
+        var waSocial = String((settings && settings.whatsapp_number) || '212619915492').replace(/[^0-9]/g, '') || '212619915492';
+        var phoneLabel = (settings && settings.contact_phone) || '+212 619 915 492';
+        function contactSocialHref(raw) {
+          var v = String(raw || '').trim();
+          if (!v) return 'https://wa.me/' + waSocial;
+          if (/^https?:\/\//i.test(v)) return v;
+          var d = v.replace(/[^0-9]/g, '');
+          if (d.length >= 8) return 'https://wa.me/' + d;
+          return v;
+        }
+      %>
+      <a class="contact-card" data-reveal target="_blank" rel="noopener" href="<%= contactSocialHref(settings.instagram) %>">
+        <span class="contact-ico"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm10 2H7a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3zm-5 3.5A4.5 4.5 0 1112 16.5 4.5 4.5 0 0112 7.5zm0 2A2.5 2.5 0 1014.5 12 2.5 2.5 0 0012 9.5zm5.2-3.1a1 1 0 11-1 1 1 1 0 011-1z"/></svg></span>
+        <div><strong>Instagram</strong><span><%= phoneLabel %></span></div>
+      </a>
+      <a class="contact-card" data-reveal target="_blank" rel="noopener" href="<%= contactSocialHref(settings.facebook) %>">
+        <span class="contact-ico"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg></span>
+        <div><strong>Facebook</strong><span><%= phoneLabel %></span></div>
+      </a>
     </div>
     <p class="medical-note"><%= t('medical_disclaimer') %></p>
     <%- include('../partials/trust-pay', { mode: 'compact' }) %>

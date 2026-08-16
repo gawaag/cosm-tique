@@ -26,6 +26,10 @@
       <div class="field"><label for="contact_phone">Téléphone affiché</label><input type="text" id="contact_phone" name="contact_phone" value="<%= settings.contact_phone %>"></div>
     </div>
     <div class="field"><label for="contact_email">Email de contact (affiché sur le site)</label><input type="email" id="contact_email" name="contact_email" value="<%= settings.contact_email %>"></div>
+    <div class="field-row">
+      <div class="field grow"><label for="instagram">Instagram <span class="muted">(URL ou téléphone)</span></label><input type="text" id="instagram" name="instagram" value="<%= settings.instagram || '' %>" placeholder="https://wa.me/212619915492"></div>
+      <div class="field grow"><label for="facebook">Facebook <span class="muted">(URL ou téléphone)</span></label><input type="text" id="facebook" name="facebook" value="<%= settings.facebook || '' %>" placeholder="https://wa.me/212619915492"></div>
+    </div>
     <p class="muted" style="margin:0">Pour l’email qui <strong>reçoit</strong> les formulaires de réservation, allez dans <a href="<%= adminBase %>/personnel">Personnel</a>.</p>
   </div>
 

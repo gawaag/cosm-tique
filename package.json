@@ -1,7 +1,7 @@
 {
   "name": "herbalis-store",
   "version": "1.0.0",
-  "description": "Boutique HERBALIS - complements alimentaires (colon, cheveux, respiration), FR/AR",
+  "description": "Boutique معشبة الأطلس — confort côlon, cheveux, packs. FR/AR, Maroc",
   "type": "commonjs",
   "main": "server.js",
   "scripts": {

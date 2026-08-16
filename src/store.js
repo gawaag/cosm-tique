@@ -78,7 +78,7 @@ function uniqueSlug(base, excludeId = null) {
 const productCols = ['name','name_ar','brand','category','price','old_price','stock','cpu','ram','storage','gpu','screen','os','short_fr','short_en','short_ar','desc_fr','desc_en','desc_ar','image','featured','active','sort_order'];
 
 function createProduct(data) {
-  const slug = uniqueSlug(data.name || 'produit');
+  const slug = uniqueSlug(data.slug || data.name || 'produit');
   const stmt = db.prepare(`
     INSERT INTO products (slug, ${productCols.join(', ')})
     VALUES (@slug, ${productCols.map((c) => '@' + c).join(', ')})

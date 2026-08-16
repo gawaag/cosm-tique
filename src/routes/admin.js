@@ -276,6 +276,7 @@ router.post('/reservations/:id/supprimer', requireAuth, csrf, (req, res) => {
 // ---------------------------------------------------------------------------
 const SETTING_KEYS = [
   'brand_name', 'accent_color', 'whatsapp_number', 'contact_email', 'notification_email', 'contact_phone',
+  'instagram', 'facebook',
   'hero_title_fr', 'hero_title_ar', 'hero_sub_fr', 'hero_sub_ar',
   'about_fr', 'about_ar', 'currency', 'currency_symbol', 'brand_latin',
   'attestation_fr', 'attestation_ar',
