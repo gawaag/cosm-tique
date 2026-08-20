@@ -16,6 +16,21 @@ module.exports = function sqlSessionStore(session) {
           expired INTEGER NOT NULL
         )
       `);
+      try {
+        const cols = this.client.prepare('PRAGMA table_info(sessions)').all().map((c) => c.name);
+        if (!cols.includes('expired')) {
+          this.client.exec('ALTER TABLE sessions ADD COLUMN expired INTEGER NOT NULL DEFAULT 0');
+        }
+      } catch (_) {
+        this.client.exec('DROP TABLE IF EXISTS sessions');
+        this.client.exec(`
+          CREATE TABLE sessions (
+            sid TEXT PRIMARY KEY,
+            sess TEXT NOT NULL,
+            expired INTEGER NOT NULL
+          )
+        `);
+      }
       if (this.expired.clear) {
         const interval = this.expired.intervalMs || 15 * 60 * 1000;
         this._timer = setInterval(() => {
