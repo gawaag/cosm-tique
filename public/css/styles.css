@@ -264,6 +264,32 @@ video.hero-bg--video {
   from { transform: rotateY(-3.6deg) rotateX(.6deg) translate3d(-1.4%, .4%, 18px); }
   to   { transform: rotateY(3.6deg) rotateX(-.4deg) translate3d(1.4%, -.3%, 42px); }
 }
+.hero-media--pan {
+  animation: none;
+  overflow: hidden;
+  inset: 0;
+}
+.hero-pan-track {
+  display: flex;
+  height: 100%;
+  width: max-content;
+  animation: hero-pan-ltr 90s linear infinite;
+  will-change: transform;
+}
+.hero-bg--pan {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  transform: none;
+  flex: none;
+}
+@keyframes hero-pan-ltr {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
 .hero-scrim {
   position: absolute;
   inset: 0;
@@ -1560,7 +1586,8 @@ html.js [data-reveal].is-visible { opacity: 1; transform: none; }
   html.js .hero-bg { opacity: 1 !important; transform: none !important; animation: none !important; }
   .hero-bg,
   .hero-media,
-  .hero-stage { animation: none !important; transform: none !important; }
+  .hero-stage,
+  .hero-pan-track { animation: none !important; transform: none !important; }
   .bottle { animation: none !important; }
 }
 

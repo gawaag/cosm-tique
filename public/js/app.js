@@ -628,6 +628,7 @@
     var stage = document.querySelector('[data-hero-tilt]');
     var hero = stage && stage.closest('.hero');
     if (!stage || !hero) return;
+    if (hero.querySelector('.hero-media--pan')) return;
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (reduce || !fine) return;

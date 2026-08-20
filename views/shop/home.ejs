@@ -19,7 +19,7 @@
     var heroVideo = (settings.hero_video && settings.hero_video.trim()) ? settings.hero_video.trim() : '';
     var heroImg = (settings.hero_image && settings.hero_image.trim())
       ? settings.hero_image.trim()
-      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-atlas-colon.png');
+      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-souk-atlas.png');
     var hasVideo = !!heroVideo;
   %>
   <section class="hero<%= (hasVideo || heroImg) ? ' hero--photo' : ' hero--fallback' %>">
@@ -35,8 +35,11 @@
           </video>
         </div>
       <% } else if (heroImg) { %>
-        <div class="hero-media">
-          <img class="hero-bg" src="/uploads/<%= heroImg %>" alt="" loading="eager" fetchpriority="high">
+        <div class="hero-media hero-media--pan">
+          <div class="hero-pan-track">
+            <img class="hero-bg hero-bg--pan" src="/uploads/<%= heroImg %>" alt="معشبة الأطلس، المغرب" loading="eager" fetchpriority="high">
+            <img class="hero-bg hero-bg--pan" src="/uploads/<%= heroImg %>" alt="" aria-hidden="true">
+          </div>
         </div>
       <% } else { %>
         <div class="hero-media hero-media--fallback">
@@ -60,7 +63,7 @@
     <div class="hero-copy hero-copy--bottom">
       <p class="hero-sub"><%= settings['hero_sub_' + lang] || settings.hero_sub_fr %></p>
       <div class="hero-links">
-        <a href="/produits" class="hero-cta hero-cta--primary"><%= t('hero_cta') %></a>
+        <a href="/produits?cat=colon" class="hero-cta hero-cta--primary"><%= t('hero_cta') %></a>
         <a href="/contact#diagnostic" class="hero-cta hero-cta--ghost"><%= t('hero_diag') %></a>
       </div>
     </div>

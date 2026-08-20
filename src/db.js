@@ -122,7 +122,7 @@ const SHOP_EMAIL = 'anas.bouaita2027@gmail.com';
 const SHOP_WA = '212619915492';
 const SHOP_PHONE = '+212 619 915 492';
 const SHOP_SOCIAL = 'https://wa.me/212619915492';
-const CATALOG_VERSION = 'maachabat-colon-v1';
+const CATALOG_VERSION = 'maachabat-colon-v2';
 
 const DEFAULT_SETTINGS = {
   brand_name: 'معشبة الأطلس',
@@ -147,14 +147,14 @@ const DEFAULT_SETTINGS = {
   hero_title_fr: 'Les plantes, simplement.',
   hero_title_ar: 'الأعشاب، ببساطة.',
   hero_title_en: 'الأعشاب، ببساطة.',
-  hero_sub_fr: 'Miel du côlon, anti-chute et packs. Boutique au Maroc. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.',
-  hero_sub_ar: 'عسل راحة القولون، كثافة الشعر، وباقات. متجر في المغرب. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
-  hero_sub_en: 'عسل راحة القولون، كثافة الشعر، وباقات. متجر في المغرب. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
-  hero_image: 'hero-atlas-colon.png',
+  hero_sub_fr: 'Miel du côlon, boutique au Maroc. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.',
+  hero_sub_ar: 'عسل راحة القولون. متجر في المغرب. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
+  hero_sub_en: 'عسل راحة القولون. متجر في المغرب. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
+  hero_image: 'hero-souk-atlas.png',
   hero_video: '',
-  about_fr: "معشبة الأطلس (Maachabat Al Atlas) est une boutique au Maroc : miel de confort du côlon (250 g, 500 g, 1 kg), anti-chute, et pack côlon + cheveux. Livraison 24 h à Rabat, Salé et Casablanca, 48 h dans le reste du Maroc. Paiement à la livraison. Les compléments ne se substituent pas à un traitement médical.",
-  about_ar: "معشبة الأطلس (Maachabat Al Atlas) متجر في المغرب: عسل راحة القولون (250 غ، 500 غ، 1 كغ)، مكافحة تساقط الشعر، وباقة القولون والشعر. توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام. المكمّلات لا تغني عن علاج طبي.",
-  about_en: "معشبة الأطلس (Maachabat Al Atlas) : côlon, cheveux, packs. Boutique au Maroc. Livraison 24 h / 48 h. Paiement à la livraison.",
+  about_fr: "معشبة الأطلس (Maachabat Al Atlas) est une boutique au Maroc : miel de confort du côlon (250 g, 500 g, 1 kg). Livraison 24 h à Rabat, Salé et Casablanca, 48 h dans le reste du Maroc. Paiement à la livraison. Les compléments ne se substituent pas à un traitement médical.",
+  about_ar: "معشبة الأطلس (Maachabat Al Atlas) متجر في المغرب: عسل راحة القولون (250 غ، 500 غ، 1 كغ). توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام. المكمّلات لا تغني عن علاج طبي.",
+  about_en: "معشبة الأطلس (Maachabat Al Atlas) : miel du côlon. Boutique au Maroc. Livraison 24 h / 48 h. Paiement à la livraison.",
   attestation_fr: ATTEST_FR,
   attestation_ar: ATTEST_AR,
   delivery_fr: 'Boutique au Maroc. Paiement à la livraison. 24 h Rabat, Salé, Casablanca. 48 h dans le reste du Maroc.',
@@ -393,10 +393,10 @@ function upsertProductBySlug(row) {
   return insert.run(payload).lastInsertRowid;
 }
 
-/** Keep only the 5 canonical SKUs. Upsert by slug; deactivate the rest (orders stay intact). */
+/** Keep only active colon SKUs. Upsert by slug; deactivate the rest (orders stay intact). */
 function ensureMaachabatCatalog() {
   const catalog = require('./catalog-seed');
-  const keep = catalog.map((p) => p.slug).filter(Boolean);
+  const keep = catalog.filter((p) => p.active !== 0).map((p) => p.slug).filter(Boolean);
   if (!keep.length) return;
 
   const ver = String((getSetting.get('catalog_version') || {}).value || '');
@@ -408,7 +408,7 @@ function ensureMaachabatCatalog() {
   }
 
   const placeholders = keep.map(() => '?').join(',');
-  db.prepare(`UPDATE products SET active = 0 WHERE slug NOT IN (${placeholders})`).run(...keep);
+  db.prepare(`UPDATE products SET active = 0, featured = 0 WHERE slug NOT IN (${placeholders})`).run(...keep);
 
   upsertSetting.run('catalog_version', CATALOG_VERSION);
   if (reseed) {

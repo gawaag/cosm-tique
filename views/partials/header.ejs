@@ -17,9 +17,7 @@
 
     <nav class="main-nav" id="mainNav" aria-label="<%= lang === 'ar' ? 'القائمة' : 'Principal' %>">
       <a href="/" class="<%= page === 'home' ? 'active' : '' %>"><%= t('home') %></a>
-      <% ['colon', 'hair', 'packs'].forEach(function(cat){ %>
-        <a href="/produits?cat=<%= cat %>" class="<%= (typeof activeCat !== 'undefined' && activeCat === cat) ? 'active' : '' %>"><%= catNav(cat) %></a>
-      <% }) %>
+      <a href="/produits?cat=colon" class="<%= (typeof activeCat !== 'undefined' && activeCat === 'colon') || page === 'products' ? 'active' : '' %>"><%= catNav('colon') %></a>
     </nav>
 
     <div class="nav-tools">

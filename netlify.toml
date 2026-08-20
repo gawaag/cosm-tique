@@ -18,6 +18,7 @@
     "src/**",
     "public/css/**",
     "public/js/**",
+    "public/uploads/**",
     "node_modules/sql.js/dist/sql-wasm.wasm"
   ]
 
