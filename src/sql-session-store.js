@@ -9,46 +9,14 @@ module.exports = function sqlSessionStore(session) {
       super(options);
       this.client = options.client;
       this.expired = options.expired || {};
+      this.client.exec('DROP TABLE IF EXISTS sessions');
       this.client.exec(`
-        CREATE TABLE IF NOT EXISTS sessions (
+        CREATE TABLE sessions (
           sid TEXT PRIMARY KEY,
           sess TEXT NOT NULL,
           expired INTEGER NOT NULL
         )
       `);
-      let cols = [];
-      try {
-        cols = this.client.prepare('PRAGMA table_info(sessions)').all().map((c) => String(c.name || ''));
-      } catch (_) {
-        cols = [];
-      }
-      const hasExpired = cols.includes('expired');
-      const hasExpire = cols.includes('expire');
-      if (!hasExpired) {
-        try {
-          if (cols.length && !hasExpire) {
-            this.client.exec('ALTER TABLE sessions ADD COLUMN expired INTEGER NOT NULL DEFAULT 0');
-          } else {
-            this.client.exec('DROP TABLE IF EXISTS sessions');
-            this.client.exec(`
-              CREATE TABLE sessions (
-                sid TEXT PRIMARY KEY,
-                sess TEXT NOT NULL,
-                expired INTEGER NOT NULL
-              )
-            `);
-          }
-        } catch (_) {
-          this.client.exec('DROP TABLE IF EXISTS sessions');
-          this.client.exec(`
-            CREATE TABLE sessions (
-              sid TEXT PRIMARY KEY,
-              sess TEXT NOT NULL,
-              expired INTEGER NOT NULL
-            )
-          `);
-        }
-      }
       if (this.expired.clear) {
         const interval = this.expired.intervalMs || 15 * 60 * 1000;
         this._timer = setInterval(() => {
