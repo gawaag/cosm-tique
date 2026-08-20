@@ -19,7 +19,7 @@
     var heroVideo = (settings.hero_video && settings.hero_video.trim()) ? settings.hero_video.trim() : '';
     var heroImg = (settings.hero_image && settings.hero_image.trim())
       ? settings.hero_image.trim()
-      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-souk-atlas.png');
+      : (heroProduct && heroProduct.image ? heroProduct.image : 'hero-souk-atlas.jpg');
     var hasVideo = !!heroVideo;
   %>
   <section class="hero<%= (hasVideo || heroImg) ? ' hero--photo' : ' hero--fallback' %>">
@@ -37,8 +37,7 @@
       <% } else if (heroImg) { %>
         <div class="hero-media hero-media--pan">
           <div class="hero-pan-track">
-            <img class="hero-bg hero-bg--pan" src="/uploads/<%= heroImg %>" alt="معشبة الأطلس، المغرب" loading="eager" fetchpriority="high">
-            <img class="hero-bg hero-bg--pan" src="/uploads/<%= heroImg %>" alt="" aria-hidden="true">
+            <img class="hero-bg hero-bg--pan" src="/uploads/<%= heroImg %>" alt="معشبة الأطلس، المغرب" width="2048" height="1644" loading="eager" fetchpriority="high" decoding="sync">
           </div>
         </div>
       <% } else { %>

@@ -150,7 +150,7 @@ const DEFAULT_SETTINGS = {
   hero_sub_fr: 'Miel du côlon, boutique au Maroc. Livraison 24 h Rabat / Salé / Casa, 48 h ailleurs. Paiement à la livraison.',
   hero_sub_ar: 'عسل راحة القولون. متجر في المغرب. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
   hero_sub_en: 'عسل راحة القولون. متجر في المغرب. توصيل 24 ساعة الرباط سلا البيضاء، 48 ساعة باقي المدن. الدفع عند الاستلام.',
-  hero_image: 'hero-souk-atlas.png',
+  hero_image: 'hero-souk-atlas.jpg',
   hero_video: '',
   about_fr: "معشبة الأطلس (Maachabat Al Atlas) est une boutique au Maroc : miel de confort du côlon (250 g, 500 g, 1 kg). Livraison 24 h à Rabat, Salé et Casablanca, 48 h dans le reste du Maroc. Paiement à la livraison. Les compléments ne se substituent pas à un traitement médical.",
   about_ar: "معشبة الأطلس (Maachabat Al Atlas) متجر في المغرب: عسل راحة القولون (250 غ، 500 غ، 1 كغ). توصيل 24 ساعة الرباط وسلا والبيضاء، 48 ساعة باقي المغرب. الدفع عند الاستلام. المكمّلات لا تغني عن علاج طبي.",
